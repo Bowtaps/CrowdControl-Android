@@ -17,9 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+//import android.util.log;
+
 
 public class MainEventNavigationActivity extends AppCompatActivity implements ActionBar.TabListener {
 
+    private static final String TAG = "statusChange";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -39,6 +42,7 @@ public class MainEventNavigationActivity extends AppCompatActivity implements Ac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_event_navigation);
+        //log.i(TAG, "On_Create");
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
