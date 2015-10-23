@@ -11,4 +11,5 @@
     <string name="title_activity_welcome">WelcomeActivity</string>
     <string name="WelcomeScreenTitle">Crowd Control</string>
     <string name="title_section4">Section 4</string>
+    <string name="title_activity_log_in">LogInActivity</string>
 </resources>
