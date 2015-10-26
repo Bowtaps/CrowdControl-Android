@@ -28,15 +28,22 @@
             </intent-filter
             -->
         </activity>
-
         <activity
-            android:name=".LogInChoiceActivity"
+            android:name=".LoginChoiceActivity"
             android:label="@string/title_activity_log_in" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:parentActivityName=".WelcomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bowtaps.crowdcontrol.WelcomeActivity" />
         </activity>
     </application>
 
