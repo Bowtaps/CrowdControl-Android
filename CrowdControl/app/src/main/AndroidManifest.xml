@@ -30,7 +30,7 @@
         </activity>
 
         <activity
-            android:name=".LogInActivity"
+            android:name=".LogInChoiceActivity"
             android:label="@string/title_activity_log_in" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
