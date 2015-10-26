@@ -50,17 +50,17 @@ public class LoginChoiceActivity extends AppCompatActivity implements View.OnCli
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View view) {
         // Handles clicks onn items in view
         // in this case, either the facebook button or the create account button
 
-        switch (v.getId()) {
+        switch (view.getId()) {
             case R.id.login_choice_facebook_button:
-                onFacebookButtonClick((Button) v);
+                onFacebookButtonClick((Button) view);
                 break;
 
             case R.id.login_choice_crowd_control_button:
-                onCreateAccountButtonClick((Button) v);
+                onCreateAccountButtonClick((Button) view);
                 break;
 
             default:
@@ -69,14 +69,31 @@ public class LoginChoiceActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void onFacebookButtonClick(Button v) {
+    /**
+     * Handles clicks on the Facebook login button. Simply launches the {@link LoginActivity}.
+     *
+     * @param button  The button object that was clicked.
+     * @see           LoginActivity
+     */
+    private void onFacebookButtonClick(Button button) {
         launchLoginActivity();
     }
 
-    private void onCreateAccountButtonClick(Button b) {
+    /**
+     * Handles clicks on the Facebook login button. Simply launches the {@link LoginActivity}.
+     *
+     * @param button  The button object that was clicked.
+     * @see           LoginActivity
+     */
+    private void onCreateAccountButtonClick(Button button) {
         launchLoginActivity();
     }
 
+    /**
+     * Launches the {@link LoginActivity}.
+     *
+     * @see LoginActivity
+     */
     private void launchLoginActivity() {
         Intent myIntent = new Intent(this, LoginActivity.class);
         this.startActivity(myIntent);
