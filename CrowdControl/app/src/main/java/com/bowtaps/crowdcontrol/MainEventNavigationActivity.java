@@ -135,7 +135,7 @@ public class MainEventNavigationActivity extends AppCompatActivity implements Ac
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 4;
+            return 2;
         }
 
         @Override

@@ -11,4 +11,7 @@
     <string name="title_activity_welcome">WelcomeActivity</string>
     <string name="WelcomeScreenTitle">Crowd Control</string>
     <string name="title_section4">Section 4</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
