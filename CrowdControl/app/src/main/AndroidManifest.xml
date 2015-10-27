@@ -10,10 +10,6 @@
         <activity
             android:name=".TestActivity"
             android:label="TestActivity">
-        </activity>
-        <activity
-            android:name=".MainEventNavigationActivity"
-            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

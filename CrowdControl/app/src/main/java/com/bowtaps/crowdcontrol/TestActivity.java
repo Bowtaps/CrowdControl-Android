@@ -28,9 +28,10 @@ public class TestActivity extends AppCompatActivity {
         mTabsAdapter = new SimpleTabsAdapter(getSupportFragmentManager());
 
         //creating the tabs and adding them to adapter class
-        mTabsAdapter.addFragment(TestFragment.newInstance("Fruits"), "Fruits");
-        mTabsAdapter.addFragment(TestFragment.newInstance("Flower"), "Flower");
+        mTabsAdapter.addFragment(GroupInfoFragment.newInstance(""), "Group Information");
+        mTabsAdapter.addFragment(MapFragment.newInstance(""), "Map");
         mTabsAdapter.addFragment(TestFragment.newInstance("Leaves"), "leaves");
+        mTabsAdapter.addFragment(EventFragment.newInstance("Suggestions"), "Events");
 
         //setup viewpager to give swipe effect
         tabsviewPager.setAdapter(mTabsAdapter);
