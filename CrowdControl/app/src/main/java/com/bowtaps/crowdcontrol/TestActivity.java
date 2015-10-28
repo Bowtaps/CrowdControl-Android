@@ -28,8 +28,8 @@ public class TestActivity extends AppCompatActivity {
         mTabsAdapter = new SimpleTabsAdapter(getSupportFragmentManager());
 
         //creating the tabs and adding them to adapter class
-        mTabsAdapter.addFragment(GroupInfoFragment.newInstance(""), "Group Information");
-        mTabsAdapter.addFragment(MapFragment.newInstance(""), "Map");
+        mTabsAdapter.addFragment(GroupInfoFragment.newInstance("Group Information"), "Group Information");
+        mTabsAdapter.addFragment(MapFragment.newInstance("Map Fragment"), "Map");
         mTabsAdapter.addFragment(TestFragment.newInstance("Leaves"), "leaves");
         mTabsAdapter.addFragment(EventFragment.newInstance("Suggestions"), "Events");
 

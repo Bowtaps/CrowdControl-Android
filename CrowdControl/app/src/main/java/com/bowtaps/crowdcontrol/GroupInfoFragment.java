@@ -1,7 +1,5 @@
 package com.bowtaps.crowdcontrol;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,6 +16,7 @@ import android.widget.TextView;
  * create an instance of this fragment.
  */
 public class GroupInfoFragment extends Fragment {
+
     private static final String ARG_PARAM1 = "param1";
 
     private String mText;
