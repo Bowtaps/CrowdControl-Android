@@ -1,57 +1,36 @@
 package com.bowtaps.crowdcontrol.model;
 
 import java.text.DateFormat;
+
 /**
- * Created by 1959760 on 10/24/2015.
+ * Created by 1959760 on 10/27/2015.
  */
-public class UserModel {
+public interface UserModel {
 
-    public UserModel(){
-        // (Parse) UserModel Data
-        String ObjectID;
-        String UserName;
-        String Password;
-        Object AuthData;
-        Boolean EmailVerified;
-        String Email;
-        DateFormat CreatedAt;
-        DateFormat UpdatedAt;
+    public String getObjectID();
+    public void setObjectID();
 
-        //CC UserModel Data
-        Object Location;
-        Object Preferences;
-        String Status;
-    }
+    public String getUserName();
+    public void setUserName();
 
-    // Fields
-    public String ObjectID;
-    public String UserName;
-    public String Password;
-    public Object AuthData;
-    public Boolean EmailVerified;
-    public String Email;
-    public DateFormat CreatedAt;
-    public DateFormat UpdatedAt;
+    public String getPassword();
+    public void setPassword(String password);
+    public Object getAuthData();
+    public void setAuthData(Object authData);
+    public Boolean getEmailVerified();
+    public void setEmailVerified(Boolean isVerified);
+    public String getEmail();
+    public void setEmail(String email);
+    public DateFormat getCreatedAt();
+    public void setCreatedAt(DateFormat createdDate);
+    public DateFormat getUpdatedAt();
+    public void setUpdatedAt(DateFormat updatedDate);
 
-    //CC UserModel Data
-    public Object Location;
-    public Object Preferences;
-    public String Status;
-
-    // Methods
-//        GetGroupModel();
-//        GetGroupName();
-//        GetItinerary();
-//        GetStatus();
-//        GetWaypoints();
-
-    // How do we implement this in Java/Android? DAN HELP
-//    public Object getLocation(){
-//        return this.Location;
-//    }
-//
-//    public Object setLocation(){
-//        this.Location = Location;
-//    }
-
+    //CC ParseUserModel Data
+    public Object getLocation();
+    public void setLocation(Object location);
+    public Object getPreferences();
+    public void setPreferences(Object preferences);
+    public String getStatus();
+    public void setStatus(String status);
 }
