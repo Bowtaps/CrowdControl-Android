@@ -38,74 +38,95 @@ public class ParseUserModel implements UserModel {
     private Object preferences;
     private String status;
 
-    // Methods
+    // Get Methods
+    @Override
     public String getObjectID(){
         return this.objectID;
     }
-    public void setObjectID();
-
+    @Override
     public String getUserName(){
         return this.userName;
     }
-    public void setUserName();
-
+    @Override
     public String getPassword(){
         return this.password;
     }
-    public void setPassword();
-
+    @Override
     public Object getAuthData(){
         return this.authData;
     }
-    public void setAuthData();
+    @Override
     public Boolean getEmailVerified(){
         return  this.emailVerified;
     }
-    public void setEmailVerified();
+    @Override
     public String getEmail(){
         return this.email;
     }
-    public void setEmail();
+    @Override
     public DateFormat getCreatedAt(){
         return this.createdAt;
     }
-    public void setCreatedAt(){
-        
-    }
+    @Override
     public DateFormat getUpdatedAt(){
         return this.updatedAt;
     }
-    public void setUpdatedAt(DateFormat updatedDate){
-        this.updatedAt = updatedDate;
-    }
-
-    //CC ParseUserModel Data
+    @Override
     public Object getLocation(){
         return this.location;
     }
-    public void setLocation(Object location){
-        this.location = location;
-    }
+    @Override
     public Object getPreferences(){
         return this.preferences;
     }
-    public void setPreferences(Object preferences){
-        this.preferences = preferences;
-    }
+    @Override
     public String getStatus(){
         return this.status;
     }
+
+    // Set Methods
+    @Override
+    public void setObjectID(String objectID){
+        this.objectID = objectID;
+    }
+    @Override
+    public void setUserName(String userName){
+        this.userName= userName;
+    }
+    @Override
+    public void setPassword(String password){
+        this.password = password;
+    }
+    @Override
+    public void setAuthData(Object authData){
+        this.authData = authData;
+    }
+    @Override
+    public void setEmailVerified(Boolean emailVerified){
+        this.emailVerified = emailVerified;
+    }
+    @Override
+    public void setEmail(String email){
+        this.email = email;
+    }
+    @Override
+    public void setCreatedAt(DateFormat createdDate){
+        this.createdAt = createdDate;
+    }
+    @Override
+    public void setUpdatedAt(DateFormat updatedDate){
+        this.updatedAt = updatedDate;
+    }
+    @Override
+    public void setLocation(Object location){
+        this.location = location;
+    }
+    @Override
+    public void setPreferences(Object preferences){
+        this.preferences = preferences;
+    }
+    @Override
     public void setStatus(String status){
         this.status = status;
     }
-
-    // How do we implement this in Java/Android? DAN HELP
-//    public Object getlocation(){
-//        return this.location;
-//    }
-
-//    public Object setlocation(){
-//        this.location = location;
-//    }
-
 }
