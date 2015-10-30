@@ -37,14 +37,18 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
                 <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="com.bowtaps.crowdcontrol.TestActivity" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".groupJoin"
             android:label="@string/title_activity_group_join" >
+        </activity>
+        <activity
+            android:name=".CreateAccountActivity"
+            android:label="@string/title_activity_create_account" >
         </activity>
     </application>
 
