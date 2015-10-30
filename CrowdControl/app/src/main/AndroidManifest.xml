@@ -21,6 +21,11 @@
         <activity
             android:name=".WelcomeActivity"
             android:label="@string/title_activity_welcome" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <meta-data
@@ -33,11 +38,6 @@
         <activity
             android:name=".TestActivity"
             android:label="TestActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
                 <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="com.bowtaps.crowdcontrol.TestActivity" />

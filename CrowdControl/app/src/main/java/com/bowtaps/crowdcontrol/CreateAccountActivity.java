@@ -1,16 +1,27 @@
 package com.bowtaps.crowdcontrol;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
-public class CreateAccountActivity extends AppCompatActivity {
+public class CreateAccountActivity extends AppCompatActivity implements View.OnClickListener {
+
+    Button mButtonCreate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
+
+        // Get handles to buttons
+        mButtonCreate = (Button) findViewById(R.id.buttonToGroupJoin);
+
+        // Declare button clicks
+        mButtonCreate.setOnClickListener(this);
     }
 
     @Override
@@ -33,5 +44,42 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        // Handles clicks onn items in view
+        // in this case, either the facebook button or the create account button
+
+        switch (view.getId()) {
+            case R.id.buttonToGroupJoin:
+                onCreateButtonClick((Button) view);
+                break;
+
+            default:
+                // Sorry, you're outta luck
+                break;
+        }
+    }
+
+    /**
+     * Handles clicks on the Create button. Simply launches the {@link groupJoin}.
+     *
+     * @param button  The button object that was clicked.
+     * @see           groupJoin
+     */
+    private void onCreateButtonClick(Button button) {
+        launchGroupJoinActivity();
+    }
+
+
+    /**
+     * Launches the {@link groupJoin}.
+     *
+     * @see groupJoin
+     */
+    private void launchGroupJoinActivity() {
+        Intent myIntent = new Intent(this, groupJoin.class);
+        this.startActivity(myIntent);
     }
 }

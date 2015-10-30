@@ -1,16 +1,27 @@
 package com.bowtaps.crowdcontrol;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
-public class groupJoin extends AppCompatActivity {
+public class groupJoin extends AppCompatActivity implements View.OnClickListener {
+
+    Button mButtonToTabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_join);
+
+        // Get handles to Buttons
+        mButtonToTabs = (Button) findViewById(R.id.buttonToTab);
+
+        // Declare button clicks
+        mButtonToTabs.setOnClickListener(this);
     }
 
     @Override
@@ -33,5 +44,42 @@ public class groupJoin extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        // Handles clicks onn items in view
+        // in this case, either the facebook button or the create account button
+
+        switch (view.getId()) {
+            case R.id.buttonToTab:
+                onCreateButtonClick((Button) view);
+                break;
+
+            default:
+                // Sorry, you're outta luck
+                break;
+        }
+    }
+
+    /**
+     * Handles clicks on the Facebook login button. Simply launches the {@link TestActivity}.
+     *
+     * @param button  The button object that was clicked.
+     * @see           TestActivity
+     */
+    private void onCreateButtonClick(Button button) {
+        launchTabActivity();
+    }
+
+
+    /**
+     * Launches the {@link groupJoin}.
+     *
+     * @see TestActivity
+     */
+    private void launchTabActivity() {
+        Intent myIntent = new Intent(this, TestActivity.class);
+        this.startActivity(myIntent);
     }
 }

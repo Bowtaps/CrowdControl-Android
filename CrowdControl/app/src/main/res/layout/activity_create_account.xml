@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create"
-        android:id="@+id/button"
+        android:id="@+id/buttonToGroupJoin"
         android:layout_below="@+id/editText"
         android:layout_centerHorizontal="true" />
 
