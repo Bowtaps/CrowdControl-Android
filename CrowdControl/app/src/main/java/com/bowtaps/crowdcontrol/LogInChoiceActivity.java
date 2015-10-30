@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-public class LoginChoiceActivity extends AppCompatActivity implements View.OnClickListener {
+public class LogInChoiceActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonFacebook;
     Button mButtonCrowdControl;
