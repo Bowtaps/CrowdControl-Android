@@ -8,26 +8,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
+public class CreateAccountActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button mButtonCreateAccount;
+    Button mButtonCreate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+        setContentView(R.layout.activity_create_account);
 
         // Get handles to buttons
-        mButtonCreateAccount = (Button) findViewById(R.id.buttonToCreate);
+        mButtonCreate = (Button) findViewById(R.id.buttonToGroupJoin);
 
-        //Declare button clicks
-        mButtonCreateAccount.setOnClickListener(this);
+        // Declare button clicks
+        mButtonCreate.setOnClickListener(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_welcome, menu);
+        getMenuInflater().inflate(R.menu.menu_create_account, menu);
         return true;
     }
 
@@ -52,8 +52,8 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         // in this case, either the facebook button or the create account button
 
         switch (view.getId()) {
-            case R.id.buttonToCreate:
-                onCreateAccountButtonClick((Button) view);
+            case R.id.buttonToGroupJoin:
+                onCreateButtonClick((Button) view);
                 break;
 
             default:
@@ -63,23 +63,23 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     /**
-     * Handles clicks on the buttonToCreate button. Simply launches the {@link CreateAccountActivity}.
+     * Handles clicks on the Create button. Simply launches the {@link groupJoin}.
      *
      * @param button  The button object that was clicked.
-     * @see           CreateAccountActivity
+     * @see           groupJoin
      */
-    private void onCreateAccountButtonClick(Button button) {
-        launchCreateAccoutButtonActivity();
+    private void onCreateButtonClick(Button button) {
+        launchGroupJoinActivity();
     }
+
 
     /**
-     * Launches the {@link CreateAccountActivity}.
+     * Launches the {@link groupJoin}.
      *
-     * @see CreateAccountActivity
+     * @see groupJoin
      */
-    private void launchCreateAccoutButtonActivity() {
-        Intent myIntent = new Intent(this, CreateAccountActivity.class);
+    private void launchGroupJoinActivity() {
+        Intent myIntent = new Intent(this, groupJoin.class);
         this.startActivity(myIntent);
     }
-
 }

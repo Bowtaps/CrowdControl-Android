@@ -1,0 +1,58 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bowtaps.crowdcontrol.GroupInfoFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This is a sample description"
+        android:id="@+id/textView3"
+        android:layout_gravity="center"
+        android:textColor="#50ff15"
+        android:layout_column="0"
+        android:layout_columnSpan="3"
+        android:layout_row="2"
+        android:layout_rowSpan="2" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="65dp"
+        android:text="Leave Group"
+        android:id="@+id/button"
+        android:backgroundTint="#b30000"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:layout_column="2"
+        android:layout_columnSpan="1"
+        android:layout_row="1"
+        android:layout_rowSpan="1"
+        android:layout_gravity="center_horizontal|bottom"
+        android:clickable="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Alpha Group"
+        android:id="@+id/textView2"
+        android:layout_gravity="left|top"
+        android:textColor="#00f2ff"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_row="1"
+        android:layout_marginTop="100dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/group_test"
+        android:textColor="#ffffff"
+        android:layout_column="0"
+        android:layout_row="0"
+        android:layout_columnSpan="2"
+        android:layout_gravity="left|top" />
+</FrameLayout>
