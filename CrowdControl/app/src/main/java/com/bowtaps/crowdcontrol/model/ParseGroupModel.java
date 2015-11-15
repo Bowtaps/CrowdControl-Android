@@ -1,6 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
 import java.security.acl.Group;
+import java.util.List;
 
 /**
  * Created by 1959760 on 10/24/2015.
@@ -10,12 +11,12 @@ public class ParseGroupModel implements GroupModel{
     public ParseGroupModel()
     {
         // Initialize Fields
-        // TODO: user GroupLeader;
+        ParseUserModel GroupLeader;
         GroupName = null;
         Itinerary = null;
         Status = null;
         Waypoints = null;
-        // TODO: List of users in the group
+        List<ParseUserModel> GroupMembers;
 
     }
     // Fields
