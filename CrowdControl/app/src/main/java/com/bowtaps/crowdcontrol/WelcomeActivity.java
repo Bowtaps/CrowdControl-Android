@@ -95,7 +95,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
      * @see           CreateAccountActivity
      */
     private void onCreateAccountButtonClick(Button button) {
-        launchCreateAccoutButtonActivity();
+        launchLoginChoiceActivity();
     }
 
     /**
@@ -107,5 +107,11 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         Intent myIntent = new Intent(this, CreateAccountActivity.class);
         this.startActivity(myIntent);
     }
+
+    private void launchLoginChoiceActivity() {
+        Intent myIntent = new Intent(this, LogInChoiceActivity.class);
+        this.startActivity(myIntent);
+    }
+
 
 }
