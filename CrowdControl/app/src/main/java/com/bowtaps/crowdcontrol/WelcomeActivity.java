@@ -28,26 +28,8 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         //Declare button clicks
         mButtonCreateAccount.setOnClickListener(this);
 
+        //Sending Keys to connect to Parse
         Parse.initialize(this, "xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv", "PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi");
-// TODO: Replace this hardcoded user by actual implementation.
-        ParseUser user = new ParseUser();
-        user.setUsername("my name");
-        user.setPassword("my pass");
-        user.setEmail("email@example.com");
-
-// other fields can be set just like with ParseObject
-        user.put("phone", "650-555-0000");
-
-        user.signUpInBackground(new SignUpCallback() {
-            public void done(ParseException e) {
-                if (e == null) {
-                    // Hooray! Let them use the app now.
-                } else {
-                    // Sign up didn't succeed. Look at the ParseException
-                    // to figure out what went wrong
-                }
-            }
-        });
     }
 
     @Override

@@ -30,6 +30,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +62,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private UserLoginTask mAuthTask = null;
 
     // UI references.
+    private AutoCompleteTextView mUserNameView;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -68,6 +73,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+        mUserNameView = (AutoCompleteTextView) findViewById(R.id.userName);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -150,15 +156,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         // Reset errors.
+        mUserNameView.setError(null);
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
+        String username = mUserNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
+
+        // Check for a valid User Name.
+        if (TextUtils.isEmpty(username)) {
+            mUserNameView.setError(getString(R.string.error_field_required));
+            focusView = mUserNameView;
+            cancel = true;
+        } else if (!isUserNameValid(username)) {
+            mUserNameView.setError(getString(R.string.error_invalid_user_name));
+            focusView = mUserNameView;
+            cancel = true;
+        }
 
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
@@ -186,9 +205,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(username, email, password);
             mAuthTask.execute((Void) null);
         }
+    }
+
+    private  boolean isUserNameValid(String username) {
+        //TODO: What makes a valid username??
+        return true;
     }
 
     private boolean isEmailValid(String email) {
@@ -297,10 +321,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final String mUserName;
         private final String mEmail;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String username, String email, String password) {
+            mUserName = username;
             mEmail = email;
             mPassword = password;
         }
@@ -325,6 +351,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
 
             // TODO: register the new account here.
+
+            ParseUser user = new ParseUser();
+            user.setUsername(mUserName);
+            user.setPassword(mPassword);
+            user.setEmail(mEmail);
+
+// other fields can be set just like with ParseObject
+            user.put("phone", "650-555-0000");
+
+            user.signUpInBackground(new SignUpCallback() {
+                public void done(ParseException e) {
+                    if (e == null) {
+                        // Hooray! Let them use the app now.
+                    } else {
+                        // Sign up didn't succeed. Look at the ParseException
+                        // to figure out what went wrong
+                    }
+                }
+            });
 
             launchGroupJoinActivity();
 
