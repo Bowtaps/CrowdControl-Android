@@ -48,10 +48,6 @@ public class ParseUserModel implements UserModel {
         return this.userName;
     }
     @Override
-    public String getPassword(){
-        return this.password;
-    }
-    @Override
     public Object getAuthData(){
         return this.authData;
     }

@@ -10,7 +10,6 @@ public interface UserModel {
     // Get Methods
     public String getObjectID();
     public String getUserName();
-    public String getPassword();
     public Object getAuthData();
     public Boolean getEmailVerified();
     public String getEmail();

@@ -27,11 +27,6 @@ public class LoginController {
             }
 
             @Override
-            public String getPassword() {
-                return null;
-            }
-
-            @Override
             public Object getAuthData() {
                 return null;
             }
