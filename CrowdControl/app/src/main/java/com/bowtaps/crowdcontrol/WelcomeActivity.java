@@ -28,6 +28,9 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         //Declare button clicks
         mButtonCreateAccount.setOnClickListener(this);
 
+        //Enable Local Datastore
+        Parse.enableLocalDatastore(getApplicationContext());
+
         //Sending Keys to connect to Parse
         Parse.initialize(this, "xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv", "PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi");
     }
