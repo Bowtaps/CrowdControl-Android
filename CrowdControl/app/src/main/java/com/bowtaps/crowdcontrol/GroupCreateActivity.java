@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
@@ -196,24 +197,25 @@ public class GroupCreateActivity extends AppCompatActivity {
             }
 
             // TODO: register the new account here.
-
+            ParseObject group = new ParseObject("Group");
             ParseUser user = new ParseUser();
-            user.setUsername(mGroupName);
-            user.setEmail(mGroupDescription);
+            user.getCurrentUser( );
+            group.put("GroupName", mGroupName);
+            group.put("GroupDescription", mGroupDescription);
 
 // other fields can be set just like with ParseObject
-            user.put("phone", "650-555-0000");
-
-            user.signUpInBackground(new SignUpCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-                        // Hooray! Let them use the app now.
-                    } else {
-                        // Sign up didn't succeed. Look at the ParseException
-                        // to figure out what went wrong
-                    }
-                }
-            });
+//            group.put("phone", "650-555-0000");
+            group.saveInBackground();
+//            group.signUpInBackground(new SignUpCallback() {
+//                public void done(ParseException e) {
+//                    if (e == null) {
+//                        // Hooray! Let them use the app now.
+//                    } else {
+//                        // Sign up didn't succeed. Look at the ParseException
+//                        // to figure out what went wrong
+//                    }
+//                }
+//            });
 
             launchTestActivity();
 
