@@ -1,21 +1,22 @@
 package com.bowtaps.crowdcontrol;
 
 import android.content.Intent;
+import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.ConsoleMessage;
 import android.widget.Button;
 import com.parse.Parse;
-import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SignUpCallback;
 
 
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonCreateAccount;
+    ParseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,13 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
         //Sending Keys to connect to Parse
         Parse.initialize(this, "xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv", "PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi");
+        mUser.getCurrentUser();
+        if(mUser != null){
+            launchGroupJoinActivity();
+        }
+        else{
+            launchLoginActivity();
+        }
     }
 
     @Override
@@ -80,7 +88,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
      * @see           CreateAccountActivity
      */
     private void onCreateAccountButtonClick(Button button) {
-        launchLoginChoiceActivity();
+        launchLoginActivity();
     }
 
     /**
@@ -93,10 +101,14 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         this.startActivity(myIntent);
     }
 
-    private void launchLoginChoiceActivity() {
-        Intent myIntent = new Intent(this, LogInChoiceActivity.class);
+    private void launchLoginActivity() {
+        Intent myIntent = new Intent(this, LoginActivity.class);
         this.startActivity(myIntent);
     }
 
+    private void launchGroupJoinActivity() {
+        Intent myIntent = new Intent(this, GroupJoinActivity.class);
+        this.startActivity(myIntent);
+    }
 
 }

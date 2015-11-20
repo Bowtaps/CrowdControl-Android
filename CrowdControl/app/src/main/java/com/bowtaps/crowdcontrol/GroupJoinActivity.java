@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-public class groupJoin extends AppCompatActivity implements View.OnClickListener {
+public class GroupJoinActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonToTabs;
 
@@ -74,7 +74,7 @@ public class groupJoin extends AppCompatActivity implements View.OnClickListener
 
 
     /**
-     * Launches the {@link groupJoin}.
+     * Launches the {@link GroupJoinActivity}.
      *
      * @see TestActivity
      */

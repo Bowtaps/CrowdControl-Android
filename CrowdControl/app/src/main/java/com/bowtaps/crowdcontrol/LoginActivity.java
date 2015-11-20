@@ -397,12 +397,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Launches the {@link groupJoin}.
+     * Launches the {@link GroupJoinActivity}.
      *
-     * @see groupJoin
+     * @see GroupJoinActivity
      */
     private void launchGroupJoinActivity() {
-        Intent myIntent = new Intent(this, groupJoin.class);
+        Intent myIntent = new Intent(this, GroupJoinActivity.class);
         this.startActivity(myIntent);
     }
 }
