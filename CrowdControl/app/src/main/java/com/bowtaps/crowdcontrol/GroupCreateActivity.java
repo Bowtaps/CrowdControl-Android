@@ -12,17 +12,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
-import com.parse.SignUpCallback;
-
-import java.util.List;
 
 public class GroupCreateActivity extends AppCompatActivity {
 
@@ -60,9 +55,9 @@ public class GroupCreateActivity extends AppCompatActivity {
 
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
+     * Attempts to register the group specified by the login form.
+     * If there are form errors (invalid group, missing fields, etc.), the
+     * errors are presented and no actual registration attempt is made.
      */
     private void attemptLogin() {
         if (mAuthTask != null) {
@@ -85,7 +80,7 @@ public class GroupCreateActivity extends AppCompatActivity {
             mGroupCreateView.setError(getString(R.string.error_field_required));
             focusView = mGroupCreateView;
             cancel = true;
-        } else if (!isUserNameValid(groupName)) {
+        } else if (!isGroupNameValid(groupName)) {
             mGroupCreateView.setError(getString(R.string.error_invalid_user_name));
             focusView = mGroupCreateView;
             cancel = true;
@@ -96,7 +91,7 @@ public class GroupCreateActivity extends AppCompatActivity {
             mGroupDescriptionView.setError(getString(R.string.error_field_required));
             focusView = mGroupDescriptionView;
             cancel = true;
-        } else if (!isEmailValid(groupDescription)) {
+        } else if (!isDescriptionValid(groupDescription)) {
             mGroupDescriptionView.setError(getString(R.string.error_invalid_email));
             focusView = mGroupDescriptionView;
             cancel = true;
@@ -115,14 +110,14 @@ public class GroupCreateActivity extends AppCompatActivity {
         }
     }
 
-    private  boolean isUserNameValid(String username) {
-        //TODO: What makes a valid username??
+    private  boolean isGroupNameValid(String groupname) {
+        //TODO: What makes a valid groupname??
         return true;
     }
 
-    private boolean isEmailValid(String email) {
+    private boolean isDescriptionValid(String group) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return true;
     }
 
     /**
@@ -161,19 +156,8 @@ public class GroupCreateActivity extends AppCompatActivity {
         }
     }
 
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(GroupCreateActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mGroupDescriptionView.setAdapter(adapter);
-    }
-
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+     * Asynchronously registers a new group
      */
     public class GroupCreateTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -196,17 +180,14 @@ public class GroupCreateActivity extends AppCompatActivity {
                 return false;
             }
 
-            // TODO: register the new account here.
+            // TODO: register the new group here.
             ParseObject group = new ParseObject("Group");
             ParseUser user = new ParseUser();
             user.getCurrentUser( );
             group.put("GroupName", mGroupName);
             group.put("GroupDescription", mGroupDescription);
-
-// other fields can be set just like with ParseObject
-//            group.put("phone", "650-555-0000");
+            
             group.saveInBackground();
-//            group.signUpInBackground(new SignUpCallback() {
 //                public void done(ParseException e) {
 //                    if (e == null) {
 //                        // Hooray! Let them use the app now.
@@ -248,7 +229,7 @@ public class GroupCreateActivity extends AppCompatActivity {
      * @see groupJoin
      */
     private void launchTestActivity() {
-        Intent myIntent = new Intent(this, TestActivity.class);
+        Intent myIntent = new Intent(this, GroupNavigationActivity.class);
         this.startActivity(myIntent);
     }
 }

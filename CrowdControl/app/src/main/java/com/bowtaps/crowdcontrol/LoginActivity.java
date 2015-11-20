@@ -102,6 +102,9 @@ public class LoginActivity extends AppCompatActivity
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    /*
+     *  Fills the loader with potential auto complete data from contacts
+     */
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -110,6 +113,9 @@ public class LoginActivity extends AppCompatActivity
         getLoaderManager().initLoader(0, null, this);
     }
 
+    /*
+     *  Asks the user if the app has permission to look at users contact information
+     */
     private boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
@@ -211,16 +217,25 @@ public class LoginActivity extends AppCompatActivity
         }
     }
 
+    /*
+     *  Determine the validity of the username
+     */
     private  boolean isUserNameValid(String username) {
         //TODO: What makes a valid username??
         return true;
     }
 
+    /*
+     *  Determine the validity of the email
+     */
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
+    /*
+     *  Determine the validity of the password
+     */
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
@@ -296,6 +311,9 @@ public class LoginActivity extends AppCompatActivity
 
     }
 
+    /*
+     *  Checks phones local contact storage for emails
+     */
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -306,7 +324,9 @@ public class LoginActivity extends AppCompatActivity
         int IS_PRIMARY = 1;
     }
 
-
+    /*
+     *  Shows auto complete emails when user is filling out the form
+     */
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =

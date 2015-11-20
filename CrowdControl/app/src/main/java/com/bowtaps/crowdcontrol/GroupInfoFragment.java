@@ -14,6 +14,8 @@ import android.widget.TextView;
  * to handle interaction events.
  * Use the {@link GroupInfoFragment#newInstance} factory method to
  * create an instance of this fragment.
+ * Will display information of the current group and allow the
+ * user to leave the group
  */
 public class GroupInfoFragment extends Fragment {
 

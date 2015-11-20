@@ -7,9 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 /**
- * Created by 7143145 on 10/26/2015.
+ * This Activity will manage all the tabs related to the current group
+ * It uses a tab based system to switch between fragments
  */
-public class TestActivity extends AppCompatActivity {
+public class GroupNavigationActivity extends AppCompatActivity {
 
     TabLayout mTabs;
     private ViewPager tabsviewPager;
@@ -30,7 +31,7 @@ public class TestActivity extends AppCompatActivity {
         //creating the tabs and adding them to adapter class
         mTabsAdapter.addFragment(GroupInfoFragment.newInstance("Group Information"), "Group Information");
         mTabsAdapter.addFragment(MapFragment.newInstance("Map Fragment"), "Map");
-        mTabsAdapter.addFragment(TestFragment.newInstance("Leaves"), "leaves");
+        mTabsAdapter.addFragment(MessagingFragment.newInstance("Leaves"), "leaves");
         mTabsAdapter.addFragment(EventFragment.newInstance("Suggestions"), "Events");
 
         //setup viewpager to give swipe effect

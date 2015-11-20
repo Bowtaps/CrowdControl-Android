@@ -8,6 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+/*
+ * This Activity is where a user will either join an existing group or create a
+ * new one.
+ * This Activity will be the default view of all registered users that are not
+ * in a group
+ */
 public class groupJoin extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonToTabs;
@@ -63,10 +69,10 @@ public class groupJoin extends AppCompatActivity implements View.OnClickListener
     }
 
     /**
-     * Handles clicks on the Facebook login button. Simply launches the {@link TestActivity}.
+     * Handles clicks on the Facebook login button. Simply launches the {@link GroupNavigationActivity}.
      *
      * @param button  The button object that was clicked.
-     * @see           TestActivity
+     * @see           GroupNavigationActivity
      */
     private void onCreateButtonClick(Button button) {
         launchTabActivity();
@@ -76,10 +82,10 @@ public class groupJoin extends AppCompatActivity implements View.OnClickListener
     /**
      * Launches the {@link groupJoin}.
      *
-     * @see TestActivity
+     * @see GroupNavigationActivity
      */
     private void launchTabActivity() {
-        Intent myIntent = new Intent(this, TestActivity.class);
+        Intent myIntent = new Intent(this, GroupNavigationActivity.class);
         this.startActivity(myIntent);
     }
 }

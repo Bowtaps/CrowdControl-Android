@@ -12,7 +12,14 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
-
+/*
+ *  This Activity is the first thing launched by the app.
+ *  It determines if the user is logged in and either launches
+ *  the {@Link LoginActivity} or launches the {@Link GroupJoinActivity}
+ *
+ *  @see LoginActivity
+ *  @see GroupJoinActivity
+ */
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonCreateAccount;
@@ -93,6 +100,11 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         this.startActivity(myIntent);
     }
 
+    /**
+     * Launches the {@link LoginActivity}.
+     *
+     * @see LoginActivity
+     */
     private void launchLoginChoiceActivity() {
         Intent myIntent = new Intent(this, LogInChoiceActivity.class);
         this.startActivity(myIntent);
