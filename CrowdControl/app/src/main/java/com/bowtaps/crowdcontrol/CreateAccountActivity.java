@@ -63,10 +63,10 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
     }
 
     /**
-     * Handles clicks on the Create button. Simply launches the {@link groupJoin}.
+     * Handles clicks on the Create button. Simply launches the {@link GroupJoinActivity}.
      *
      * @param button  The button object that was clicked.
-     * @see           groupJoin
+     * @see           GroupJoinActivity
      */
     private void onCreateButtonClick(Button button) {
         launchGroupJoinActivity();
@@ -74,12 +74,12 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
 
 
     /**
-     * Launches the {@link groupJoin}.
+     * Launches the {@link GroupJoinActivity}.
      *
-     * @see groupJoin
+     * @see GroupJoinActivity
      */
     private void launchGroupJoinActivity() {
-        Intent myIntent = new Intent(this, groupJoin.class);
+        Intent myIntent = new Intent(this, GroupJoinActivity.class);
         this.startActivity(myIntent);
     }
 }

@@ -43,7 +43,8 @@ import static android.Manifest.permission.READ_CONTACTS;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity
-        implements LoaderCallbacks<Cursor>  {
+        implements LoaderCallbacks<Cursor>,
+        View.OnClickListener{
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -311,6 +312,11 @@ public class LoginActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
+
     /*
      *  Checks phones local contact storage for emails
      */
@@ -418,12 +424,12 @@ public class LoginActivity extends AppCompatActivity
     }
 
     /**
-     * Launches the {@link groupJoin}.
+     * Launches the {@link GroupJoinActivity}.
      *
-     * @see groupJoin
+     * @see GroupJoinActivity
      */
     private void launchGroupJoinActivity() {
-        Intent myIntent = new Intent(this, groupJoin.class);
+        Intent myIntent = new Intent(this, GroupJoinActivity.class);
         this.startActivity(myIntent);
     }
 }

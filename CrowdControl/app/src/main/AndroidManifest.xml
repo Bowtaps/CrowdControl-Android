@@ -47,7 +47,7 @@
                 android:value=".GroupNavigationActivity" />
         </activity>
         <activity
-            android:name=".groupJoin"
+            android:name=".GroupJoinActivity"
             android:label="@string/title_activity_group_join" >
         </activity>
         <activity

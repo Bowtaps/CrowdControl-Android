@@ -224,9 +224,9 @@ public class GroupCreateActivity extends AppCompatActivity {
     }
 
     /**
-     * Launches the {@link groupJoin}.
+     * Launches the {@link GroupJoinActivity}.
      *
-     * @see groupJoin
+     * @see GroupJoinActivity
      */
     private void launchTestActivity() {
         Intent myIntent = new Intent(this, GroupNavigationActivity.class);

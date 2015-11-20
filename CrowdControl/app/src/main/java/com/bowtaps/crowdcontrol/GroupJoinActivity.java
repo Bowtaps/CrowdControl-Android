@@ -14,7 +14,8 @@ import android.widget.Button;
  * This Activity will be the default view of all registered users that are not
  * in a group
  */
-public class groupJoin extends AppCompatActivity implements View.OnClickListener {
+public class GroupJoinActivity extends AppCompatActivity implements View.OnClickListener {
+
 
     Button mButtonToTabs;
 
@@ -80,7 +81,7 @@ public class groupJoin extends AppCompatActivity implements View.OnClickListener
 
 
     /**
-     * Launches the {@link groupJoin}.
+     * Launches the {@link GroupJoinActivity}.
      *
      * @see GroupNavigationActivity
      */
