@@ -12,7 +12,14 @@ import android.widget.Button;
 import com.parse.Parse;
 import com.parse.ParseUser;
 
-
+/*
+ *  This Activity is the first thing launched by the app.
+ *  It determines if the user is logged in and either launches
+ *  the {@Link LoginActivity} or launches the {@Link GroupJoinActivity}
+ *
+ *  @see LoginActivity
+ *  @see GroupJoinActivity
+ */
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonCreateAccount;
@@ -101,13 +108,25 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         this.startActivity(myIntent);
     }
 
+
+    /**
+     * Launches the {@link LoginActivity}.
+     *
+     * @see LoginActivity
+     */
     private void launchLoginActivity() {
         Intent myIntent = new Intent(this, LoginActivity.class);
         this.startActivity(myIntent);
     }
 
+
+    /**
+     * Launches the {@link GroupJoinActivity}.
+     *
+     * @see GroupJoinActivity
+     */
     private void launchGroupJoinActivity() {
-        Intent myIntent = new Intent(this, GroupJoinActivity.class);
+        Intent myIntent = new Intent(this,GroupJoinActivity.class);
         this.startActivity(myIntent);
     }
 

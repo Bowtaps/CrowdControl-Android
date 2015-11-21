@@ -40,11 +40,11 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".TestActivity"
+            android:name=".GroupNavigationActivity"
             android:label="TestActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.bowtaps.crowdcontrol.TestActivity" />
+                android:value=".GroupNavigationActivity" />
         </activity>
         <activity
             android:name=".GroupJoinActivity"

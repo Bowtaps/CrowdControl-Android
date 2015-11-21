@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
+ *
+ * Handles showing the user potential Events they could attend
  */
 public class EventFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
