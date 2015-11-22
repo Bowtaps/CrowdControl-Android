@@ -55,7 +55,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View view) {
-        // Handles clicks onn items in view
+        // Handles clicks on items in view
         // in this case, either the facebook button or the create account button
 
         switch (view.getId()) {
@@ -86,7 +86,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
      * @see GroupNavigationActivity
      */
     private void launchTabActivity() {
-        Intent myIntent = new Intent(this, GroupNavigationActivity.class);
+        Intent myIntent = new Intent(this, GroupCreateActivity.class);
         this.startActivity(myIntent);
     }
 }
