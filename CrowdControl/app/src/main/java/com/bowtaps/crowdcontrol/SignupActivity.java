@@ -42,7 +42,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity
+public class SignupActivity extends AppCompatActivity
         implements LoaderCallbacks<Cursor>,
         View.OnClickListener{
 
@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_signup);
         // Set up the login form.
         mUserNameView = (AutoCompleteTextView) findViewById(R.id.userName);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -231,7 +231,7 @@ public class LoginActivity extends AppCompatActivity
      */
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.contains("@") || email.contains(".");
     }
 
     /*
@@ -313,8 +313,46 @@ public class LoginActivity extends AppCompatActivity
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View view) {
+        // Handles clicks onn items in view
+        // in this case, either the facebook button or the create account button
 
+        switch (view.getId()) {
+            case R.id.login_choice_facebook_button:
+                facebookButtonClick((Button) view);
+                break;
+
+            case R.id.login_choice_twitter_button:
+                twitterButtonClick((Button) view);
+                break;
+
+            case R.id.login_choice_email_button:
+                emailButtonClick((Button) view);
+                break;
+
+            default:
+                // Sorry, you're outta luck
+                break;
+        }
+
+    }
+
+    private void emailButtonClick(Button view) { launchLoginActivity(); }
+
+    /**
+     * Launches the {@link LoginActivity}.
+     *
+     * @see LoginActivity
+     */
+    private void launchLoginActivity() {
+    //    Intent myIntent = new Intent(this, LoginActivity.class);
+    //    this.startActivity(myIntent);
+    }
+
+    private void twitterButtonClick(Button view) { //TODO Launch twitter Login
+    }
+
+    private void facebookButtonClick(Button view) { //TODO launch facebook login
     }
 
     /*
@@ -336,7 +374,7 @@ public class LoginActivity extends AppCompatActivity
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
+                new ArrayAdapter<>(SignupActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
