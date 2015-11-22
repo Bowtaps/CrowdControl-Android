@@ -16,10 +16,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.parse.ParseACL;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
-public class GroupCreateActivity extends AppCompatActivity {
+public class GroupCreateActivity extends AppCompatActivity implements View.OnClickListener {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -52,7 +55,26 @@ public class GroupCreateActivity extends AppCompatActivity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
+    
+    @Override
+    public void onClick(View view) {
+        // Handles clicks on items in view
+        // in this case, either the facebook button or the create account button
 
+        switch (view.getId()) {
+            case R.id.buttonToTab:
+                onCreateButtonClick((Button) view);
+                break;
+
+            default:
+                // Sorry, you're outta luck
+                break;
+        }
+    }
+
+    private void onCreateButtonClick(Button view) {
+
+    }
 
     /**
      * Attempts to register the group specified by the login form.
@@ -183,20 +205,22 @@ public class GroupCreateActivity extends AppCompatActivity {
             // TODO: register the new group here.
             ParseObject group = new ParseObject("Group");
             ParseUser user = new ParseUser();
-            user.getCurrentUser( );
             group.put("GroupName", mGroupName);
             group.put("GroupDescription", mGroupDescription);
-            
-            group.saveInBackground();
-//                public void done(ParseException e) {
-//                    if (e == null) {
-//                        // Hooray! Let them use the app now.
-//                    } else {
-//                        // Sign up didn't succeed. Look at the ParseException
-//                        // to figure out what went wrong
-//                    }
-//                }
-//            });
+
+            ParseACL acl = new ParseACL();
+
+            // Give public read access
+            acl.setPublicReadAccess(true);
+            group.setACL(acl);
+
+            group.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    finish();
+                }
+            });
+
 
             launchTestActivity();
 
