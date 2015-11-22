@@ -1,13 +1,11 @@
 package com.bowtaps.crowdcontrol;
 
 import android.content.Intent;
-import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.ConsoleMessage;
 import android.widget.Button;
 import com.parse.Parse;
 import com.parse.ParseUser;
@@ -15,9 +13,9 @@ import com.parse.ParseUser;
 /*
  *  This Activity is the first thing launched by the app.
  *  It determines if the user is logged in and either launches
- *  the {@Link LoginActivity} or launches the {@Link GroupJoinActivity}
+ *  the {@Link SignupActivity} or launches the {@Link GroupJoinActivity}
  *
- *  @see LoginActivity
+ *  @see SignupActivity
  *  @see GroupJoinActivity
  */
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -110,12 +108,12 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
 
     /**
-     * Launches the {@link LoginActivity}.
+     * Launches the {@link SignupActivity}.
      *
-     * @see LoginActivity
+     * @see SignupActivity
      */
     private void launchLoginActivity() {
-        Intent myIntent = new Intent(this, LoginActivity.class);
+        Intent myIntent = new Intent(this, SignupActivity.class);
         this.startActivity(myIntent);
     }
 
