@@ -187,6 +187,7 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         private final String mGroupDescription;
 
         GroupCreateTask(String groupName, String groupDescription) {
+            //Can add more attributes later
             mGroupName = groupName;
             mGroupDescription = groupDescription;
         }
