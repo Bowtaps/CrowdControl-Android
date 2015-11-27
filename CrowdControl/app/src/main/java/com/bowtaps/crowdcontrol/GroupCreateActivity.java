@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -24,36 +23,34 @@ import com.parse.SaveCallback;
 
 public class GroupCreateActivity extends AppCompatActivity implements View.OnClickListener {
 
+    Button mButtonGroupCreate;
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private GroupCreateTask mAuthTask = null;
 
     // UI references.
-    private AutoCompleteTextView mGroupCreateView;
-    private AutoCompleteTextView mGroupDescriptionView;
-    private EditText mPasswordView;
+    private EditText mGroupNameView;
+    private EditText mGroupDesctiptionView;
     private View mProgressView;
     private View mLoginFormView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_create);
-        // Set up the login form.
-        mGroupCreateView = (AutoCompleteTextView) findViewById(R.id.group_name);
-        mGroupDescriptionView = (AutoCompleteTextView) findViewById(R.id.group_description);
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.group_create_button);
-        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+        mButtonGroupCreate = (Button) findViewById(R.id.group_create_button);
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mButtonGroupCreate.setOnClickListener(this);
+
+        mGroupNameView = (EditText) findViewById(R.id.group_name);
+        mGroupDesctiptionView = (EditText) findViewById(R.id.group_description);
+
+        mLoginFormView = findViewById(R.id.group_form);
+        mProgressView = findViewById(R.id.group_progress);
     }
     
     @Override
@@ -62,7 +59,7 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         // in this case, either the facebook button or the create account button
 
         switch (view.getId()) {
-            case R.id.buttonToTab:
+            case R.id.group_create_button:
                 onCreateButtonClick((Button) view);
                 break;
 
@@ -73,67 +70,12 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void onCreateButtonClick(Button view) {
-
+        attemptGroupCreate();
     }
 
-    /**
-     * Attempts to register the group specified by the login form.
-     * If there are form errors (invalid group, missing fields, etc.), the
-     * errors are presented and no actual registration attempt is made.
-     */
-    private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
-        // Reset errors.
-        mGroupCreateView.setError(null);
-        mGroupDescriptionView.setError(null);
-
-        // Store values at the time of the login attempt.
-        String groupName = mGroupCreateView.getText().toString();
-        String groupDescription = mGroupDescriptionView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid Group Name.
-        if (TextUtils.isEmpty(groupName)) {
-            mGroupCreateView.setError(getString(R.string.error_field_required));
-            focusView = mGroupCreateView;
-            cancel = true;
-        } else if (!isGroupNameValid(groupName)) {
-            mGroupCreateView.setError(getString(R.string.error_invalid_user_name));
-            focusView = mGroupCreateView;
-            cancel = true;
-        }
-
-        // Check for a valid groupDescription.
-        if (TextUtils.isEmpty(groupDescription)) {
-            mGroupDescriptionView.setError(getString(R.string.error_field_required));
-            focusView = mGroupDescriptionView;
-            cancel = true;
-        } else if (!isDescriptionValid(groupDescription)) {
-            mGroupDescriptionView.setError(getString(R.string.error_invalid_email));
-            focusView = mGroupDescriptionView;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new GroupCreateTask(groupName, groupDescription);
-            mAuthTask.execute((Void) null);
-        }
-    }
 
     private  boolean isGroupNameValid(String groupname) {
-        //TODO: What makes a valid groupname??
+        //TODO: What makes a valid group name??
         return true;
     }
 
@@ -175,6 +117,73 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    /**
+     * Attempts to sign in or register the account specified by the login form.
+     * If there are form errors (invalid groupname, missing fields, etc.), the
+     * errors are presented and no actual login attempt is made.
+     */
+    private void attemptGroupCreate() {
+        if (mAuthTask != null) {
+            return;
+        }
+
+        // Reset errors.
+        mGroupNameView.setError(null);
+        mGroupDesctiptionView.setError(null);
+
+        // Store values at the time of the login attempt.
+        String groupname = mGroupNameView.getText().toString();
+        String groupDescription = mGroupDesctiptionView.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid User Name.
+        if (TextUtils.isEmpty(groupname)) {
+            mGroupNameView.setError(getString(R.string.error_field_required));
+            focusView = mGroupNameView;
+            cancel = true;
+        } else if (!isGroupNameValid(groupname)) {
+            mGroupNameView.setError(getString(R.string.error_invalid_user_name));
+            focusView = mGroupNameView;
+            cancel = true;
+        }
+
+        // Check for a valid groupDescription, if the user entered one.
+        if (TextUtils.isEmpty(groupDescription)) {
+            mGroupDesctiptionView.setError(getString(R.string.error_field_required));
+            focusView = mGroupDesctiptionView;
+            cancel = true;
+        } else if (!TextUtils.isEmpty(groupDescription) && !isDescriptionValid(groupDescription)) {
+            mGroupDesctiptionView.setError(getString(R.string.error_invalid_password));
+            focusView = mGroupDesctiptionView;
+            cancel = true;
+        }
+
+        // Check for a valid groupname address.
+        if (TextUtils.isEmpty(groupname)) {
+            mGroupNameView.setError(getString(R.string.error_field_required));
+            focusView = mGroupNameView;
+            cancel = true;
+        } else if (!isGroupNameValid(groupname)) {
+            mGroupNameView.setError(getString(R.string.error_invalid_email));
+            focusView = mGroupNameView;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user login attempt.
+            showProgress(true);
+            mAuthTask = new GroupCreateTask(groupname, groupDescription);
+            mAuthTask.execute((Void) null);
         }
     }
 
@@ -223,8 +232,6 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             });
 
 
-            launchTestActivity();
-
             return true;
         }
 
@@ -235,9 +242,9 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
 
             if (success) {
                 finish();
+                launchTestActivity();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                mGroupNameView.requestFocus();
             }
         }
 
