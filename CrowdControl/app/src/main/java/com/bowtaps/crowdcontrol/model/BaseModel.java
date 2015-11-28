@@ -60,7 +60,7 @@ public interface BaseModel {
      * Saves this object to storage. This is a blocking function, so care should
      * be taken to not call this function on the main thread.
      */
-    void save();
+    public void save() throws Exception;
 
     /**
      * Saves this object to storage asynchronously. Spawns a separate thread so
@@ -74,13 +74,13 @@ public interface BaseModel {
      *                 is complete. If no object is provided (or null is given),
      *                 then nothing will happen after the object has been saved.
      */
-    void saveInBackground(SaveCallback callback);
+    public void saveInBackground(SaveCallback callback);
 
     /**
      * Loads this object from storage. This is a blocking function, so care
      * should be taken to not call this function on the main thread.
      */
-    void load();
+    public void load() throws Exception;
 
     /**
      * Loads this object from storage asynchronously. Spawns a separate thread
@@ -95,7 +95,7 @@ public interface BaseModel {
      *                 then nothing will happen after the object has been
      *                 loaded.
      */
-    void loadInBackground(LoadCallback callback);
+    public void loadInBackground(LoadCallback callback);
 
 
 
