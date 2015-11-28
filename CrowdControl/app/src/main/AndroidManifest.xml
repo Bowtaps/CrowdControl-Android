@@ -66,6 +66,10 @@
             android:name=".GroupCreateActivity"
             android:label="@string/title_activity_group_create" >
         </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login" >
+        </activity>
     </application>
 
 </manifest>

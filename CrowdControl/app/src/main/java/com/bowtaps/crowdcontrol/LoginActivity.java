@@ -3,26 +3,25 @@ package com.bowtaps.crowdcontrol;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -39,12 +38,7 @@ import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-/**
- * A login screen that offers login via email/password.
- */
-public class SignupActivity extends AppCompatActivity
-        implements LoaderCallbacks<Cursor>,
-        View.OnClickListener{
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -70,17 +64,11 @@ public class SignupActivity extends AppCompatActivity
     private View mProgressView;
     private View mLoginFormView;
 
-    // Buttons
-    Button mFacebookButton;
-    Button mTwitterButton;
-    Button mEmailButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.activity_login);
         // Set up the login form.
-        mUserNameView = (AutoCompleteTextView) findViewById(R.id.userName);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -96,16 +84,8 @@ public class SignupActivity extends AppCompatActivity
             }
         });
 
-        mFacebookButton = (Button) findViewById(R.id.login_choice_facebook_button);
-        mTwitterButton = (Button) findViewById(R.id.login_choice_twitter_button);
-        mEmailButton = (Button) findViewById(R.id.login_choice_email_button);
-
-        mFacebookButton.setOnClickListener(this);
-        mTwitterButton.setOnClickListener(this);
-        mEmailButton.setOnClickListener(this);
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button mEmailSignInButton = (Button) findViewById(R.id.email_log_in_button);
+        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -177,28 +157,15 @@ public class SignupActivity extends AppCompatActivity
         }
 
         // Reset errors.
-        mUserNameView.setError(null);
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = mUserNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
-
-        // Check for a valid User Name.
-        if (TextUtils.isEmpty(username)) {
-            mUserNameView.setError(getString(R.string.error_field_required));
-            focusView = mUserNameView;
-            cancel = true;
-        } else if (!isUserNameValid(username)) {
-            mUserNameView.setError(getString(R.string.error_invalid_user_name));
-            focusView = mUserNameView;
-            cancel = true;
-        }
 
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
@@ -226,18 +193,11 @@ public class SignupActivity extends AppCompatActivity
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(username, email, password);
+            mAuthTask = new UserLoginTask( email, password);
             mAuthTask.execute((Void) null);
         }
     }
 
-    /*
-     *  Determine the validity of the username
-     */
-    private  boolean isUserNameValid(String username) {
-        //TODO: What makes a valid username??
-        return true;
-    }
 
     /*
      *  Determine the validity of the email
@@ -325,48 +285,6 @@ public class SignupActivity extends AppCompatActivity
 
     }
 
-    @Override
-    public void onClick(View view) {
-        // Handles clicks onn items in view
-        // in this case, either the facebook button or the create account button
-
-        switch (view.getId()) {
-            case R.id.login_choice_facebook_button:
-                facebookButtonClick((Button) view);
-                break;
-
-            case R.id.login_choice_twitter_button:
-                twitterButtonClick((Button) view);
-                break;
-
-            case R.id.login_choice_email_button:
-                emailButtonClick((Button) view);
-                break;
-
-            default:
-                // Sorry, you're outta luck
-                break;
-        }
-
-    }
-
-    private void emailButtonClick(Button view) { launchLoginActivity(); }
-
-    /**
-     * Launches the {@link LoginActivity}.
-     *
-     * @see LoginActivity
-     */
-    private void launchLoginActivity() {
-        Intent myIntent = new Intent(this, LoginActivity.class);
-        this.startActivity(myIntent);
-    }
-
-    private void twitterButtonClick(Button view) { //TODO Launch twitter Login
-    }
-
-    private void facebookButtonClick(Button view) { //TODO launch facebook login
-    }
 
     /*
      *  Checks phones local contact storage for emails
@@ -387,24 +305,22 @@ public class SignupActivity extends AppCompatActivity
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(SignupActivity.this,
+                new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
+     * Represents an asynchronous login task used to authenticate
      * the user.
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mUserName;
         private final String mEmail;
         private final String mPassword;
 
-        UserLoginTask(String username, String email, String password) {
-            mUserName = username;
+        UserLoginTask( String email, String password) {
             mEmail = email;
             mPassword = password;
         }
@@ -430,26 +346,8 @@ public class SignupActivity extends AppCompatActivity
 
             // TODO: register the new account here.
 
-            ParseUser user = new ParseUser();
-            user.setUsername(mUserName);
-            user.setPassword(mPassword);
-            user.setEmail(mEmail);
 
-// other fields can be set just like with ParseObject
-            user.put("phone", "650-555-0000");
-
-            user.signUpInBackground(new SignUpCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-                        // Hooray! Let them use the app now.
-                    } else {
-                        // Sign up didn't succeed. Look at the ParseException
-                        // to figure out what went wrong
-                    }
-                }
-            });
-
-            launchGroupJoinActivity();
+            //launchGroupJoinActivity();
 
             return true;
         }
