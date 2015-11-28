@@ -128,7 +128,7 @@ public class ParseBaseModel implements BaseModel {
      *                   on to this function's caller.
      */
     @Override
-    public void load() throws Exception {
+    public void load() throws ParseException {
         parseObject.fetch();
     }
 
