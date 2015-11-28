@@ -26,8 +26,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:8.1.0'
     //noinspection GradleDependency
     compile 'com.android.support:design:23.0.1'
-    compile 'com.parse.bolts:bolts-android:1.+'
-    compile 'com.parse:parse-android:1.+'
     
     androidTestCompile 'com.android.support.test:runner:0.4'
     androidTestCompile 'com.android.support.test:rules:0.4'
