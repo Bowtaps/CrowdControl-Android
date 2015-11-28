@@ -1,35 +1,55 @@
 package com.bowtaps.crowdcontrol.model;
 
-import java.text.DateFormat;
-
 /**
- * Created by 1959760 on 10/27/2015.
+ * The interface for login user models, providing access to private user
+ * data, such as username, email, and phone number.
+ *
+ * @author Daniel Andrus
+ * @since 2015-11-27
  */
-public interface UserModel {
+public interface UserModel extends BaseModel {
 
-    // Get Methods
-    public String getObjectID();
-    public String getUserName();
-    public String getPassword();
-    public Object getAuthData();
+    /**
+     * Gets the username for the user. This value should not be changed, as it
+     * is set at creation time and is a unique identifier for this object.
+     *
+     * @return The user's unique username.
+     */
+    public String getUsername();
+
+    /**
+     * Gets whether the user has verified their email address with the service.
+     *
+     * @return True if the user's email address has been verified, false if not.
+     */
     public Boolean getEmailVerified();
-    public String getEmail();
-    public DateFormat getCreatedAt();
-    public DateFormat getUpdatedAt();
-    public Object getLocation();
-    public Object getPreferences();
-    public String getStatus();
 
-    //Set Methods
-    public void setObjectID(String objectID);
-    public void setUserName(String userName);
-    public void setPassword(String password);
-    public void setAuthData(Object authData);
-    public void setEmailVerified(Boolean isVerified);
+    /**
+     * Gets the user's email address.
+     *
+     * @return The user's email address.
+     */
+    public String getEmail();
+
+    /**
+     * Replaces the user's existing email address with a new one.
+     *
+     * @param email The new email address to assign to the user.
+     */
     public void setEmail(String email);
-    public void setCreatedAt(DateFormat createdDate);
-    public void setUpdatedAt(DateFormat updatedDate);
-    public void setLocation(Object location);
-    public void setPreferences(Object preferences);
-    public void setStatus(String status);
+
+    /**
+     * Gets the user's phone number.
+     *
+     * @return The user's phone number.
+     */
+    public String getPhone();
+
+    /**
+     * Replaces the user's phone number with a new one.
+     *
+     * @param phone The new phone number to assign to the user.
+     */
+    public void setPhone(String phone);
+
 }
