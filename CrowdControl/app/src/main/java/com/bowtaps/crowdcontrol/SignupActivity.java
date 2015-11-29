@@ -1,5 +1,7 @@
 package com.bowtaps.crowdcontrol;
 
+import android.app.Activity;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -420,6 +422,7 @@ public class SignupActivity extends AppCompatActivity
                 return false;
             }
 
+
             for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
@@ -430,15 +433,16 @@ public class SignupActivity extends AppCompatActivity
 
             // TODO: register the new account here.
 
-            ParseUser user = new ParseUser();
+            final ParseUser user = new ParseUser();
             user.setUsername(mUserName);
             user.setPassword(mPassword);
             user.setEmail(mEmail);
 
 // other fields can be set just like with ParseObject
             user.put("phone", "650-555-0000");
+            CrowdControlApplication.aUser = user;
 
-            user.signUpInBackground(new SignUpCallback() {
+            CrowdControlApplication.aUser.signUpInBackground(new SignUpCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
                         // Hooray! Let them use the app now.

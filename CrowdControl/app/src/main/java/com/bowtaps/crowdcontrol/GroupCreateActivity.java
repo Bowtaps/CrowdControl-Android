@@ -18,6 +18,7 @@ import android.widget.EditText;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -214,9 +215,15 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
 
             // TODO: register the new group here.
             ParseObject group = new ParseObject("Group");
-            ParseUser user = new ParseUser();
+            ParseUser user = CrowdControlApplication.aUser;
+            ParseObject member = new ParseObject("CCUser");
+            member.put("DisplayName", user.getUsername() );
             group.put("GroupName", mGroupName);
             group.put("GroupDescription", mGroupDescription);
+
+            ParseRelation relation = group.getRelation("GroupMembers");
+            relation.add( member );
+
 
             ParseACL acl = new ParseACL();
 
@@ -224,6 +231,12 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             acl.setPublicReadAccess(true);
             group.setACL(acl);
 
+            member.saveInBackground(new SaveCallback() {
+            @Override
+                public void done(ParseException e) {
+
+                }
+            });
             group.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
