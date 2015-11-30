@@ -1,64 +1,73 @@
 package com.bowtaps.crowdcontrol.model;
-
-import java.security.acl.Group;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 /**
  * Created by 1959760 on 10/24/2015.
  */
-public class ParseGroupModel implements GroupModel{
+public class ParseGroupModel extends ParseBaseModel implements GroupModel{
 
-    public ParseGroupModel()
-    {
-        // Initialize Fields
-        // TODO: user GroupLeader;
-        GroupName = null;
-        Itinerary = null;
-        Status = null;
-        Waypoints = null;
-        // TODO: List of users in the group
+    /**
+     * The name of the table that this object is designed to interact with.
+     */
+    private static final String tableName = "Group";
 
-    }
-    // Fields
-    private String GroupName;
-    private Object Itinerary;
-    private String Status;
-    private Object Waypoints;
+    /**
+     * Key corresponding to {@link ParseGroupModel#getGeneralLocation}
+     */
+    private static final String generalLocationKey = "GeneralLocation";
 
+    /**
+     * Key corresponding to {@link ParseGroupModel#getGroupDescription()}
+     */
+    private static final String groupDescriptionKey = "GroupDescription";
 
-    // Get Methods
-    @Override
-    public String getGroupName(){
-        return this.getGroupName();
-    }
-    @Override
-    public Object getItinerary(){
-        return this.Itinerary;
-    }
-    @Override
-    public String getStatus(){
-        return this.Status;
-    }
-    @Override
-    public Object getWaypoints(){
-        return this.Waypoints;
+    /**
+     * Key corresponding to {@link ParseGroupModel#getGroupMembers()} and
+     */
+    private static final String groupMembersKey = "GroupMembers";
+    //TODO: Must retrieve a LIST of groupmembers, and corresponding groupmembers keys.
+
+    /**
+     * The class constructor. Initializes the model from an existing
+     * {@link ParseUser}.
+     *
+     * @param object The object to use as a handle.
+     */
+    public ParseGroupModel(ParseObject object) {
+        super(object);
     }
 
-    // Set Methods
+
+    /**
+     * Gets the general location of the group.
+     *
+     * @return The location of the group in the form of a ParseGeoPoint object.
+     */
     @Override
-    public void setGroupName(String groupName){
-        this.GroupName = groupName;
-    }
-    @Override
-    public void setItinerary(Object itinerary){
-        this.Itinerary = itinerary;
-    }
-    @Override
-    public void setStatus(String status ){
-        this.Status = status;
-    }
-    @Override
-    public void setWaypoints(Object waypoints){
-        this.Waypoints = waypoints;
+    public ParseGeoPoint getGeneralLocation() {
+        return (ParseGeoPoint) ((ParseObject) parseObject).get(groupDescriptionKey);
     }
 
+    /**
+     * Gets the description of the current group.
+     *
+     * @return The description string attached to the group.
+     */
+    @Override
+    public String getGroupDescription() {
+        return (String) ((ParseObject) parseObject).get(groupDescriptionKey);
+    }
+
+    /**
+     * Gets the list of users associated with the current group.
+     *
+     * @return The list of users as ParseUserModel objects that belong to the
+     * group.
+     */
+    @Override
+    public ParseUser getGroupMembers() {
+        return ((ParseObject) parseObject).getParseUser(groupMembersKey);
+    }
 }
