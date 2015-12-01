@@ -48,9 +48,9 @@ public class CustomParseAdapter extends ParseQueryAdapter<ParseObject> {
         TextView titleTextView = (TextView) v.findViewById(R.id.list_group_name);
         titleTextView.setText(object.getString("GroupName"));
 
-        // Add a reminder of how long this item has been outstanding
-        TextView timestampView = (TextView) v.findViewById(R.id.list_group_description);
-        timestampView.setText(object.getString("GroupDescription"));
+        // Give group Description
+        TextView groupDescriptionView = (TextView) v.findViewById(R.id.list_group_description);
+        groupDescriptionView.setText(object.getString("GroupDescription"));
         return v;
     }
 

@@ -6,6 +6,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.bowtaps.crowdcontrol.adapters.SimpleTabsAdapter;
+
 /**
  * This Activity will manage all the tabs related to the current group
  * It uses a tab based system to switch between fragments
@@ -31,7 +33,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
         //creating the tabs and adding them to adapter class
         mTabsAdapter.addFragment(GroupInfoFragment.newInstance("Group Information"), "Group Information");
         mTabsAdapter.addFragment(MapFragment.newInstance("Map Fragment"), "Map");
-        mTabsAdapter.addFragment(MessagingFragment.newInstance("Leaves"), "leaves");
+        mTabsAdapter.addFragment(MessagingFragment.newInstance("Not Implemented"), "Messaging");
         mTabsAdapter.addFragment(EventFragment.newInstance("Suggestions"), "Events");
 
         //setup viewpager to give swipe effect

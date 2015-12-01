@@ -14,7 +14,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="+"
+        android:text="Create A New Group"
         android:id="@+id/buttonToTab"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
