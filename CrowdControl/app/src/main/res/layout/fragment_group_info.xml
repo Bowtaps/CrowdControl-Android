@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="This is a sample description"
-        android:id="@+id/textView3"
+        android:id="@+id/text_group_description"
         android:layout_gravity="center"
         android:textColor="#50ff15"
         android:layout_column="0"
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="65dp"
         android:text="Leave Group"
-        android:id="@+id/button"
+        android:id="@+id/leave_group_button"
         android:backgroundTint="#b30000"
         android:gravity="center"
         android:textSize="20dp"
@@ -36,23 +36,15 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Alpha Group"
-        android:id="@+id/textView2"
-        android:layout_gravity="left|top"
+        android:id="@+id/text_group_name"
         android:textColor="#00f2ff"
-        android:layout_column="0"
-        android:layout_columnSpan="2"
-        android:layout_row="1"
         android:layout_marginTop="100dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
+        android:text="Group Information"
         android:id="@+id/group_test"
-        android:textColor="#ffffff"
-        android:layout_column="0"
-        android:layout_row="0"
-        android:layout_columnSpan="2"
-        android:layout_gravity="left|top" />
+        android:textColor="#ffffff" />
 </FrameLayout>

@@ -232,11 +232,12 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             group.setACL(acl);
 
             member.saveInBackground(new SaveCallback() {
-            @Override
+                @Override
                 public void done(ParseException e) {
 
                 }
             });
+            CrowdControlApplication.aGroup = group;
             group.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {

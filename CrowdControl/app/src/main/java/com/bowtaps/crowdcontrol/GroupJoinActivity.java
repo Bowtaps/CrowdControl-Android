@@ -7,6 +7,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
+
+import com.bowtaps.crowdcontrol.adapters.CustomParseAdapter;
+import com.parse.ParseObject;
+import com.parse.ParseQueryAdapter;
 
 /*
  * This Activity is where a user will either join an existing group or create a
@@ -19,10 +24,32 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
     Button mButtonToTabs;
 
+    // List view pieces
+    private ParseQueryAdapter<ParseObject> mainAdapter;
+    private CustomParseAdapter groupListAdapter;
+    private ListView groupListView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_join);
+
+        // Initialize main ParseQueryAdapter
+        mainAdapter = new ParseQueryAdapter<ParseObject>(this, "Group");
+        mainAdapter.setTextKey("GroupName");
+        mainAdapter.setTextKey("GroupDescription");
+
+        //mainAdapter.setImageKey("image");
+
+        // Initialize the subclass of ParseQueryAdapter
+        groupListAdapter = new CustomParseAdapter(this);
+
+        // Initialize ListView and set initial view to mainAdapter
+        groupListView = (ListView) findViewById(R.id.group_list);
+        groupListView.setAdapter(mainAdapter);
+        mainAdapter.loadObjects(); // Querry in CustomParseAdapter
+
+
 
         // Get handles to Buttons
         mButtonToTabs = (Button) findViewById(R.id.buttonToTab);

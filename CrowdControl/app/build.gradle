@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.bowtaps.crowdcontrol"
@@ -10,7 +10,17 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        // Enabling multidex support.
+        multiDexEnabled true
     }
+
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "2048M"
+        jumboMode = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -23,16 +33,29 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'com.android.support:multidex:1.0.1'
+
     //noinspection GradleDependency
     compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.google.android.gms:play-services:8.1.0'
+    compile 'com.google.android.gms:play-services:8.3.0'
     //noinspection GradleDependency
     compile 'com.android.support:design:23.0.1'
     
     androidTestCompile 'com.android.support.test:runner:0.4'
     androidTestCompile 'com.android.support.test:rules:0.4'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
+
+
+    // Module dependency on ParseUI libraries sources
+    compile 'com.parse:parseui-login-android:0.0.1'
+    compile 'com.parse:parseui-widget-android:0.0.1'
+
+// Uncomment if using Facebook or Twitter Login (optional Maven dependency)
+    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+//    compile 'com.parse:parsefacebookutils-v4-android:1.10.3@aar'
+//    compile 'com.parse:parsetwitterutils-android:1.10.3'
 }
 
 //dependencies {
