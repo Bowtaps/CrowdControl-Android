@@ -1,4 +1,4 @@
-package com.bowtaps.crowdcontrol;
+package com.bowtaps.crowdcontrol.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

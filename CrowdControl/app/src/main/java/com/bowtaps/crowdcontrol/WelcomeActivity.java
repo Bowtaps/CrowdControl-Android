@@ -7,10 +7,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import com.parse.Parse;
+import com.parse.ParseUser;
 
+/*
+ *  This Activity is the first thing launched by the app.
+ *  It determines if the user is logged in and either launches
+ *  the {@Link SignupActivity} or launches the {@Link GroupJoinActivity}
+ *
+ *  @see SignupActivity
+ *  @see GroupJoinActivity
+ */
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonCreateAccount;
+    ParseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +33,14 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
         //Declare button clicks
         mButtonCreateAccount.setOnClickListener(this);
+
+        //This Determines if a user is logged in from a previous run
+        if(mUser != null){
+            launchGroupJoinActivity();
+        }
+        else{
+            launchLoginActivity();
+        }
     }
 
     @Override
@@ -69,7 +88,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
      * @see           CreateAccountActivity
      */
     private void onCreateAccountButtonClick(Button button) {
-        launchCreateAccoutButtonActivity();
+        launchLoginActivity();
     }
 
     /**
@@ -79,6 +98,28 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void launchCreateAccoutButtonActivity() {
         Intent myIntent = new Intent(this, CreateAccountActivity.class);
+        this.startActivity(myIntent);
+    }
+
+
+    /**
+     * Launches the {@link SignupActivity}.
+     *
+     * @see SignupActivity
+     */
+    private void launchLoginActivity() {
+        Intent myIntent = new Intent(this, SignupActivity.class);
+        this.startActivity(myIntent);
+    }
+
+
+    /**
+     * Launches the {@link GroupJoinActivity}.
+     *
+     * @see GroupJoinActivity
+     */
+    private void launchGroupJoinActivity() {
+        Intent myIntent = new Intent(this,GroupJoinActivity.class);
         this.startActivity(myIntent);
     }
 

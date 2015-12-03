@@ -7,15 +7,49 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 
-public class groupJoin extends AppCompatActivity implements View.OnClickListener {
+import com.bowtaps.crowdcontrol.adapters.CustomParseAdapter;
+import com.parse.ParseObject;
+import com.parse.ParseQueryAdapter;
+
+/*
+ * This Activity is where a user will either join an existing group or create a
+ * new one.
+ * This Activity will be the default view of all registered users that are not
+ * in a group
+ */
+public class GroupJoinActivity extends AppCompatActivity implements View.OnClickListener {
+
 
     Button mButtonToTabs;
+
+    // List view pieces
+    private ParseQueryAdapter<ParseObject> mainAdapter;
+    private CustomParseAdapter groupListAdapter;
+    private ListView groupListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_join);
+
+        // Initialize main ParseQueryAdapter
+        mainAdapter = new ParseQueryAdapter<ParseObject>(this, "Group");
+        mainAdapter.setTextKey("GroupName");
+        mainAdapter.setTextKey("GroupDescription");
+
+        //mainAdapter.setImageKey("image");
+
+        // Initialize the subclass of ParseQueryAdapter
+        groupListAdapter = new CustomParseAdapter(this);
+
+        // Initialize ListView and set initial view to mainAdapter
+        groupListView = (ListView) findViewById(R.id.group_list);
+        groupListView.setAdapter(mainAdapter);
+        mainAdapter.loadObjects(); // Querry in CustomParseAdapter
+
+
 
         // Get handles to Buttons
         mButtonToTabs = (Button) findViewById(R.id.buttonToTab);
@@ -48,7 +82,7 @@ public class groupJoin extends AppCompatActivity implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        // Handles clicks onn items in view
+        // Handles clicks on items in view
         // in this case, either the facebook button or the create account button
 
         switch (view.getId()) {
@@ -63,10 +97,10 @@ public class groupJoin extends AppCompatActivity implements View.OnClickListener
     }
 
     /**
-     * Handles clicks on the Facebook login button. Simply launches the {@link TestActivity}.
+     * Handles clicks on the Facebook login button. Simply launches the {@link GroupNavigationActivity}.
      *
      * @param button  The button object that was clicked.
-     * @see           TestActivity
+     * @see           GroupNavigationActivity
      */
     private void onCreateButtonClick(Button button) {
         launchTabActivity();
@@ -74,12 +108,12 @@ public class groupJoin extends AppCompatActivity implements View.OnClickListener
 
 
     /**
-     * Launches the {@link groupJoin}.
+     * Launches the {@link GroupJoinActivity}.
      *
-     * @see TestActivity
+     * @see GroupNavigationActivity
      */
     private void launchTabActivity() {
-        Intent myIntent = new Intent(this, TestActivity.class);
+        Intent myIntent = new Intent(this, GroupCreateActivity.class);
         this.startActivity(myIntent);
     }
 }
