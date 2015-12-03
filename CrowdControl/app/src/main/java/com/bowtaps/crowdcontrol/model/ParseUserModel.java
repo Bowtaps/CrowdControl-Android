@@ -1,27 +1,14 @@
 package com.bowtaps.crowdcontrol.model;
 
-import java.text.DateFormat;
+import com.parse.ParseUser;
+
 /**
- * Created by 1959760 on 10/24/2015.
+ * The Parse implementation for the @{link UserModel} interface.
+ *
+ * @author Daniel Andrus
+ * @since 2015-11-27
  */
-public class ParseUserModel implements UserModel {
-
-    public ParseUserModel(){
-        //User Data
-        String objectID;
-        String userName;
-        String password;
-        Object authData;
-        Boolean emailVerified;
-        String email;
-        DateFormat createdAt;
-        DateFormat updatedAt;
-
-        //CCUser Data
-        Object location;
-        Object preferences;
-        String status;
-    }
+public class ParseUserModel extends ParseBaseModel implements UserModel {
 
     // Properties
     private String objectID;
@@ -30,8 +17,6 @@ public class ParseUserModel implements UserModel {
     private Object authData;
     private Boolean emailVerified;
     private String email;
-    private DateFormat createdAt;
-    private DateFormat updatedAt;
 
     //CC ParseUserModel Data
     private Object location;
@@ -48,85 +33,106 @@ public class ParseUserModel implements UserModel {
         return this.userName;
     }
     @Override
-    public String getPassword(){
-        return this.password;
-    }
-    @Override
     public Object getAuthData(){
         return this.authData;
     }
-    @Override
-    public Boolean getEmailVerified(){
-        return  this.emailVerified;
-    }
-    @Override
-    public String getEmail(){
-        return this.email;
-    }
-    @Override
-    public DateFormat getCreatedAt(){
-        return this.createdAt;
-    }
-    @Override
-    public DateFormat getUpdatedAt(){
-        return this.updatedAt;
-    }
-    @Override
-    public Object getLocation(){
-        return this.location;
-    }
-    @Override
-    public Object getPreferences(){
-        return this.preferences;
-    }
-    @Override
-    public String getStatus(){
-        return this.status;
+
+    /**
+     * The name of the table that this object is designed to interact with.
+     */
+    private static final String tableName = "_User";
+
+    /**
+     * Key corresponding to {@link ParseUserModel#getUsername}
+     */
+    private static final String usernameKey = "username";
+
+    /**
+     * Key corresponding to {@link ParseUserModel#getEmailVerified}
+     */
+    private static final String emailVerifiedKey = "emailVerified";
+
+    /**
+     * Key corresponding to {@link ParseUserModel#getEmail} and
+     * {@link ParseUserModel#setEmail}
+     */
+    private static final String emailKey = "email";
+
+    /**
+     * Key correponding to {@link ParseUserModel#getPhone} and
+     * {@link ParseUserModel#setPhone}
+     */
+    private static final String phoneKey = "phone";
+
+
+    /**
+     * The class constructor. Initializes the model from an existing
+     * {@link ParseUser}.
+     *
+     * @param object The object to use as a handle.
+     */
+    public ParseUserModel(ParseUser object) {
+        super(object);
     }
 
-    // Set Methods
+    /**
+     * Gets the user's username.
+     *
+     * @return The user's username.
+     */
     @Override
-    public void setObjectID(String objectID){
-        this.objectID = objectID;
+    public String getUsername() {
+        return ((ParseUser) parseObject).getUsername();
     }
+
+    /**
+     * Gets whether or not the user has verified their email.
+     *
+     * @return Whether or not the user has verified their email.
+     */
     @Override
-    public void setUserName(String userName){
-        this.userName= userName;
+    public Boolean getEmailVerified() {
+        return (Boolean) ((ParseUser) parseObject).get(emailVerifiedKey);
     }
+
+    /**
+     * Gets the user's email.
+     *
+     * @return The user's email.
+     */
     @Override
-    public void setPassword(String password){
-        this.password = password;
+    public String getEmail() {
+        return ((ParseUser) parseObject).getEmail();
     }
+
+    /**
+     * Sets the user's email.
+     *
+     * @param email The new email address to assign to the user.
+     */
     @Override
-    public void setAuthData(Object authData){
-        this.authData = authData;
+    public void setEmail(String email) {
+        ((ParseUser) parseObject).setEmail(email);
     }
+
+    /**
+     * Gets the user's phone number.
+     *
+     * @return The user's phone number.
+     */
     @Override
-    public void setEmailVerified(Boolean emailVerified){
-        this.emailVerified = emailVerified;
+    public String getPhone() {
+        return (String) parseObject.get(phoneKey);
     }
+
+    /**
+     * Sets the user's phone number.
+     *
+     * @param phone The new phone number to assign to the user.
+     */
     @Override
-    public void setEmail(String email){
-        this.email = email;
+    public void setPhone(String phone) {
+        parseObject.put(phoneKey, phone);
     }
-    @Override
-    public void setCreatedAt(DateFormat createdDate){
-        this.createdAt = createdDate;
-    }
-    @Override
-    public void setUpdatedAt(DateFormat updatedDate){
-        this.updatedAt = updatedDate;
-    }
-    @Override
-    public void setLocation(Object location){
-        this.location = location;
-    }
-    @Override
-    public void setPreferences(Object preferences){
-        this.preferences = preferences;
-    }
-    @Override
-    public void setStatus(String status){
-        this.status = status;
-    }
+
 }

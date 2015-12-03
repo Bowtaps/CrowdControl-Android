@@ -1,18 +1,39 @@
 package com.bowtaps.crowdcontrol.model;
 
-/**
- * Created by 1959760 on 10/28/2015.
- */
-public interface GroupModel {
-    // Get Methods
-    public String getGroupName();
-    public Object getItinerary();
-    public String getStatus();
-    public Object getWaypoints();
+import com.google.android.gms.vision.barcode.Barcode;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseUser;
 
-    // Set Methods
-    public void setGroupName(String groupName);
-    public void setItinerary(Object itinerary);
-    public void setStatus(String status);
-    public void setWaypoints(Object waypoints);
+import java.util.List;
+
+/**
+ * The interface for group models.
+ *
+ * @author Joseph Mowry
+ * @since 2015-11-28
+ */
+public interface GroupModel extends BaseModel {
+
+    /**
+     * Gets the general location of the group.
+     *
+     * @return The location of the group in the form of a ParseGeoPoint object.
+     */
+    public ParseGeoPoint getGeneralLocation();
+
+    /**
+     * Gets the description of the current group.
+     *
+     * @return The description string attached to the group.
+     */
+    public String getGroupDescription();
+
+    /**
+     * Gets the list of users associated with the current group.
+     *
+     * @return The list of users as ParseUserModel objects that belong to the
+     *         group.
+     */
+    public ParseUser getGroupMembers();
+
 }

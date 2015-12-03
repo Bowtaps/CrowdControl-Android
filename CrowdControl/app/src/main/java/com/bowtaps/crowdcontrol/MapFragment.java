@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Will Display a Google Map and place group members on it
  */
 public class MapFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
