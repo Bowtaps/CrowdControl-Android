@@ -33,7 +33,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import java.util.ArrayList;
@@ -434,12 +437,26 @@ public class SignupActivity extends AppCompatActivity
             // TODO: register the new account here.
 
             final ParseUser user = new ParseUser();
-            user.setUsername(mUserName);
+            user.setUsername(mEmail);
             user.setPassword(mPassword);
             user.setEmail(mEmail);
 
+            ParseObject member = new ParseObject("CCUser");
+            member.put("DisplayName", mUserName );
+
 // other fields can be set just like with ParseObject
             user.put("phone", "650-555-0000");
+
+            ParseRelation relation = user.getRelation("CCUser");
+            relation.add( member );
+
+            member.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+
+                }
+            });
+
             CrowdControlApplication.aUser = user;
 
             CrowdControlApplication.aUser.signUpInBackground(new SignUpCallback() {

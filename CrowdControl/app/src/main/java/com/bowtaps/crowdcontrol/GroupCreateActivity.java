@@ -217,7 +217,8 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             ParseObject group = new ParseObject("Group");
             ParseUser user = CrowdControlApplication.aUser;
             ParseObject member = new ParseObject("CCUser");
-            member.put("DisplayName", user.getUsername() );
+
+            member.put("DisplayName", user.get("CCUser") );
             group.put("GroupName", mGroupName);
             group.put("GroupDescription", mGroupDescription);
 
@@ -231,12 +232,6 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             acl.setPublicReadAccess(true);
             group.setACL(acl);
 
-            member.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-
-                }
-            });
             CrowdControlApplication.aGroup = group;
             group.saveInBackground(new SaveCallback() {
                 @Override
