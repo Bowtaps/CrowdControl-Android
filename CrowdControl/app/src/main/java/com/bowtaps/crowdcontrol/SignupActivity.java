@@ -436,40 +436,36 @@ public class SignupActivity extends AppCompatActivity
 
             // TODO: register the new account here.
 
-            final ParseUser user = new ParseUser();
+            ParseUser user = new ParseUser();
             user.setUsername(mEmail);
             user.setPassword(mPassword);
             user.setEmail(mEmail);
 
             ParseObject member = new ParseObject("CCUser");
-            member.put("DisplayName", mUserName );
+            member.put("DisplayName", mUserName);
 
 // other fields can be set just like with ParseObject
             user.put("phone", "650-555-0000");
 
-            ParseRelation relation = user.getRelation("CCUser");
-            relation.add( member );
+            user.put("CCUser", member);
 
-            member.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
+            //ParseRelation relation = user.getRelation("CCUser");
+            //relation.add( member );
 
-                }
-            });
+            //member.saveInBackground(new SaveCallback() {
+//                @Override
+//                public void done(ParseException e) {
+//
+//                }
+//            });
+
+            //CrowdControlApplication.aUser = user;
+
+            user.signUpInBackground();
+
+
 
             CrowdControlApplication.aUser = user;
-
-            CrowdControlApplication.aUser.signUpInBackground(new SignUpCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-                        // Hooray! Let them use the app now.
-                    } else {
-                        // Sign up didn't succeed. Look at the ParseException
-                        // to figure out what went wrong
-                    }
-                }
-            });
-
             launchGroupJoinActivity();
 
             return true;
