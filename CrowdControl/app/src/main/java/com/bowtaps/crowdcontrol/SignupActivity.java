@@ -441,7 +441,6 @@ public class SignupActivity extends AppCompatActivity
 // other fields can be set just like with ParseObject
             user.put("phone", "650-555-0000");
             CrowdControlApplication.aUser = user;
-
             CrowdControlApplication.aUser.signUpInBackground(new SignUpCallback() {
                 public void done(ParseException e) {
                     if (e == null) {

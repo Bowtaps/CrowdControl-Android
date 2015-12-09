@@ -34,6 +34,13 @@
         </activity>
 
         <meta-data
+            android:name="com.parse.APPLICATION_ID"
+            android:value="xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv" />
+        <meta-data
+            android:name="com.parse.CLIENT_KEY"
+            android:value="PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi" />
+
+        <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
