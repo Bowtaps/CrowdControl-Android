@@ -37,7 +37,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         // Initialize main ParseQueryAdapter
         mainAdapter = new ParseQueryAdapter<ParseObject>(this, "Group");
         mainAdapter.setTextKey("GroupName");
-        mainAdapter.setTextKey("GroupDescription");
+        //mainAdapter.setTextKey("GroupDescription");
 
         //mainAdapter.setImageKey("image");
 
@@ -46,7 +46,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
         // Initialize ListView and set initial view to mainAdapter
         groupListView = (ListView) findViewById(R.id.group_list);
-        groupListView.setAdapter(mainAdapter);
+        groupListView.setAdapter(groupListAdapter);
         mainAdapter.loadObjects(); // Querry in CustomParseAdapter
 
 
