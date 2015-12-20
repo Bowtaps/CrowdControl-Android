@@ -1,7 +1,12 @@
 package com.bowtaps.crowdcontrol.model;
+import com.bowtaps.crowdcontrol.CrowdControlApplication;
+import com.parse.ParseACL;
+import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 /**
  * Created by 1959760 on 10/24/2015.
@@ -69,5 +74,41 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
     @Override
     public ParseUser getGroupMembers() {
         return ((ParseObject) parseObject).getParseUser(groupMembersKey);
+    }
+
+    public void SetGroupData(String groupDescription, String groupName) {
+
+        // TODO: register the new group here.
+        ParseObject group = new ParseObject("Group");
+        ParseUser user = CrowdControlApplication.aUser;
+        ParseObject member = new ParseObject("CCUser");
+        member.put("DisplayName", user.getUsername() );
+        group.put("GroupName", groupName);
+        group.put("GroupDescription", groupDescription);
+
+        ParseRelation relation = group.getRelation("GroupMembers");
+        relation.add( member );
+
+
+        ParseACL acl = new ParseACL();
+
+        // Give public read access
+        acl.setPublicReadAccess(true);
+        group.setACL(acl);
+
+        member.saveInBackground(new com.parse.SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+
+            }
+        });
+        CrowdControlApplication.aGroup = group;
+
+        group.saveInBackground(new com.parse.SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+
+            }
+        });
     }
 }

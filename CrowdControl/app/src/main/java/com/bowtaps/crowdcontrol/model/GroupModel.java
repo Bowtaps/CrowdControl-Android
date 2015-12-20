@@ -36,4 +36,12 @@ public interface GroupModel extends BaseModel {
      */
     public ParseUser getGroupMembers();
 
+    /**
+     * Sets the properties for the current group.
+     *
+     * @return The list of users as ParseUserModel objects that belong to the
+     *         group.
+     */
+    public void SetGroupData(String groupDescription, String groupName);
+
 }
