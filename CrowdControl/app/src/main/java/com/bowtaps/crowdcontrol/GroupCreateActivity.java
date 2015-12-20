@@ -15,12 +15,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.bowtaps.crowdcontrol.model.ParseGroupModel;
+import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import static com.bowtaps.crowdcontrol.model.ParseGroupModel.*;
 
 public class GroupCreateActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -212,39 +216,39 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             } catch (InterruptedException e) {
                 return false;
             }
-
-            // TODO: register the new group here.
-            ParseObject group = new ParseObject("Group");
-            ParseUser user = CrowdControlApplication.aUser;
-            ParseObject member = new ParseObject("CCUser");
-            member.put("DisplayName", user.getUsername() );
-            group.put("GroupName", mGroupName);
-            group.put("GroupDescription", mGroupDescription);
-
-            ParseRelation relation = group.getRelation("GroupMembers");
-            relation.add( member );
-
-
-            ParseACL acl = new ParseACL();
-
-            // Give public read access
-            acl.setPublicReadAccess(true);
-            group.setACL(acl);
-
-            member.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-
-                }
-            });
-            CrowdControlApplication.aGroup = group;
-            group.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    finish();
-                }
-            });
-
+            ParseGroupModel parseGroupModel = new ParseGroupModel(CrowdControlApplication.aGroup);
+            parseGroupModel.SetGroupData(mGroupName, mGroupDescription);
+//            // TODO: register the new group here.
+//            ParseObject group = new ParseObject("Group");
+//            ParseUser user = CrowdControlApplication.aUser;
+//            ParseObject member = new ParseObject("CCUser");
+//            member.put("DisplayName", user.getUsername() );
+//            group.put("GroupName", mGroupName);
+//            group.put("GroupDescription", mGroupDescription);
+//
+//            ParseRelation relation = group.getRelation("GroupMembers");
+//            relation.add( member );
+//
+//
+//            ParseACL acl = new ParseACL();
+//
+//            // Give public read access
+//            acl.setPublicReadAccess(true);
+//            group.setACL(acl);
+//
+//            member.saveInBackground(new SaveCallback() {
+//                @Override
+//                public void done(ParseException e) {
+//
+//                }
+//            });
+//            CrowdControlApplication.aGroup = group;
+//            group.saveInBackground(new SaveCallback() {
+//                @Override
+//                public void done(ParseException e) {
+//                    finish();
+//                }
+//            });
 
             return true;
         }
