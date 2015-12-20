@@ -1,6 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 /**
  * The Parse implementation of the @{link ParseBaseModel} interface.
@@ -19,6 +20,16 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
      * Key corresponding to {@link ParseUserProfileModel#getDisplayName}
      */
     private static final String displayNameKey = "DisplayName";
+
+    /**
+     * Key corresponding to {@link ParseUserProfileModel#setInheritedUser}
+     */
+    private static final String parentParseUserIDKey = "UserID";
+
+    /**
+     * Key corresponding to {@link ParseUserProfileModel#getDisplayDatabaseID}
+     */
+    private static final String displayUserIDKey = "ObjectID";
 
 
     /**
@@ -41,6 +52,8 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
         return (String) parseObject.get(displayNameKey);
     }
 
+
+
     /**
      * Sets the user's display name.
      *
@@ -49,5 +62,12 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
     @Override
     public void setDisplayName(String displayName) {
         parseObject.put(displayNameKey, displayName);
+    }
+
+    public String getDisplayDatabaseID() { return (String) parseObject.get(displayUserIDKey);}
+
+    public void setInheritedUser( ParseUser inheritedUser)
+    {
+        parseObject.put(parentParseUserIDKey, inheritedUser.get( "ObjectID") );
     }
 }
