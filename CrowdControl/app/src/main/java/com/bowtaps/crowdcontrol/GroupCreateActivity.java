@@ -11,10 +11,12 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.ParseGroupModel;
 import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.parse.ParseACL;
@@ -40,6 +42,8 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
     private EditText mGroupDesctiptionView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private static final String TAG = GroupCreateTask.class.getSimpleName();
 
 
     @Override
@@ -200,6 +204,7 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         private final String mGroupName;
         private final String mGroupDescription;
 
+
         GroupCreateTask(String groupName, String groupDescription) {
             //Can add more attributes later
             mGroupName = groupName;
@@ -217,7 +222,23 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
                 return false;
             }
             ParseGroupModel parseGroupModel = new ParseGroupModel(CrowdControlApplication.aGroup);
+
+            //sets info to single global instance of group
             parseGroupModel.SetGroupData(mGroupName, mGroupDescription);
+
+            try {
+                parseGroupModel.AddNewMember(CrowdControlApplication.aProfile);
+            }
+            catch (NullPointerException nullPointerE){
+                Log.d(TAG, "aProfile wasn't filled properly");
+            }
+
+            parseGroupModel.saveInBackground(new BaseModel.SaveCallback() {
+                @Override
+                public void doneSavingModel(BaseModel object, Exception ex) {
+
+                }
+            });
 //            // TODO: register the new group here.
 //            ParseObject group = new ParseObject("Group");
 //            ParseUser user = CrowdControlApplication.aUser;

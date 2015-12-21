@@ -78,37 +78,23 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
 
     public void SetGroupData(String groupDescription, String groupName) {
 
-        // TODO: register the new group here.
-        ParseObject group = new ParseObject("Group");
-        ParseUser user = CrowdControlApplication.aUser;
-        ParseObject member = new ParseObject("CCUser");
-        member.put("DisplayName", user.getUsername() );
-        group.put("GroupName", groupName);
-        group.put("GroupDescription", groupDescription);
-
-        ParseRelation relation = group.getRelation("GroupMembers");
-        relation.add( member );
-
+        // Add Group info into the single global instance of group
+        CrowdControlApplication.aGroup.put("GroupName", groupName);
+        CrowdControlApplication.aGroup.put("GroupDescription", groupDescription);
 
         ParseACL acl = new ParseACL();
 
         // Give public read access
         acl.setPublicReadAccess(true);
-        group.setACL(acl);
+        CrowdControlApplication.aGroup.setACL(acl);
 
-        member.saveInBackground(new com.parse.SaveCallback() {
-            @Override
-            public void done(ParseException e) {
+    }
 
-            }
-        });
-        CrowdControlApplication.aGroup = group;
-
-        group.saveInBackground(new com.parse.SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-
-            }
-        });
+    public void AddNewMember( ParseObject userProfile ) {
+        if ( CrowdControlApplication.aProfile == null ) {
+            throw(new NullPointerException());
+        }
+        ParseRelation relation = CrowdControlApplication.aGroup.getRelation("GroupMembers");
+        relation.add( userProfile );
     }
 }
