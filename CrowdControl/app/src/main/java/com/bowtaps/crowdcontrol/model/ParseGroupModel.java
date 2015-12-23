@@ -79,8 +79,8 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
     public void SetGroupData(String groupDescription, String groupName) {
 
         // Add Group info into the single global instance of group
-        CrowdControlApplication.aGroup.put("GroupName", groupName);
-        CrowdControlApplication.aGroup.put("GroupDescription", groupDescription);
+        parseObject.put("GroupName", groupName);
+        parseObject.put("GroupDescription", groupDescription);
 
         ParseACL acl = new ParseACL();
 
@@ -94,7 +94,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
         if ( CrowdControlApplication.aProfile == null ) {
             throw(new NullPointerException());
         }
-        ParseRelation relation = CrowdControlApplication.aGroup.getRelation("GroupMembers");
+        ParseRelation relation = parseObject.getRelation("GroupMembers");
         relation.add( userProfile );
     }
 }

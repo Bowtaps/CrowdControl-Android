@@ -236,7 +236,8 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             parseGroupModel.saveInBackground(new BaseModel.SaveCallback() {
                 @Override
                 public void doneSavingModel(BaseModel object, Exception ex) {
-
+                //TODO catch ex for error checking
+                    finish();
                 }
             });
 //            // TODO: register the new group here.
