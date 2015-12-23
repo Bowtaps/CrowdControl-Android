@@ -1,6 +1,5 @@
 package com.bowtaps.crowdcontrol;
 
-
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.widget.TextView;
@@ -30,5 +29,10 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
     public void textTextViewNotFull() {
         TextView textView = (TextView) loginActivity.findViewById(R.id.textView);
         assertNotNull(textView);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
     }
 }
