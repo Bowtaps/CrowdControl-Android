@@ -68,6 +68,6 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
 
     public void setInheritedUser( ParseUser inheritedUser)
     {
-        parseObject.put(parentParseUserIDKey, inheritedUser.get( "ObjectID") );
+        parseObject.put(parentParseUserIDKey, inheritedUser.getObjectId() );
     }
 }

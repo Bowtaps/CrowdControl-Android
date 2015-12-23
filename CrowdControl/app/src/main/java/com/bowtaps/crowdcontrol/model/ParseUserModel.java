@@ -1,5 +1,6 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.bowtaps.crowdcontrol.CrowdControlApplication;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -195,6 +196,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     {
         setEmail(email);
         ((ParseUser) parseObject).setUsername(email);
+        ((ParseUser) parseObject).setPassword(password);
         setPhone(phone);
     }
 
@@ -207,7 +209,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
 
     public void setDisplayUser( ParseObject displayUser)
     {
-        parseObject.put(displayUserIDKey, displayUser.get("ObjectID"));
+        parseObject.put(displayUserIDKey, CrowdControlApplication.aProfile.getObjectId());
     }
 
 }

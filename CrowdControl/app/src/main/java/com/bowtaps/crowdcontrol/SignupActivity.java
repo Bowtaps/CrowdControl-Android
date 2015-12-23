@@ -443,21 +443,36 @@ public class SignupActivity extends AppCompatActivity
             ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
             ParseUserProfileModel parseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
 
-            parseUserModel.setAllUserData(mEmail, mPassword, "");
+            parseUserModel.setAllUserData(mEmail, mPassword, "605-877-1757");
             parseUserProfileModel.setDisplayName(mUserName);
-            parseUserModel.setDisplayUser(CrowdControlApplication.aProfile);
-            parseUserProfileModel.setInheritedUser(CrowdControlApplication.aUser);
-
-            parseUserModel.saveInBackground(new BaseModel.SaveCallback() {
+            parseUserProfileModel.saveInBackground(new BaseModel.SaveCallback() {
                 @Override
                 public void doneSavingModel(BaseModel object, Exception ex) {
                     //TODO ex error checking
                     finish();
                 }
             });
+            parseUserModel.setDisplayUser(CrowdControlApplication.aProfile);
+
+            parseUserModel.saveInBackground(new BaseModel.SaveCallback() {
+                @Override
+                public void doneSavingModel(BaseModel object, Exception ex) {
+                    if ( ex != null ) {
+                        System.out.println(ex.getMessage());
+                    }
+                    //TODO ex error checking
+                    finish();
+                }
+            });
+
+            //parseUserProfileModel.setInheritedUser(CrowdControlApplication.aUser);
+
             parseUserProfileModel.saveInBackground(new BaseModel.SaveCallback() {
                 @Override
                 public void doneSavingModel(BaseModel object, Exception ex) {
+                    if( ex != null ) {
+                        System.out.println(ex.getMessage());
+                    }
                     //TODO ex error checking
                     finish();
                 }
