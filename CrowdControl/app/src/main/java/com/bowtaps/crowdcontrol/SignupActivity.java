@@ -32,6 +32,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.bowtaps.crowdcontrol.model.BaseModel;
+import com.bowtaps.crowdcontrol.model.ParseUserModel;
+import com.bowtaps.crowdcontrol.model.ParseUserProfileModel;
+import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseRelation;
@@ -436,48 +440,39 @@ public class SignupActivity extends AppCompatActivity
 
             // TODO: register the new account here.
 
-            ParseUser user = new ParseUser();
-            user.setUsername(mEmail);
-            user.setPassword(mPassword);
-            user.setEmail(mEmail);
+            ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
+            ParseUserProfileModel parseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
 
-            ParseObject member = new ParseObject("CCUser");
-            member.put("DisplayName", mUserName);
+            parseUserModel.setAllUserData(mEmail, mPassword, "");
+            parseUserProfileModel.setDisplayName(mUserName);
+            parseUserModel.setDisplayUser(CrowdControlApplication.aProfile);
+            parseUserProfileModel.setInheritedUser(CrowdControlApplication.aUser);
 
-// other fields can be set just like with ParseObject
-            user.put("phone", "650-555-0000");
-
-            CrowdControlApplication.aUser = user;
-            CrowdControlApplication.aUser.signUpInBackground(new SignUpCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-                        // Hooray! Let them use the app now.
-                    } else {
-                        // Sign up didn't succeed. Look at the ParseException
-                        // to figure out what went wrong
-                    }
+            parseUserModel.saveInBackground(new BaseModel.SaveCallback() {
+                @Override
+                public void doneSavingModel(BaseModel object, Exception ex) {
+                    //TODO ex error checking
+                    finish();
+                }
+            });
+            parseUserProfileModel.saveInBackground(new BaseModel.SaveCallback() {
+                @Override
+                public void doneSavingModel(BaseModel object, Exception ex) {
+                    //TODO ex error checking
+                    finish();
                 }
             });
 
-            user.put("CCUser", member); // Do Not use relation. Just use an object ID
+            //TODO add phone number automatically extract from phone
 
-            //ParseRelation relation = user.getRelation("CCUser");
-            //relation.add( member );
-
-            //member.saveInBackground(new SaveCallback() {
-//                @Override
-//                public void done(ParseException e) {
+//            ParseUser user = new ParseUser();
+//            user.setUsername(mEmail);
+//            user.setPassword(mPassword);
+//            user.setEmail(mEmail);
 //
-//                }
-//            });
+//            ParseObject member = new ParseObject("CCUser");
+//            member.put("DisplayName", mUserName);
 
-            //CrowdControlApplication.aUser = user;
-
-            user.signUpInBackground();
-
-
-
-            CrowdControlApplication.aUser = user;
             launchGroupJoinActivity();
 
             return true;

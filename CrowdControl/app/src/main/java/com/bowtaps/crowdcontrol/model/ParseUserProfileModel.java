@@ -38,7 +38,7 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
      *
      * @param object The object to use as a handle.
      */
-    ParseUserProfileModel(ParseObject object) {
+    public ParseUserProfileModel(ParseObject object) {
         super(object);
     }
 

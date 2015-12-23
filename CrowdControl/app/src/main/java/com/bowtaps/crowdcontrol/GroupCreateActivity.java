@@ -215,12 +215,12 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+//            try {
+//                // Simulate network access.
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                return false;
+//            }
             ParseGroupModel parseGroupModel = new ParseGroupModel(CrowdControlApplication.aGroup);
 
             //sets info to single global instance of group
