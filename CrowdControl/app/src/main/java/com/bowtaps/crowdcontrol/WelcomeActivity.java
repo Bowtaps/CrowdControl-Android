@@ -21,7 +21,7 @@ import com.parse.ParseUser;
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonCreateAccount;
-    ParseUser mUser;
+    ParseUser mUser = ParseUser.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,8 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
         //This Determines if a user is logged in from a previous run
         if(mUser != null){
+            //TODO: This functionality is implying that the GroupJoinActivity is the "Home" page for a logged in user.
+            CrowdControlApplication.aUser = mUser;
             launchGroupJoinActivity();
         }
         else{
