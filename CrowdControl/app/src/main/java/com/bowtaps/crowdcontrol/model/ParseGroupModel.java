@@ -91,6 +91,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
     }
 
     public void AddNewMember( ParseObject userProfile ) {
+        //TODO this isn't catching empty profiles!!!!
         if ( CrowdControlApplication.aProfile == null ) {
             throw(new NullPointerException());
         }
