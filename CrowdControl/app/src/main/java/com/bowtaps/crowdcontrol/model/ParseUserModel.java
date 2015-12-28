@@ -171,8 +171,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      *                 is complete. If no object is provided (or null is given),
      *                 no callback will be executed.
      */
-    @Override
-    public void saveInBackground(final SaveCallback callback) {
+    public void signUpInBackground(final SaveCallback callback) {
         final BaseModel model = this;
 //        ((ParseUser) parseObject).signupInBackground(new com.parse.SaveCallback(e) {
 //            @Override
@@ -183,6 +182,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
 //            }
 //        });
         ((ParseUser) parseObject).signUpInBackground();
+        CrowdControlApplication.aUser = (ParseUser) parseObject;
     }
 
     /**
@@ -209,7 +209,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
 
     public void setDisplayUser( ParseObject displayUser)
     {
-        parseObject.put(displayUserIDKey, CrowdControlApplication.aProfile.getObjectId());
+        parseObject.put(displayUserIDKey, displayUser );
     }
 
 }
