@@ -210,8 +210,12 @@ public class SignupActivity extends AppCompatActivity
         }
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!isPasswordValid(password)) {
+            mEmailView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -458,7 +462,7 @@ public class SignupActivity extends AppCompatActivity
             parseUserProfileModel.saveInBackground(new BaseModel.SaveCallback() {
                 @Override
                 public void doneSavingModel(BaseModel object, Exception ex) {
-                    if ( ex != null ) {
+                    if (ex != null) {
                         System.out.println(ex.getMessage());
                     }
                     //TODO ex error checking
@@ -470,7 +474,7 @@ public class SignupActivity extends AppCompatActivity
             parseUserModel.saveInBackground(new BaseModel.SaveCallback() {
                 @Override
                 public void doneSavingModel(BaseModel object, Exception ex) {
-                    if ( ex != null ) {
+                    if (ex != null) {
                         System.out.println(ex.getMessage());
                     }
                     //TODO ex error checking
