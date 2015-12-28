@@ -1,5 +1,8 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.bowtaps.crowdcontrol.CrowdControlApplication;
+import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 /**
@@ -13,15 +16,15 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     // Properties
     private String objectID;
     private String userName;
-    private String password;
+//    private String password;
     private Object authData;
-    private Boolean emailVerified;
-    private String email;
+//    private Boolean emailVerified;
+//    private String email;
 
-    //CC ParseUserModel Data
-    private Object location;
-    private Object preferences;
-    private String status;
+//    //CC ParseUserModel Data
+//    private Object location;
+//    private Object preferences;
+//    private String status;
 
     // Get Methods
     @Override
@@ -63,6 +66,17 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      * {@link ParseUserModel#setPhone}
      */
     private static final String phoneKey = "phone";
+
+    /**
+     * Key correponding to {@link ParseUserModel#getUserDatabaseID} and
+     * {@link ParseUserModel#setPhone}
+     */
+    private static final String userDatabaseIDKey = "ObjectID";
+
+    /**
+     * Key correponding to {@link ParseUserModel#getPhone}
+     */
+    private static final String displayUserIDKey = "CCUser";
 
 
     /**
@@ -133,6 +147,69 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     @Override
     public void setPhone(String phone) {
         parseObject.put(phoneKey, phone);
+    }
+
+
+    /**
+     * Attempts to save the model to Parse synchronously. This is a blocking
+     * function and thus should never be used on the main thread.
+     *
+     * @throws Exception If an exception is thrown by Parse, it will be passed
+     *                   on to this function's caller.
+     */
+    @Override
+    public void save() throws ParseException {
+        ((ParseUser) parseObject).signUp();
+    }
+
+    /**
+     * Attempts to save the model to Parse asynchronously and passes control
+     * back to the main thread by using the object passed as a parameter to this
+     * function.
+     *
+     * @param callback The callback object to pass control to once the operation
+     *                 is complete. If no object is provided (or null is given),
+     *                 no callback will be executed.
+     */
+    public void signUpInBackground(final SaveCallback callback) {
+        final BaseModel model = this;
+//        ((ParseUser) parseObject).signupInBackground(new com.parse.SaveCallback(e) {
+//            @Override
+//            public void done(ParseException e) {
+//                if (callback != null) {
+//                    callback.doneSavingModel(model, e);
+//                }
+//            }
+//        });
+        ((ParseUser) parseObject).signUpInBackground();
+        CrowdControlApplication.aUser = (ParseUser) parseObject;
+    }
+
+    /**
+     * Set all of the information for a User
+     *
+     * @param email The new email address to assign to the user.
+     * @param password The new password being assigned to the user.
+     * @param phone The new phone number to assign to the user.
+     */
+    public void setAllUserData ( String email, String password, String phone )
+    {
+        setEmail(email);
+        ((ParseUser) parseObject).setUsername(email);
+        ((ParseUser) parseObject).setPassword(password);
+        setPhone(phone);
+    }
+
+    public void logIntoParseUser ( String email, String password )
+    {
+        ((ParseUser) parseObject).logInInBackground(email, password);
+    }
+
+    public String getUserDatabaseID() { return (String) parseObject.get(userDatabaseIDKey);}
+
+    public void setDisplayUser( ParseObject displayUser)
+    {
+        parseObject.put(displayUserIDKey, displayUser );
     }
 
 }

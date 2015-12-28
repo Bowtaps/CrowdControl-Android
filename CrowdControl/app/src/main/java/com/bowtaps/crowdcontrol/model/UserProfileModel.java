@@ -1,5 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.parse.ParseUser;
+
 /**
  * The interface for user profile models, providing access to public-facing
  * user profile data, such as display name and profile image.
@@ -29,5 +31,9 @@ public interface UserProfileModel extends BaseModel {
      * @param displayName The new display name for the user.
      */
     public void setDisplayName(String displayName);
+
+    public String getDisplayDatabaseID();
+
+    public void setInheritedUser( ParseUser inheritedUser);
 
 }

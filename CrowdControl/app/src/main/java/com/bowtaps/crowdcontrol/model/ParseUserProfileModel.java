@@ -1,6 +1,8 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.bowtaps.crowdcontrol.CrowdControlApplication;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 /**
  * The Parse implementation of the @{link ParseBaseModel} interface.
@@ -20,6 +22,16 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
      */
     private static final String displayNameKey = "DisplayName";
 
+    /**
+     * Key corresponding to {@link ParseUserProfileModel#setInheritedUser}
+     */
+    private static final String parentParseUserIDKey = "UserID";
+
+    /**
+     * Key corresponding to {@link ParseUserProfileModel#getDisplayDatabaseID}
+     */
+    private static final String displayUserIDKey = "ObjectID";
+
 
     /**
      * The class constructor. Initializes the model from an existing
@@ -27,7 +39,7 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
      *
      * @param object The object to use as a handle.
      */
-    ParseUserProfileModel(ParseObject object) {
+    public ParseUserProfileModel(ParseObject object) {
         super(object);
     }
 
@@ -41,6 +53,8 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
         return (String) parseObject.get(displayNameKey);
     }
 
+
+
     /**
      * Sets the user's display name.
      *
@@ -49,5 +63,12 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
     @Override
     public void setDisplayName(String displayName) {
         parseObject.put(displayNameKey, displayName);
+    }
+
+    public String getDisplayDatabaseID() { return (String) parseObject.get(displayUserIDKey);}
+
+    public void setInheritedUser( ParseUser inheritedUser)
+    {
+        parseObject.put(parentParseUserIDKey, inheritedUser );
     }
 }
