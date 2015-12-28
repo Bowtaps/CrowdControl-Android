@@ -444,10 +444,23 @@ public class SignupActivity extends AppCompatActivity
             ParseUserProfileModel parseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
 
             parseUserModel.setAllUserData(mEmail, mPassword, "605-877-1757");
+            parseUserModel.signUpInBackground(new BaseModel.SaveCallback() {
+                @Override
+                public void doneSavingModel(BaseModel object, Exception ex) {
+                    if (ex != null) {
+                        System.out.println(ex.getMessage());
+                    }
+                    //TODO ex error checking
+                    finish();
+                }
+            });
             parseUserProfileModel.setDisplayName(mUserName);
             parseUserProfileModel.saveInBackground(new BaseModel.SaveCallback() {
                 @Override
                 public void doneSavingModel(BaseModel object, Exception ex) {
+                    if ( ex != null ) {
+                        System.out.println(ex.getMessage());
+                    }
                     //TODO ex error checking
                     finish();
                 }
@@ -465,7 +478,7 @@ public class SignupActivity extends AppCompatActivity
                 }
             });
 
-            //parseUserProfileModel.setInheritedUser(CrowdControlApplication.aUser);
+            parseUserProfileModel.setInheritedUser(CrowdControlApplication.aUser);
 
             parseUserProfileModel.saveInBackground(new BaseModel.SaveCallback() {
                 @Override

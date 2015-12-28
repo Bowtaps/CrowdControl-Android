@@ -1,5 +1,6 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.bowtaps.crowdcontrol.CrowdControlApplication;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -68,6 +69,6 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
 
     public void setInheritedUser( ParseUser inheritedUser)
     {
-        parseObject.put(parentParseUserIDKey, inheritedUser.getObjectId() );
+        parseObject.put(parentParseUserIDKey, inheritedUser );
     }
 }
