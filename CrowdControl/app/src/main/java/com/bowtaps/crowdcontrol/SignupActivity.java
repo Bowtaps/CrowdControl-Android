@@ -32,8 +32,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.bowtaps.crowdcontrol.model.BaseModel;
+import com.bowtaps.crowdcontrol.model.ParseUserModel;
+import com.bowtaps.crowdcontrol.model.ParseUserProfileModel;
+import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import java.util.ArrayList;
@@ -203,8 +210,12 @@ public class SignupActivity extends AppCompatActivity
         }
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!isPasswordValid(password)) {
+            mEmailView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -433,24 +444,57 @@ public class SignupActivity extends AppCompatActivity
 
             // TODO: register the new account here.
 
-            final ParseUser user = new ParseUser();
-            user.setUsername(mUserName);
-            user.setPassword(mPassword);
-            user.setEmail(mEmail);
+            ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
+            ParseUserProfileModel parseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
 
-// other fields can be set just like with ParseObject
-            user.put("phone", "650-555-0000");
-            CrowdControlApplication.aUser = user;
-            CrowdControlApplication.aUser.signUpInBackground(new SignUpCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-                        // Hooray! Let them use the app now.
-                    } else {
-                        // Sign up didn't succeed. Look at the ParseException
-                        // to figure out what went wrong
+            parseUserModel.setAllUserData(mEmail, mPassword, "605-877-1757");
+            try {
+                parseUserModel.signUp();
+            } catch (ParseException e) {
+                e.printStackTrace();
+
+            }
+            parseUserProfileModel.setDisplayName(mUserName);
+            try {
+                parseUserProfileModel.save();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            parseUserModel.setDisplayUser(CrowdControlApplication.aProfile);
+
+            parseUserModel.saveInBackground(new BaseModel.SaveCallback() {
+                @Override
+                public void doneSavingModel(BaseModel object, Exception ex) {
+                    if (ex != null) {
+                        System.out.println(ex.getMessage());
                     }
+                    //TODO ex error checking
+                    finish();
                 }
             });
+
+            parseUserProfileModel.setInheritedUser(CrowdControlApplication.aUser);
+
+            parseUserProfileModel.saveInBackground(new BaseModel.SaveCallback() {
+                @Override
+                public void doneSavingModel(BaseModel object, Exception ex) {
+                    if( ex != null ) {
+                        System.out.println(ex.getMessage());
+                    }
+                    //TODO ex error checking
+                    finish();
+                }
+            });
+
+            //TODO add phone number automatically extract from phone
+
+//            ParseUser user = new ParseUser();
+//            user.setUsername(mEmail);
+//            user.setPassword(mPassword);
+//            user.setEmail(mEmail);
+//
+//            ParseObject member = new ParseObject("CCUser");
+//            member.put("DisplayName", mUserName);
 
             launchGroupJoinActivity();
 

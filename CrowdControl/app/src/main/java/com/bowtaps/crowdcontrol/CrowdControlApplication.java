@@ -17,6 +17,7 @@ public class CrowdControlApplication extends Application {
     // Global Parse Objects
     public static ParseUser aUser;
     public static ParseObject aGroup = new ParseObject("Group");
+    public static ParseObject aProfile = new ParseObject("CCUser");
 
 
     @Override
@@ -28,5 +29,6 @@ public class CrowdControlApplication extends Application {
         Parse.initialize(this, "xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv", "PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi");
         aUser = new ParseUser();
         aGroup = new ParseObject("Group");
+
     }
 }

@@ -37,7 +37,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         // Initialize main ParseQueryAdapter
         mainAdapter = new ParseQueryAdapter<ParseObject>(this, "Group");
         mainAdapter.setTextKey("GroupName");
-        mainAdapter.setTextKey("GroupDescription");
 
         //mainAdapter.setImageKey("image");
 
@@ -46,7 +45,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
         // Initialize ListView and set initial view to mainAdapter
         groupListView = (ListView) findViewById(R.id.group_list);
-        groupListView.setAdapter(mainAdapter);
+        groupListView.setAdapter(groupListAdapter);
         mainAdapter.loadObjects(); // Querry in CustomParseAdapter
 
 
@@ -97,22 +96,22 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     }
 
     /**
-     * Handles clicks on the Facebook login button. Simply launches the {@link GroupNavigationActivity}.
+     * Sends user to the group creationg page {@link GroupCreateActivity}.
      *
      * @param button  The button object that was clicked.
-     * @see           GroupNavigationActivity
+     * @see           GroupCreateActivity
      */
     private void onCreateButtonClick(Button button) {
-        launchTabActivity();
+        launchCreateGroupActivity();
     }
 
 
     /**
      * Launches the {@link GroupJoinActivity}.
      *
-     * @see GroupNavigationActivity
+     * @see GroupCreateActivity
      */
-    private void launchTabActivity() {
+    private void launchCreateGroupActivity() {
         Intent myIntent = new Intent(this, GroupCreateActivity.class);
         this.startActivity(myIntent);
     }
