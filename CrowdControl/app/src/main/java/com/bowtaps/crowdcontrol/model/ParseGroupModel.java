@@ -76,7 +76,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
         return ((ParseObject) parseObject).getParseUser(groupMembersKey);
     }
 
-    public void SetGroupData(String groupDescription, String groupName) {
+    public void SetGroupData(String groupName, String groupDescription) {
 
         // Add Group info into the single global instance of group
         parseObject.put("GroupName", groupName);
