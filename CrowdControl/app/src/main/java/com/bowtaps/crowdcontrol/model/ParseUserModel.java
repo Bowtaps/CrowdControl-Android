@@ -185,6 +185,10 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
         CrowdControlApplication.aUser = (ParseUser) parseObject;
     }
 
+    public void signUp() throws ParseException {
+        ((ParseUser) parseObject).signUp();
+    }
+
     /**
      * Set all of the information for a User
      *
