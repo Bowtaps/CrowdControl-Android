@@ -27,8 +27,8 @@ public class CrowdControlApplication extends Application {
         // Initialize parse
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv", "PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi");
-        //Parse.enableLocalDatastore(this);
         aUser = new ParseUser();
         aGroup = new ParseObject("Group");
+
     }
 }
