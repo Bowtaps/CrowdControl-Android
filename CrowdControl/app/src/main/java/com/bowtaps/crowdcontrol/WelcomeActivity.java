@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 /*
@@ -38,7 +39,11 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         if(mUser != null){
             //TODO: This functionality is implying that the GroupJoinActivity is the "Home" page for a logged in user.
             CrowdControlApplication.aUser = mUser;
+
+            CrowdControlApplication.aProfile = mUser.getParseObject("CCUser");
+
             launchGroupJoinActivity();
+
         }
         else{
             launchLoginActivity();
