@@ -36,4 +36,6 @@ public interface UserProfileModel extends BaseModel {
 
     public void setInheritedUser( ParseUser inheritedUser);
 
+    public void initializeFromUser(ParseUser inheritedUser);
+
 }

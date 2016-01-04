@@ -1,8 +1,12 @@
 package com.bowtaps.crowdcontrol.model;
 
+import android.util.Log;
+
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 /**
@@ -25,6 +29,8 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
 //    private Object location;
 //    private Object preferences;
 //    private String status;
+
+    private static final String TAG = ParseUserModel.class.getSimpleName();
 
     // Get Methods
     @Override
@@ -214,6 +220,29 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     public void setDisplayUser( ParseObject displayUser)
     {
         parseObject.put(displayUserIDKey, displayUser );
+    }
+
+    public void getCurrentUser()
+    {
+        CrowdControlApplication.aUser = ParseUser.getCurrentUser();
+    }
+
+    public void fetchProfile( )
+    {
+        ParseQuery query = ParseQuery.getQuery("CCUser");
+        query.getInBackground("iLmTs6PkEo",
+                new GetCallback() {
+                    @Override
+                    public void done(ParseObject object, ParseException e) {
+                        CrowdControlApplication.aProfile = object;
+                    }
+
+                    @Override
+                    public void done(Object o, Throwable throwable) {
+                        // something went wrong. CCUser not assigned
+                        Log.d(TAG, "aProfile wasn't filled properly");
+                    }
+                });
     }
 
 }

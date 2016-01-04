@@ -7,8 +7,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import com.parse.Parse;
-import com.parse.ParseException;
+
+import com.bowtaps.crowdcontrol.model.ParseUserModel;
+import com.bowtaps.crowdcontrol.model.ParseUserProfileModel;
 import com.parse.ParseUser;
 
 /*
@@ -22,12 +23,17 @@ import com.parse.ParseUser;
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonCreateAccount;
-    ParseUser mUser = ParseUser.getCurrentUser();
+    ParseUserProfileModel mParseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
+    ParseUserModel mParseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
+    ParseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+
+        mParseUserModel.getCurrentUser();
+        mUser = CrowdControlApplication.aUser;
 
         // Get handles to buttons
         mButtonCreateAccount = (Button) findViewById(R.id.buttonToCreate);
@@ -36,11 +42,11 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         mButtonCreateAccount.setOnClickListener(this);
 
         //This Determines if a user is logged in from a previous run
-        if(mUser != null){
+        if(mUser.getObjectId() != null){
             //TODO: This functionality is implying that the GroupJoinActivity is the "Home" page for a logged in user.
-            CrowdControlApplication.aUser = mUser;
-
-            CrowdControlApplication.aProfile = mUser.getParseObject("CCUser");
+            mParseUserModel.fetchProfile();
+            //mParseUserProfileModel.initializeFromUser(CrowdControlApplication.aUser);
+            //CrowdControlApplication.aProfile = mUser.getParseObject("CCUser");
 
             launchGroupJoinActivity();
 
