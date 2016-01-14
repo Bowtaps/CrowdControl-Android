@@ -1,5 +1,6 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.parse.LogInCallback;
 import com.parse.ParseObject;
 
 /**
@@ -75,7 +76,7 @@ public interface UserModel extends BaseModel {
      * @param email The new email address to assign to the user.
      * @param password The new password being assigned to the user.
      */
-    public void logIntoParseUser ( String email, String password );
+    public void logIntoParseUser ( String email, String password, LogInCallback logInCallback);
 
     public void setDisplayUser( ParseObject displayUser);
 

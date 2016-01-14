@@ -1,6 +1,12 @@
 package com.bowtaps.crowdcontrol.model;
 
+import android.content.Intent;
+import android.widget.Toast;
+
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
+import com.bowtaps.crowdcontrol.GroupJoinActivity;
+import com.bowtaps.crowdcontrol.LoginActivity;
+import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -200,7 +206,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
         setPhone(phone);
     }
 
-    public void logIntoParseUser ( String email, String password )
+    public void logIntoParseUser ( String email, String password, LogInCallback logInCallback )
     {
         ((ParseUser) parseObject).logInInBackground(email, password);
     }
