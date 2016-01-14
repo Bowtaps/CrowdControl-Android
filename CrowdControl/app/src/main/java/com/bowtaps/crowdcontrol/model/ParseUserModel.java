@@ -7,6 +7,7 @@ import com.bowtaps.crowdcontrol.CrowdControlApplication;
 import com.bowtaps.crowdcontrol.GroupJoinActivity;
 import com.bowtaps.crowdcontrol.LoginActivity;
 import com.parse.LogInCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -209,6 +210,11 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     public void logIntoParseUser ( String email, String password, LogInCallback logInCallback )
     {
         ((ParseUser) parseObject).logInInBackground(email, password);
+    }
+
+    public void logOutOfParseUser ()
+    {
+        ParseUser.logOut();
     }
 
     public String getUserDatabaseID() { return (String) parseObject.get(userDatabaseIDKey);}

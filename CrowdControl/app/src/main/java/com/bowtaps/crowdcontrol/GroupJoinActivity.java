@@ -1,6 +1,7 @@
 package com.bowtaps.crowdcontrol;
 
 import android.content.Intent;
+import android.media.audiofx.BassBoost;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -23,6 +24,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
 
     Button mButtonToTabs;
+    Button mButtonSettings;
 
     // List view pieces
     private ParseQueryAdapter<ParseObject> mainAdapter;
@@ -48,13 +50,12 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         groupListView.setAdapter(groupListAdapter);
         mainAdapter.loadObjects(); // Querry in CustomParseAdapter
 
-
-
         // Get handles to Buttons
         mButtonToTabs = (Button) findViewById(R.id.buttonToTab);
-
+        mButtonSettings = (Button) findViewById(R.id.buttonSettings);
         // Declare button clicks
         mButtonToTabs.setOnClickListener(this);
+        mButtonSettings.setOnClickListener(this);
     }
 
     @Override
@@ -89,6 +90,10 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
                 onCreateButtonClick((Button) view);
                 break;
 
+            case R.id.buttonSettings:
+                onSettingsButtonClick((Button) view);
+                break;
+
             default:
                 // Sorry, you're outta luck
                 break;
@@ -105,6 +110,14 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         launchCreateGroupActivity();
     }
 
+    private void onSettingsButtonClick(Button button) {
+        launchSettingsActivity();
+    }
+
+    private void launchSettingsActivity() {
+        Intent myIntent = new Intent(this, SettingsActivity.class);
+        this.startActivity(myIntent);
+    }
 
     /**
      * Launches the {@link GroupJoinActivity}.

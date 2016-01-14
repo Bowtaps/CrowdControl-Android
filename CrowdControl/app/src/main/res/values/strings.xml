@@ -36,4 +36,7 @@
 
     <!-- Strings related to Create a Group -->
     <string name="title_activity_group_create">GroupCreateActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="search_distance">Search Distance</string>
+    <string name="logout_full">Log Out</string>
 </resources>
