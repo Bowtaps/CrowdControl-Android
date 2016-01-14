@@ -79,5 +79,11 @@ public interface UserModel extends BaseModel {
 
     public void setDisplayUser( ParseObject displayUser);
 
+    public void getCurrentUser();
+
+    public void fetchProfile( );
+
+    public void updateUser();
+
 
 }

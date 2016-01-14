@@ -18,15 +18,6 @@ import android.widget.EditText;
 
 import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.ParseGroupModel;
-import com.bowtaps.crowdcontrol.model.ParseUserModel;
-import com.parse.ParseACL;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseRelation;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
-import static com.bowtaps.crowdcontrol.model.ParseGroupModel.*;
 
 public class GroupCreateActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -282,7 +273,7 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
 
             if (success) {
                 finish();
-                launchTestActivity();
+                launchGroupNavigationActivity();
             } else {
                 mGroupNameView.requestFocus();
             }
@@ -296,11 +287,11 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
     }
 
     /**
-     * Launches the {@link GroupJoinActivity}.
+     * Launches the {@link GroupNavigationActivity}.
      *
-     * @see GroupJoinActivity
+     * @see GroupNavigationActivity
      */
-    private void launchTestActivity() {
+    private void launchGroupNavigationActivity() {
         Intent myIntent = new Intent(this, GroupNavigationActivity.class);
         this.startActivity(myIntent);
     }

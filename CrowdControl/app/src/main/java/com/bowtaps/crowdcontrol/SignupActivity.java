@@ -444,6 +444,7 @@ public class SignupActivity extends AppCompatActivity
 
             // TODO: register the new account here.
 
+            CrowdControlApplication.aUser = new ParseUser();
             ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
             ParseUserProfileModel parseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
 
