@@ -81,7 +81,9 @@ public interface UserModel extends BaseModel {
 
     public void getCurrentUser();
 
-    public void fetchProfile();
+    public void fetchProfile( );
+
+    public void updateUser();
 
 
 }

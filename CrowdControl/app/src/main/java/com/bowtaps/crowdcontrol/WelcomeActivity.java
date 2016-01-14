@@ -42,9 +42,9 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         mButtonCreateAccount.setOnClickListener(this);
 
         //This Determines if a user is logged in from a previous run
-        if(mUser.getObjectId() != null){
+        if(mUser != null && mUser.getObjectId() != null){
             //TODO: This functionality is implying that the GroupJoinActivity is the "Home" page for a logged in user.
-            mParseUserModel.fetchProfile();
+            mParseUserModel.updateUser();
             //mParseUserProfileModel.initializeFromUser(CrowdControlApplication.aUser);
             //CrowdControlApplication.aProfile = mUser.getParseObject("CCUser");
 

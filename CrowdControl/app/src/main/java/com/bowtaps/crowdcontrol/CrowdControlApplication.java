@@ -2,6 +2,7 @@ package com.bowtaps.crowdcontrol;
 
 import android.app.Application;
 import com.parse.Parse;
+import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -12,6 +13,7 @@ import com.parse.ParseUser;
  * @author Daniel Andrus
  * @since 2015-11-27
  */
+@ParseClassName("CrowdControlApplication")
 public class CrowdControlApplication extends Application {
 
     // Global Parse Objects
@@ -25,6 +27,8 @@ public class CrowdControlApplication extends Application {
         super.onCreate();
 
         // Initialize parse
+
+        //ParseObject.registerSubclass(CrowdControlApplication.class);
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv", "PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi");
         aUser = new ParseUser();

@@ -95,7 +95,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
         if ( CrowdControlApplication.aProfile == null ) {
             throw(new NullPointerException());
         }
-        ParseRelation relation = parseObject.getRelation("GroupMembers");
+        ParseRelation relation = CrowdControlApplication.aGroup.getRelation("GroupMembers");
         relation.add( userProfile );
     }
 }
