@@ -78,6 +78,8 @@ public interface UserModel extends BaseModel {
      */
     public void logIntoParseUser ( String email, String password, LogInCallback logInCallback);
 
+    public void logOutOfParseUser ();
+
     public void setDisplayUser( ParseObject displayUser);
 
 
