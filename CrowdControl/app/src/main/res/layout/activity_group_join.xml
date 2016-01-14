@@ -16,7 +16,8 @@
         android:id="@+id/buttonToTab"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="#0aac19" />
 
     <Button
         android:layout_width="wrap_content"

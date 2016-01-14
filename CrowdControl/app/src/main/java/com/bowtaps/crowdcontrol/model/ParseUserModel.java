@@ -1,13 +1,13 @@
 package com.bowtaps.crowdcontrol.model;
 
-import android.content.Intent;
-import android.widget.Toast;
+
+
 
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
-import com.bowtaps.crowdcontrol.GroupJoinActivity;
-import com.bowtaps.crowdcontrol.LoginActivity;
+
 import com.parse.LogInCallback;
-import com.parse.Parse;
+
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -32,6 +32,8 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
 //    private Object location;
 //    private Object preferences;
 //    private String status;
+
+    private static final String TAG = ParseUserModel.class.getSimpleName();
 
     // Get Methods
     @Override
@@ -103,7 +105,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public String getUsername() {
-        return ((ParseUser) parseObject).getUsername();
+        return (CrowdControlApplication.aUser).getUsername();
     }
 
     /**
@@ -113,7 +115,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public Boolean getEmailVerified() {
-        return (Boolean) ((ParseUser) parseObject).get(emailVerifiedKey);
+        return (Boolean) ( CrowdControlApplication.aUser).get(emailVerifiedKey);
     }
 
     /**
@@ -123,7 +125,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public String getEmail() {
-        return ((ParseUser) parseObject).getEmail();
+        return (CrowdControlApplication.aUser).getEmail();
     }
 
     /**
@@ -133,7 +135,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public void setEmail(String email) {
-        ((ParseUser) parseObject).setEmail(email);
+        (CrowdControlApplication.aUser).setEmail(email);
     }
 
     /**
@@ -143,7 +145,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public String getPhone() {
-        return (String) parseObject.get(phoneKey);
+        return (String) CrowdControlApplication.aUser.get(phoneKey);
     }
 
     /**
@@ -153,7 +155,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public void setPhone(String phone) {
-        parseObject.put(phoneKey, phone);
+        CrowdControlApplication.aUser.put(phoneKey, phone);
     }
 
 
@@ -166,7 +168,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public void save() throws ParseException {
-        ((ParseUser) parseObject).signUp();
+        CrowdControlApplication.aUser.signUp();
     }
 
     /**
@@ -188,8 +190,11 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
 //                }
 //            }
 //        });
-        ((ParseUser) parseObject).signUpInBackground();
-        CrowdControlApplication.aUser = (ParseUser) parseObject;
+        ( CrowdControlApplication.aUser).signUpInBackground();
+    }
+
+    public void signUp() throws ParseException {
+        CrowdControlApplication.aUser.signUp();
     }
 
     /**
@@ -202,26 +207,57 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     public void setAllUserData ( String email, String password, String phone )
     {
         setEmail(email);
-        ((ParseUser) parseObject).setUsername(email);
-        ((ParseUser) parseObject).setPassword(password);
+        setUsername(email);
+        setPassword(password);
         setPhone(phone);
     }
 
     public void logIntoParseUser ( String email, String password, LogInCallback logInCallback )
     {
-        ((ParseUser) parseObject).logInInBackground(email, password);
+         CrowdControlApplication.aUser.logInInBackground(email, password);
     }
-
     public void logOutOfParseUser ()
     {
         ParseUser.logOut();
     }
 
-    public String getUserDatabaseID() { return (String) parseObject.get(userDatabaseIDKey);}
+    public String getUserDatabaseID() { return (String) CrowdControlApplication.aUser.get(userDatabaseIDKey);}
 
     public void setDisplayUser( ParseObject displayUser)
     {
-        parseObject.put(displayUserIDKey, displayUser );
+        CrowdControlApplication.aUser.put(displayUserIDKey, displayUser);
     }
 
+    public void getCurrentUser()
+    {
+        CrowdControlApplication.aUser = ParseUser.getCurrentUser();
+    }
+
+    public void fetchProfile( )
+    {
+        CrowdControlApplication.aUser.getParseObject("CCUser")
+                .fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject profile, ParseException e) {
+                        CrowdControlApplication.aProfile = profile;
+                    }
+                });
+    }
+
+    public void updateUser() {
+        CrowdControlApplication.aUser.fetchInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                fetchProfile();
+            }
+        });
+    }
+
+    public void setUsername(String username) {
+        CrowdControlApplication.aUser.setUsername(username);
+    }
+
+    public void setPassword(String password) {
+        CrowdControlApplication.aUser.setPassword(password);
+    }
 }

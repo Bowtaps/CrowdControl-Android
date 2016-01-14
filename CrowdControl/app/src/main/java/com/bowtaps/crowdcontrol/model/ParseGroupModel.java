@@ -91,10 +91,11 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
     }
 
     public void AddNewMember( ParseObject userProfile ) {
+        //TODO this isn't catching empty profiles!!!!
         if ( CrowdControlApplication.aProfile == null ) {
             throw(new NullPointerException());
         }
-        ParseRelation relation = parseObject.getRelation("GroupMembers");
+        ParseRelation relation = CrowdControlApplication.aGroup.getRelation("GroupMembers");
         relation.add( userProfile );
     }
 }

@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.bowtaps.crowdcontrol.adapters.CustomParseAdapter;
+import com.bowtaps.crowdcontrol.model.BaseModel;
+import com.bowtaps.crowdcontrol.model.ParseGroupModel;
 import com.parse.ParseObject;
 import com.parse.ParseQueryAdapter;
 
@@ -20,16 +23,16 @@ import com.parse.ParseQueryAdapter;
  * This Activity will be the default view of all registered users that are not
  * in a group
  */
-public class GroupJoinActivity extends AppCompatActivity implements View.OnClickListener {
+public class GroupJoinActivity extends AppCompatActivity implements View.OnClickListener, ListView.OnItemClickListener {
 
 
     Button mButtonToTabs;
     Button mButtonSettings;
 
     // List view pieces
-    private ParseQueryAdapter<ParseObject> mainAdapter;
-    private CustomParseAdapter groupListAdapter;
-    private ListView groupListView;
+    private ParseQueryAdapter<ParseObject> mMainAdapter;
+    private CustomParseAdapter mGroupListAdapter;
+    private ListView mGroupListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +40,21 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_group_join);
 
         // Initialize main ParseQueryAdapter
-        mainAdapter = new ParseQueryAdapter<ParseObject>(this, "Group");
-        mainAdapter.setTextKey("GroupName");
+        mMainAdapter = new ParseQueryAdapter<ParseObject>(this, "Group");
+        mMainAdapter.setTextKey("GroupName");
 
-        //mainAdapter.setImageKey("image");
+        //mMainAdapter.setImageKey("image");
 
         // Initialize the subclass of ParseQueryAdapter
-        groupListAdapter = new CustomParseAdapter(this);
+        mGroupListAdapter = new CustomParseAdapter(this);
 
-        // Initialize ListView and set initial view to mainAdapter
-        groupListView = (ListView) findViewById(R.id.group_list);
-        groupListView.setAdapter(groupListAdapter);
-        mainAdapter.loadObjects(); // Querry in CustomParseAdapter
+        // Initialize ListView and set initial view to mMainAdapter
+        mGroupListView = (ListView) findViewById(R.id.group_list);
+        mGroupListView.setAdapter(mGroupListAdapter);
+
+        mGroupListView.setOnItemClickListener(this);
+
+        mMainAdapter.loadObjects(); // Querry in CustomParseAdapter
 
         // Get handles to Buttons
         mButtonToTabs = (Button) findViewById(R.id.buttonToTab);
@@ -80,6 +86,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public void onClick(View view) {
         // Handles clicks on items in view
@@ -100,6 +107,23 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    @Override
+    public void onItemClick(AdapterView parent, View view, int position, long id){
+        CrowdControlApplication.aGroup = mGroupListAdapter.getItem(position);
+        ParseGroupModel parseGroupModel = new ParseGroupModel(mGroupListAdapter.getItem(position));
+        parseGroupModel.AddNewMember(CrowdControlApplication.aProfile);
+
+        parseGroupModel.saveInBackground(new BaseModel.SaveCallback() {
+            @Override
+            public void doneSavingModel(BaseModel object, Exception ex) {
+                //TODO catch ex for error checking
+                finish();
+            }
+        });
+
+        launchGroupNavigationActivity();
+    }
+
     /**
      * Sends user to the group creationg page {@link GroupCreateActivity}.
      *
@@ -107,6 +131,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
      * @see           GroupCreateActivity
      */
     private void onCreateButtonClick(Button button) {
+
         launchCreateGroupActivity();
     }
 
@@ -120,12 +145,17 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     }
 
     /**
-     * Launches the {@link GroupJoinActivity}.
+     * Launches the {@link GroupCreateActivity}.
      *
      * @see GroupCreateActivity
      */
     private void launchCreateGroupActivity() {
         Intent myIntent = new Intent(this, GroupCreateActivity.class);
+        this.startActivity(myIntent);
+    }
+
+    private void launchGroupNavigationActivity() {
+        Intent myIntent = new Intent(this, GroupNavigationActivity.class);
         this.startActivity(myIntent);
     }
 }
