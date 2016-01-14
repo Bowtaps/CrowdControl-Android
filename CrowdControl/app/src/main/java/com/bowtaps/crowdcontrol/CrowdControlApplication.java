@@ -17,6 +17,7 @@ import com.parse.ParseUser;
 public class CrowdControlApplication extends Application {
 
     // Global Parse Objects
+    // cannot be declared as final because parse.initiallized has not been completed yet
     public static ParseUser aUser;
     public static ParseObject aGroup = new ParseObject("Group");
     public static ParseObject aProfile = new ParseObject("CCUser");

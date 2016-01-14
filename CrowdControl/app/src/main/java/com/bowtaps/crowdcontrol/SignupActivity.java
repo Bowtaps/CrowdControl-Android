@@ -448,6 +448,7 @@ public class SignupActivity extends AppCompatActivity
             ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
             ParseUserProfileModel parseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
 
+            //todo phone number is hard coded
             parseUserModel.setAllUserData(mEmail, mPassword, "605-877-1757");
             try {
                 parseUserModel.signUp();

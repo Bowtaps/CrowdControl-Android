@@ -12,11 +12,22 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+/*
+ *  This Custom Parse Adapter is used to quarry Parse for Group Data and adapt that
+ *  data to be displayed in a list view
+ *
+ *  @see GroupJoinActivity
+ */
 public class CustomParseAdapter extends ParseQueryAdapter<ParseObject> {
 
+    /*
+     *  This QueryFactory generates a querry used to grab group information
+     *
+     *  @see GroupJoinActivity
+     */
     public CustomParseAdapter(Context context) {
-        // Use the QueryFactory to construct a PQA that will only show
-        // Todos marked as high-pri
+        // Use the QueryFactory to construct a PQA that will show all groups
+        // currently sorted by the date of which it was created
         super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
             public ParseQuery create() {
                 ParseQuery query = new ParseQuery("Group");
