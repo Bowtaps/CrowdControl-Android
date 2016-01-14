@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by 7143145 on 10/26/2015.
+ * @author 7143145
+ * @since 10/26/2015.
  */
 public class SimpleTabsAdapter extends FragmentPagerAdapter {
 

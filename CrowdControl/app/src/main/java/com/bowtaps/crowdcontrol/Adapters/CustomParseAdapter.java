@@ -16,7 +16,8 @@ import com.parse.ParseQueryAdapter;
  *  This Custom Parse Adapter is used to quarry Parse for Group Data and adapt that
  *  data to be displayed in a list view
  *
- *  @see GroupJoinActivity
+ *  @See GroupJoinActivity
+ *  @author Johnny Ackerman
  */
 public class CustomParseAdapter extends ParseQueryAdapter<ParseObject> {
 
@@ -38,7 +39,12 @@ public class CustomParseAdapter extends ParseQueryAdapter<ParseObject> {
         });
     }
 
-    // Customize the layout by overriding getItemView
+    /*
+     * Customize the layout by overriding getItemView. This allows for use of
+     * a custom list view, in displaying the list of groups
+     *
+     *  @see GroupJoinActivity
+     */
     @Override
     public View getItemView(ParseObject object, View v, ViewGroup parent) {
         if (v == null) {
