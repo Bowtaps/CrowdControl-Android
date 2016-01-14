@@ -1,5 +1,8 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.parse.LogInCallback;
+import com.parse.ParseObject;
+
 /**
  * The interface for login user models, providing access to private user
  * data, such as username, email, and phone number.
@@ -57,5 +60,25 @@ public interface UserModel extends BaseModel {
      * @param phone The new phone number to assign to the user.
      */
     public void setPhone(String phone);
+
+    /**
+     * Set all of the information for a User
+     *
+     * @param email The new email address to assign to the user.
+     * @param password The new password being assigned to the user.
+     * @param phone The new phone number to assign to the user.
+     */
+    public void setAllUserData ( String email, String password, String phone );
+
+    /**
+     * Log a user into parse
+     *
+     * @param email The new email address to assign to the user.
+     * @param password The new password being assigned to the user.
+     */
+    public void logIntoParseUser ( String email, String password, LogInCallback logInCallback);
+
+    public void setDisplayUser( ParseObject displayUser);
+
 
 }
