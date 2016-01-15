@@ -52,4 +52,11 @@ public interface GroupModel extends BaseModel {
      */
     public void AddNewMember( ParseObject userProfile );
 
+    /**
+     * Removes a user from a group
+     *
+     * @param userProfile - user being removed
+     */
+    public void LeaveGroup( ParseObject userProfile );
+
 }
