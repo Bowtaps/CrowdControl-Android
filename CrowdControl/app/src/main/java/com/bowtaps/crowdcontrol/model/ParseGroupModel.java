@@ -1,12 +1,19 @@
 package com.bowtaps.crowdcontrol.model;
+import android.util.Log;
+
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
+import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import java.util.List;
 
 /**
  * Created by 1959760 on 10/24/2015.
@@ -107,8 +114,21 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
             throw(new NullPointerException());
         }
         ParseRelation relation = CrowdControlApplication.aGroup.getRelation("GroupMembers");
-        relation.add( userProfile );
+        relation.add(userProfile);
     }
 
+    public void LeaveGroup( ParseObject userProfile ) {
+        if (CrowdControlApplication.aUser == null ){
+            throw(new NullPointerException());
+        }
 
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("GroupMemebers");
+        String profileId = CrowdControlApplication.aProfile.getObjectId();
+        query.whereEqualTo("objectId", profileId);
+
+        ParseRelation<ParseObject> relation = CrowdControlApplication.aGroup.getRelation("GroupMembers");
+        relation.remove(CrowdControlApplication.aGroup);
+        //TODO: Ideally, we should be error checking this instead of just trusting it.
+
+    }
 }
