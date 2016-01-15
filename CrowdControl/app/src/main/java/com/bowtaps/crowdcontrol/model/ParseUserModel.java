@@ -266,7 +266,9 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
                 .fetchIfNeededInBackground(new GetCallback<ParseObject>() {
                     @Override
                     public void done(ParseObject profile, ParseException e) {
-                        CrowdControlApplication.aProfile = profile;
+                        if( e != null ) {
+                            CrowdControlApplication.aProfile = profile;
+                        }
                     }
                 });
     }
