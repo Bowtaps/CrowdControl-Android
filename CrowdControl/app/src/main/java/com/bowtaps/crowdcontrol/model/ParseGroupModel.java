@@ -76,6 +76,12 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
         return ((ParseObject) parseObject).getParseUser(groupMembersKey);
     }
 
+    /**
+     * puts the new group information into the group application variable
+     *
+     * @param groupName entered group name
+     * @param groupDescription entered group description
+     */
     public void SetGroupData(String groupName, String groupDescription) {
 
         // Add Group info into the single global instance of group
@@ -90,6 +96,11 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
 
     }
 
+    /**
+     * adds a new member to the active group
+     *
+     * @param userProfile - the new group member
+     */
     public void AddNewMember( ParseObject userProfile ) {
         //TODO this isn't catching empty profiles!!!!
         if ( CrowdControlApplication.aProfile == null ) {
