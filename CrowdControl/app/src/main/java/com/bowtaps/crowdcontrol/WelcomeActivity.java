@@ -95,25 +95,14 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     /**
-     * Handles clicks on the buttonToCreate button. Simply launches the {@link CreateAccountActivity}.
+     * Handles clicks on the buttonToCreate button. Simply launches the {@link SignupActivity}.
      *
      * @param button  The button object that was clicked.
-     * @see           CreateAccountActivity
+     * @see           SignupActivity
      */
     private void onCreateAccountButtonClick(Button button) {
         launchLoginActivity();
     }
-
-    /**
-     * Launches the {@link CreateAccountActivity}.
-     *
-     * @see CreateAccountActivity
-     */
-    private void launchCreateAccoutButtonActivity() {
-        Intent myIntent = new Intent(this, CreateAccountActivity.class);
-        this.startActivity(myIntent);
-    }
-
 
     /**
      * Launches the {@link SignupActivity}.
