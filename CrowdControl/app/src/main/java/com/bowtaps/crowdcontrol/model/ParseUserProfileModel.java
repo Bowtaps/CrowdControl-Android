@@ -66,15 +66,21 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
         parseObject.put(displayNameKey, displayName);
     }
 
+    /**
+     *  returns the id of public user profile
+     *
+     *  @return displayUserIDKey
+     */
     public String getDisplayDatabaseID() { return (String) parseObject.get(displayUserIDKey);}
 
+    /**
+     * adds a pointer back to the private user information
+     *
+     * @param inheritedUser
+     */
     public void setInheritedUser( ParseUser inheritedUser)
     {
         parseObject.put(parentParseUserIDKey, inheritedUser );
     }
 
-    public void initializeFromUser(ParseUser inheritedUser)
-    {
-        //CrowdControlApplication.aProfile.setObjectId(inheritedUser.getParseObject("CCUser"));
-    }
 }

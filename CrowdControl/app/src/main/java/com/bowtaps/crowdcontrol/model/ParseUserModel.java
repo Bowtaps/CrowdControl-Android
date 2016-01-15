@@ -212,27 +212,54 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
         setPhone(phone);
     }
 
+    /**
+     * Logs into a given user and sets the current user for future recovery for auto loggin
+     *
+     * @param email The new email address to assign to the user.
+     * @param password The new password being assigned to the user.
+     * @param logInCallback This is the code that is run when this background task finishes
+     */
     public void logIntoParseUser ( String email, String password, LogInCallback logInCallback )
     {
          CrowdControlApplication.aUser.logInInBackground(email, password);
     }
+
+    /**
+     * Removes the current log in user
+     */
     public void logOutOfParseUser ()
     {
         ParseUser.logOut();
     }
 
+    /**
+     * returns the ID of the user in the parse database
+     *
+     * @return userDatabaseIDKey
+     */
     public String getUserDatabaseID() { return (String) CrowdControlApplication.aUser.get(userDatabaseIDKey);}
 
+    /**
+     * Adds a pointer to the public user information
+     *
+     * @param displayUser holder for the public user information
+     */
     public void setDisplayUser( ParseObject displayUser)
     {
         CrowdControlApplication.aUser.put(displayUserIDKey, displayUser);
     }
 
+    /**
+     * checks the local datastore to find the currently logged in user
+     */
     public void getCurrentUser()
     {
         CrowdControlApplication.aUser = ParseUser.getCurrentUser();
     }
 
+    /**
+     * checks local data with the data on parse and grabs the public user data
+     */
     public void fetchProfile( )
     {
         CrowdControlApplication.aUser.getParseObject("CCUser")
@@ -244,6 +271,9 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
                 });
     }
 
+    /**
+     * updates userinformation from the parse database
+     */
     public void updateUser() {
         CrowdControlApplication.aUser.fetchInBackground(new GetCallback<ParseObject>() {
             @Override
@@ -253,10 +283,20 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
         });
     }
 
+    /**
+     * Sets the username of the user
+     *
+     * @param username given username(actually is email address for parse)
+     */
     public void setUsername(String username) {
         CrowdControlApplication.aUser.setUsername(username);
     }
 
+    /**
+     * sets the password
+     *
+     * @param password given user password
+     */
     public void setPassword(String password) {
         CrowdControlApplication.aUser.setPassword(password);
     }

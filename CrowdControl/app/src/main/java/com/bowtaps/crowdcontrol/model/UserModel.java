@@ -78,14 +78,31 @@ public interface UserModel extends BaseModel {
      */
     public void logIntoParseUser ( String email, String password, LogInCallback logInCallback);
 
+    /**
+     * Removes the current log in user
+     */
     public void logOutOfParseUser ();
 
+    /**
+     * Adds a pointer to the public user information
+     *
+     * @param displayUser holder for the public user information
+     */
     public void setDisplayUser( ParseObject displayUser);
 
+    /**
+     * checks the local datastore to find the currently logged in user
+     */
     public void getCurrentUser();
 
+    /**
+     * checks local data with the data on parse and grabs the public user data
+     */
     public void fetchProfile( );
 
+    /**
+     * updates userinformation from the parse database
+     */
     public void updateUser();
 
 
