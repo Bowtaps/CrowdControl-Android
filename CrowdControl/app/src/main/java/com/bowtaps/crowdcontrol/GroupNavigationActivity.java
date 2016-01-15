@@ -18,6 +18,15 @@ public class GroupNavigationActivity extends AppCompatActivity {
     private ViewPager tabsviewPager;
     private SimpleTabsAdapter mTabsAdapter;
 
+    /*
+     *  sets up the (@Link SimpleTabsAdapter) and adds in the possible Fragments
+     *
+     *  @see SimpleTabsAdapter
+     *  @see GroupInfoFragment
+     *  @see MapFragment
+     *  @see MessageingFragment
+     *  @see EventFragment
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

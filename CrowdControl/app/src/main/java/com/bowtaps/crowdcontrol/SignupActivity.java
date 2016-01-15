@@ -49,7 +49,7 @@ import java.util.List;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers registration via email/password.
  */
 public class SignupActivity extends AppCompatActivity
         implements LoaderCallbacks<Cursor>,
@@ -60,13 +60,6 @@ public class SignupActivity extends AppCompatActivity
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -84,6 +77,14 @@ public class SignupActivity extends AppCompatActivity
     Button mTwitterButton;
     Button mEmailButton;
 
+    /*
+     *  Sets up the form to gather input from the user for registration and
+     *  set up the buttons and listeners for them
+     *
+     *  @param mUserNameView - holder for the username from the user
+     *  @param mEmailView - holder for the email from the user
+     *  @param mPasswordView - holder for the password from the user
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -304,6 +305,10 @@ public class SignupActivity extends AppCompatActivity
         }
     }
 
+    /*
+     *  This Loader for the curser grabs the click on the registration button and
+     *  retrieves the data entered
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
@@ -321,6 +326,9 @@ public class SignupActivity extends AppCompatActivity
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
+    /*
+     *  Computes the data retrieved during the click
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         List<String> emails = new ArrayList<>();
@@ -333,11 +341,17 @@ public class SignupActivity extends AppCompatActivity
         addEmailsToAutoComplete(emails);
     }
 
+    /*
+     *  empties the information out of the loader
+     */
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
     }
 
+    /*
+     *  Handles the clicks for all the buttons attached to the onClickListener
+     */
     @Override
     public void onClick(View view) {
         // Handles clicks onn items in view
@@ -363,6 +377,9 @@ public class SignupActivity extends AppCompatActivity
 
     }
 
+    /*
+     *  Launches code for when the email button is clicked
+     */
     private void emailButtonClick(Button view) { launchLoginActivity(); }
 
     /**
@@ -426,21 +443,6 @@ public class SignupActivity extends AppCompatActivity
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
 
             // TODO: register the new account here.
 
@@ -488,21 +490,16 @@ public class SignupActivity extends AppCompatActivity
                 }
             });
 
-            //TODO add phone number automatically extract from phone
-
-//            ParseUser user = new ParseUser();
-//            user.setUsername(mEmail);
-//            user.setPassword(mPassword);
-//            user.setEmail(mEmail);
-//
-//            ParseObject member = new ParseObject("CCUser");
-//            member.put("DisplayName", mUserName);
+            //TODO add phone number
 
             launchGroupJoinActivity();
 
             return true;
         }
 
+        /*
+         *  Finishes the login process and resets if fails
+         */
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
@@ -516,6 +513,9 @@ public class SignupActivity extends AppCompatActivity
             }
         }
 
+        /*
+         *  Resets the mAuthTask if login failed
+         */
         @Override
         protected void onCancelled() {
             mAuthTask = null;
