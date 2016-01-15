@@ -131,8 +131,9 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener 
     //TODO: Should make sure to leave a group first before logging out.
     private void launchLeaveGroupButtonClick() {
         ParseGroupModel parseGroupModel = new ParseGroupModel(CrowdControlApplication.aGroup);
-        
+        parseGroupModel.LeaveGroup(CrowdControlApplication.aProfile);
 
-        //finish();
+        Intent myIntent = new Intent(getActivity(), GroupJoinActivity.class);
+        getActivity().startActivity(myIntent);
     }
 }

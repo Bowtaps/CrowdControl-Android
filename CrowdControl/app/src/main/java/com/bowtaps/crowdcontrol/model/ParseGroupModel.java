@@ -123,7 +123,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
         }
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("GroupMemebers");
-        String profileId = CrowdControlApplication.aProfile.getObjectId();
+        String profileId = userProfile.getObjectId();
         query.whereEqualTo("objectId", profileId);
 
         ParseRelation<ParseObject> relation = CrowdControlApplication.aGroup.getRelation("GroupMembers");
