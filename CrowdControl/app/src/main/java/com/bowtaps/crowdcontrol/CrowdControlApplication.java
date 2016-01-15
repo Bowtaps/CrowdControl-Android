@@ -23,6 +23,13 @@ public class CrowdControlApplication extends Application {
     public static ParseObject aProfile = new ParseObject("CCUser");
 
 
+    /*
+     *  Sets up the data store and gives initial values to the Application Variables
+     *
+     * @param aUser - Global instance of the Parse User, the current user of the app
+     * @param aProfile - the public information for aUser
+     * @param aGroup - the public instance of the group that the user is in
+     */
     @Override
     public void onCreate() {
         super.onCreate();
