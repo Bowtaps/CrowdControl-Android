@@ -12,6 +12,9 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
 
     Button mButtonCreate;
 
+    /*
+     *  Initiats CreateAccountActivity and sets up the OnClickListener and button
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +27,9 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
         mButtonCreate.setOnClickListener(this);
     }
 
+    /*
+     *  Inflates the menu
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -31,6 +37,9 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
         return true;
     }
 
+    /*
+     *  Used to determine what menu Item was selected
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -46,6 +55,12 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+     *  Uses a switch statement to determin which OnClickListiner button was selected
+     *  and then does the action specific to the button.
+     *
+     *  @param button The button object that was clicked
+     */
     @Override
     public void onClick(View view) {
         // Handles clicks onn items in view
