@@ -109,4 +109,6 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
         ParseRelation relation = CrowdControlApplication.aGroup.getRelation("GroupMembers");
         relation.add( userProfile );
     }
+
+
 }
