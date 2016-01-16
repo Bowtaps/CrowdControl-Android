@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bowtaps.crowdcontrol.model.ParseUserModel;
+import com.bowtaps.crowdcontrol.model.ParseUserProfileModel;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -176,7 +177,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView.requestFocus();
         } else {
 
-            mUser.logInInBackground(email, password, new LogInCallback(){
+            CrowdControlApplication.aUser = new ParseUser();
+            final ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
+            //ParseUserProfileModel parseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
+
+
+            parseUserModel.logIntoParseUser(email, password, new LogInCallback(){
                 @Override
                 public void done(ParseUser user, ParseException e) {
 //                    dialog.dismiss();
@@ -189,8 +195,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         focusView = mEmailView;
                         focusView.requestFocus();
                     } else {
+                        // sets user from the call back function???
+                        CrowdControlApplication.aUser = user;
+                        //fetch profile after login
+                        parseUserModel.updateUser();
+
+
                         // Start an intent for the dispatch activity
                         launchGroupJoinActivity();
+                        finish();
                     }
                 }
             });

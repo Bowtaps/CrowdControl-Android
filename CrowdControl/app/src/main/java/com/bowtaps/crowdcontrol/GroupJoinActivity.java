@@ -139,7 +139,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void doneSavingModel(BaseModel object, Exception ex) {
                 //TODO catch ex for error checking
-                finish();
+                //finish();
             }
         });
 

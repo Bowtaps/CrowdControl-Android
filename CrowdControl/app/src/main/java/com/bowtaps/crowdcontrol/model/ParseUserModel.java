@@ -221,7 +221,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     public void logIntoParseUser ( String email, String password, LogInCallback logInCallback )
     {
-         CrowdControlApplication.aUser.logInInBackground(email, password);
+         CrowdControlApplication.aUser.logInInBackground(email, password, logInCallback);
     }
 
     /**
@@ -266,7 +266,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
                 .fetchIfNeededInBackground(new GetCallback<ParseObject>() {
                     @Override
                     public void done(ParseObject profile, ParseException e) {
-                        if( e != null ) {
+                        if (e == null) {
                             CrowdControlApplication.aProfile = profile;
                         }
                     }
@@ -274,13 +274,16 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     }
 
     /**
-     * updates userinformation from the parse database
+     * updates user information from the parse database
      */
     public void updateUser() {
         CrowdControlApplication.aUser.fetchInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject object, ParseException e) {
-                fetchProfile();
+                if( e == null) {
+                    CrowdControlApplication.aUser = (ParseUser) object;
+                    fetchProfile();
+                }
             }
         });
     }

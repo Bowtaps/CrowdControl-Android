@@ -110,7 +110,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
      */
     public void AddNewMember( ParseObject userProfile ) {
         //TODO this isn't catching empty profiles!!!!
-        if ( CrowdControlApplication.aProfile == null ) {
+        if ( CrowdControlApplication.aProfile == null || CrowdControlApplication.aProfile.getObjectId() == null ) {
             throw(new NullPointerException());
         }
         ParseRelation relation = CrowdControlApplication.aGroup.getRelation("GroupMembers");
@@ -122,12 +122,14 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
             throw(new NullPointerException());
         }
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("GroupMemebers");
-        String profileId = userProfile.getObjectId();
-        query.whereEqualTo("objectId", profileId);
+        //ParseQuery<ParseObject> query = ParseQuery.getQuery("GroupMemebers");
+        //String profileId = userProfile.getObjectId();
+        //query.whereEqualTo("objectId", profileId);
 
-        ParseRelation<ParseObject> relation = CrowdControlApplication.aGroup.getRelation("GroupMembers");
-        relation.remove(CrowdControlApplication.aGroup);
+        ParseRelation<ParseObject> relation = parseObject.getRelation("GroupMembers");
+        relation.remove(userProfile);
+
+        parseObject.saveInBackground();
         //TODO: Ideally, we should be error checking this instead of just trusting it.
 
     }

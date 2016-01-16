@@ -133,7 +133,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener 
         ParseGroupModel parseGroupModel = new ParseGroupModel(CrowdControlApplication.aGroup);
         parseGroupModel.LeaveGroup(CrowdControlApplication.aProfile);
 
-        Intent myIntent = new Intent(getActivity(), GroupJoinActivity.class);
-        getActivity().startActivity(myIntent);
+        getActivity().finish();
+        //Intent myIntent = new Intent(getActivity(), GroupJoinActivity.class);
+        //getActivity().startActivity(myIntent);
     }
 }

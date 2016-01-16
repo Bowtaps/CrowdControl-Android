@@ -49,10 +49,12 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
             //CrowdControlApplication.aProfile = mUser.getParseObject("CCUser");
 
             launchGroupJoinActivity();
+            finish();
 
         }
         else{
             launchLoginActivity();
+            finish();
         }
     }
 
