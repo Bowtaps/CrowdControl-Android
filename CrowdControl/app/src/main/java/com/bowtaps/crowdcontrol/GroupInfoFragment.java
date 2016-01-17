@@ -1,9 +1,7 @@
 package com.bowtaps.crowdcontrol;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.bowtaps.crowdcontrol.model.ParseGroupModel;
-import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.parse.ParseObject;
-
-import org.w3c.dom.Text;
 
 
 /**
@@ -131,7 +126,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener 
     //TODO: Should make sure to leave a group first before logging out.
     private void launchLeaveGroupButtonClick() {
         ParseGroupModel parseGroupModel = new ParseGroupModel(CrowdControlApplication.aGroup);
-        parseGroupModel.LeaveGroup(CrowdControlApplication.aProfile);
+        parseGroupModel.removeGroupMember(CrowdControlApplication.aProfile);
 
         getActivity().finish();
         //Intent myIntent = new Intent(getActivity(), GroupJoinActivity.class);

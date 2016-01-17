@@ -1,7 +1,6 @@
 package com.bowtaps.crowdcontrol;
 
 import android.content.Intent;
-import android.media.audiofx.BassBoost;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -133,7 +132,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         //TODO request to join group instead of just joining it
         CrowdControlApplication.aGroup = mGroupListAdapter.getItem(position);
         ParseGroupModel parseGroupModel = new ParseGroupModel(mGroupListAdapter.getItem(position));
-        parseGroupModel.AddNewMember(CrowdControlApplication.aProfile);
+        parseGroupModel.addGroupMember(CrowdControlApplication.aProfile);
 
         parseGroupModel.saveInBackground(new BaseModel.SaveCallback() {
             @Override

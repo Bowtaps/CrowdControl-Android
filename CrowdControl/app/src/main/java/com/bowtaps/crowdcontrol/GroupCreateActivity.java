@@ -241,7 +241,7 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             parseGroupModel.SetGroupData(mGroupName, mGroupDescription);
 
             try {
-                parseGroupModel.AddNewMember(CrowdControlApplication.aProfile);
+                parseGroupModel.addGroupMember(CrowdControlApplication.aProfile);
             }
             catch (NullPointerException nullPointerE){
                 Log.d(TAG, "aProfile wasn't filled properly");
