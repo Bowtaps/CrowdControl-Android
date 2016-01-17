@@ -29,6 +29,12 @@ public class ParseBaseModel implements BaseModel {
      * @param object The object to use as a handle.
      */
     public ParseBaseModel(ParseObject object) {
+
+        // Verify arguments
+        if (object == null) {
+            throw new IllegalArgumentException("object cannot be null");
+        }
+
         parseObject = object;
     }
 

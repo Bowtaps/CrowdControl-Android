@@ -67,8 +67,8 @@ public interface BaseModel {
      * that this function can be called from the main thread without blocking
      * the UI. Upon completion, whether successful or unsuccessful, returns
      * control to the main thread by calling the
-     * @{link SaveCallback.modelSaved()} method on the provided
-     * @{link SaveCallback} object.
+     * {@link SaveCallback#doneSavingModel(BaseModel, Exception)} method on the provided
+     * {@link SaveCallback} object.
      *
      * @param callback The callback object to pass control to once the operation
      *                 is complete. If no object is provided (or null is given),
@@ -79,6 +79,8 @@ public interface BaseModel {
     /**
      * Loads this object from storage. This is a blocking function, so care
      * should be taken to not call this function on the main thread.
+     *
+     * @throws Exception Throws the exception
      */
     public void load() throws Exception;
 
@@ -87,8 +89,8 @@ public interface BaseModel {
      * so that this function can be called from the main thread without blocking
      * the UI. Upon completion, whether successful or unsuccessful, returns
      * control to the main thread by calling the
-     * @{link LoadCallback.modelLoaded()} method on the provided
-     * @{link SaveCallback} object.
+     * {@link LoadCallback#doneLoadingModel(BaseModel, Exception)} method on the provided
+     * {@link LoadCallback} object.
      *
      * @param callback The callback object to pass control to once the operation
      *                 is completed. If no object is provided (or null is given),
