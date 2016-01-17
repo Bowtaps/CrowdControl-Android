@@ -62,27 +62,38 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
 
     /**
      * Forwarding class constructor. Invokes
-     * {@link #ParseUserModel(ParseUser, ParseUserProfileModel)} with the {@code profile} parameter
-     * set to {@code null}.
+     * {@link #ParseUserModel(ParseUser, ParseUserProfileModel)} with a new
+     * {@link ParseUserProfileModel} object, which will create a new row in the Parse database if
+     * it is saved.
      *
      * @param object The {@link ParseUser} object to use as a handle.
      */
     public ParseUserModel(ParseUser object) {
-        this(object, null);
+        this(object, new ParseUserProfileModel());
     }
 
     /**
-     * The class constructor. Initializes the model from an existing {@link ParseUser}.
+     * The class constructor. Initializes the model from an existing {@link ParseUser} and
+     * {@link ParseObject} profile.
      *
      * @param object The {@link ParseUser} object to use as a handle.
      * @param profile The {@link ParseUserProfileModel} object that is associated with this model.
-     *                If this parameter is {@code null}, then a new {@link ParseUserProfileModel}
-     *                will be instantiated and used in its stead.
      */
     public ParseUserModel(ParseUser object, ParseUserProfileModel profile) {
         super(object);
 
-        // TODO: Create a profile model if none exists
+        // Verify arguments
+        if (profile == null) {
+            throw new IllegalArgumentException("profile cannot be null");
+        }
+
+        // Set user's profile to the provided object
+        ParseObject profileObject = object.getParseObject(profileKey);
+        if (profileObject == null || !profile.equals(profileObject)) {
+            parseObject.put(profileKey, profile.parseObject);
+        }
+
+        userProfileModel = profile;
     }
 
     /**
