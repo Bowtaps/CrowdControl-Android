@@ -165,4 +165,22 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     public ParseUserProfileModel getProfile() {
         return userProfileModel;
     }
+
+
+
+    public static ParseUserModel createFromSignUp(String username, String password) {
+
+        // Create new profile object
+        ParseUserProfileModel profileModel = new ParseUserProfileModel();
+
+        // Create new Parse user and set attributes
+        ParseUser parseUser = new ParseUser();
+        parseUser.setUsername(username);
+        parseUser.setPassword(password);
+        parseUser.put(profileKey, profileModel.parseObject);
+
+        // Create new user model
+        ParseUserModel userModel = new ParseUserModel(parseUser, profileModel);
+        return userModel;
+    }
 }

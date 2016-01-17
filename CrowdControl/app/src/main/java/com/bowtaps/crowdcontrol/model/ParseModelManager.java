@@ -78,20 +78,16 @@ public class ParseModelManager implements ModelManager {
     @Override
     public ParseUserModel createUser(String username, String email, String password) throws ParseException {
 
-        // Sign up new user using the Parse API
-        ParseUser parseUser = new ParseUser();
-        parseUser.setUsername(username);
-        parseUser.setPassword(password);
-        parseUser.setEmail(email);
-        parseUser.signUp();
+        // Create new user model and set properties
+        ParseUserModel userModel = ParseUserModel.createFromSignUp(username, password);
+        userModel.setEmail(email);
 
-        // Assuming no errors have occurred, bind new ParseUser to a new ParseUserModel
-        ParseUserModel userModel = new ParseUserModel(parseUser);
-
-        // Force a save to database, both for the new user and their profile
-        userModel.getProfile().save();
+        // Try saving everything
+        ((ParseUser) userModel.parseObject).signUp();
         userModel.save();
+        userModel.getProfile().save();
 
+        // Return user once everything is saved
         return userModel;
     }
 
