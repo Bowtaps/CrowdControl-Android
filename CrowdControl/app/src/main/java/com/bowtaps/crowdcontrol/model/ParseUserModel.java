@@ -1,7 +1,6 @@
 package com.bowtaps.crowdcontrol.model;
 
-
-
+import android.os.AsyncTask;
 
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
 
@@ -13,41 +12,13 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 /**
- * The Parse implementation for the @{link UserModel} interface.
+ * The Parse implementation for the @{link UserModel} interface. Extends the {@link ParseBaseModel}
+ * class and adds additional user-related functionality.
  *
  * @author Daniel Andrus
  * @since 2015-11-27
  */
 public class ParseUserModel extends ParseBaseModel implements UserModel {
-
-    // Properties
-    private String objectID;
-    private String userName;
-//    private String password;
-    private Object authData;
-//    private Boolean emailVerified;
-//    private String email;
-
-//    //CC ParseUserModel Data
-//    private Object location;
-//    private Object preferences;
-//    private String status;
-
-    private static final String TAG = ParseUserModel.class.getSimpleName();
-
-    // Get Methods
-    @Override
-    public String getObjectID(){
-        return this.objectID;
-    }
-    @Override
-    public String getUserName(){
-        return this.userName;
-    }
-    @Override
-    public Object getAuthData(){
-        return this.authData;
-    }
 
     /**
      * The name of the table that this object is designed to interact with.
@@ -55,47 +26,63 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     private static final String tableName = "_User";
 
     /**
-     * Key corresponding to {@link ParseUserModel#getUsername}
+     * Key corresponding to {@link #getUsername()}
      */
     private static final String usernameKey = "username";
 
     /**
-     * Key corresponding to {@link ParseUserModel#getEmailVerified}
+     * Key corresponding to {@link #getEmailVerified()}.
      */
     private static final String emailVerifiedKey = "emailVerified";
 
     /**
-     * Key corresponding to {@link ParseUserModel#getEmail} and
-     * {@link ParseUserModel#setEmail}
+     * Key corresponding to {@link #getEmail()} and {@link #setEmail(String)}.
      */
     private static final String emailKey = "email";
 
     /**
-     * Key correponding to {@link ParseUserModel#getPhone} and
-     * {@link ParseUserModel#setPhone}
+     * Key corresponding to {@link #getPhone()} and {@link #setPhone(String)}.
      */
     private static final String phoneKey = "phone";
 
     /**
-     * Key correponding to {@link ParseUserModel#getUserDatabaseID} and
-     * {@link ParseUserModel#setPhone}
+     * Key corresponding to {@link #getProfile()} .
      */
-    private static final String userDatabaseIDKey = "ObjectID";
+    private static final String profileKey = "CCUser";
 
-    /**
-     * Key correponding to {@link ParseUserModel#getPhone}
-     */
-    private static final String displayUserIDKey = "CCUser";
 
 
     /**
-     * The class constructor. Initializes the model from an existing
-     * {@link ParseUser}.
+     * Internal reference to the {@link ParseUserProfileModel} linked to this user. This value
+     * should never be {@code null}.
+     */
+    private ParseUserProfileModel userProfileModel;
+
+
+
+    /**
+     * Forwarding class constructor. Invokes
+     * {@link #ParseUserModel(ParseUser, ParseUserProfileModel)} with the {@code profile} parameter
+     * set to {@code null}.
      *
-     * @param object The object to use as a handle.
+     * @param object The {@link ParseUser} object to use as a handle.
      */
     public ParseUserModel(ParseUser object) {
+        this(object, null);
+    }
+
+    /**
+     * The class constructor. Initializes the model from an existing {@link ParseUser}.
+     *
+     * @param object The {@link ParseUser} object to use as a handle.
+     * @param profile The {@link ParseUserProfileModel} object that is associated with this model.
+     *                If this parameter is {@code null}, then a new {@link ParseUserProfileModel}
+     *                will be instantiated and used in its stead.
+     */
+    public ParseUserModel(ParseUser object, ParseUserProfileModel profile) {
         super(object);
+
+        // TODO: Create a profile model if none exists
     }
 
     /**
@@ -105,7 +92,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public String getUsername() {
-        return (CrowdControlApplication.aUser).getUsername();
+        return ((ParseUser) parseObject).getUsername();
     }
 
     /**
@@ -115,7 +102,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public Boolean getEmailVerified() {
-        return (Boolean) ( CrowdControlApplication.aUser).get(emailVerifiedKey);
+        return parseObject.getBoolean(emailVerifiedKey);
     }
 
     /**
@@ -125,7 +112,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public String getEmail() {
-        return (CrowdControlApplication.aUser).getEmail();
+        return ((ParseUser) parseObject).getEmail();
     }
 
     /**
@@ -135,7 +122,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public void setEmail(String email) {
-        (CrowdControlApplication.aUser).setEmail(email);
+        ((ParseUser) parseObject).setEmail(email);
     }
 
     /**
@@ -145,7 +132,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public String getPhone() {
-        return (String) CrowdControlApplication.aUser.get(phoneKey);
+        return parseObject.getString(phoneKey);
     }
 
     /**
@@ -155,154 +142,16 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public void setPhone(String phone) {
-        CrowdControlApplication.aUser.put(phoneKey, phone);
+        parseObject.put(phoneKey, phone);
     }
 
-
     /**
-     * Attempts to save the model to Parse synchronously. This is a blocking
-     * function and thus should never be used on the main thread.
+     * Gets the {@link ParseUserProfileModel} object linked to this {@link ParseUserModel} object.
      *
-     * @throws Exception If an exception is thrown by Parse, it will be passed
-     *                   on to this function's caller.
+     * @return The {@link ParseUserProfileModel} linked to this model.
      */
     @Override
-    public void save() throws ParseException {
-        CrowdControlApplication.aUser.signUp();
-    }
-
-    /**
-     * Attempts to save the model to Parse asynchronously and passes control
-     * back to the main thread by using the object passed as a parameter to this
-     * function.
-     *
-     * @param callback The callback object to pass control to once the operation
-     *                 is complete. If no object is provided (or null is given),
-     *                 no callback will be executed.
-     */
-    public void signUpInBackground(final SaveCallback callback) {
-        final BaseModel model = this;
-//        ((ParseUser) parseObject).signupInBackground(new com.parse.SaveCallback(e) {
-//            @Override
-//            public void done(ParseException e) {
-//                if (callback != null) {
-//                    callback.doneSavingModel(model, e);
-//                }
-//            }
-//        });
-        ( CrowdControlApplication.aUser).signUpInBackground();
-    }
-
-    public void signUp() throws ParseException {
-        CrowdControlApplication.aUser.signUp();
-    }
-
-    /**
-     * Set all of the information for a User
-     *
-     * @param email The new email address to assign to the user.
-     * @param password The new password being assigned to the user.
-     * @param phone The new phone number to assign to the user.
-     */
-    public void setAllUserData ( String email, String password, String phone )
-    {
-        setEmail(email);
-        setUsername(email);
-        setPassword(password);
-        setPhone(phone);
-    }
-
-    /**
-     * Logs into a given user and sets the current user for future recovery for auto loggin
-     *
-     * @param email The new email address to assign to the user.
-     * @param password The new password being assigned to the user.
-     * @param logInCallback This is the code that is run when this background task finishes
-     */
-    public void logIntoParseUser ( String email, String password, LogInCallback logInCallback )
-    {
-         CrowdControlApplication.aUser.logInInBackground(email, password, logInCallback);
-    }
-
-    /**
-     * Removes the current log in user
-     */
-    public void logOutOfParseUser ()
-    {
-        ParseUser.logOut();
-    }
-
-    /**
-     * returns the ID of the user in the parse database
-     *
-     * @return userDatabaseIDKey
-     */
-    public String getUserDatabaseID() { return (String) CrowdControlApplication.aUser.get(userDatabaseIDKey);}
-
-    /**
-     * Adds a pointer to the public user information
-     *
-     * @param displayUser holder for the public user information
-     */
-    public void setDisplayUser( ParseObject displayUser)
-    {
-        CrowdControlApplication.aUser.put(displayUserIDKey, displayUser);
-    }
-
-    /**
-     * checks the local datastore to find the currently logged in user
-     */
-    public void getCurrentUser()
-    {
-        CrowdControlApplication.aUser = ParseUser.getCurrentUser();
-    }
-
-    /**
-     * checks local data with the data on parse and grabs the public user data
-     */
-    public void fetchProfile( )
-    {
-        CrowdControlApplication.aUser.getParseObject("CCUser")
-                .fetchIfNeededInBackground(new GetCallback<ParseObject>() {
-                    @Override
-                    public void done(ParseObject profile, ParseException e) {
-                        if (e == null) {
-                            CrowdControlApplication.aProfile = profile;
-                        }
-                    }
-                });
-    }
-
-    /**
-     * updates user information from the parse database
-     */
-    public void updateUser() {
-        CrowdControlApplication.aUser.fetchInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject object, ParseException e) {
-                if( e == null) {
-                    CrowdControlApplication.aUser = (ParseUser) object;
-                    fetchProfile();
-                }
-            }
-        });
-    }
-
-    /**
-     * Sets the username of the user
-     *
-     * @param username given username(actually is email address for parse)
-     */
-    public void setUsername(String username) {
-        CrowdControlApplication.aUser.setUsername(username);
-    }
-
-    /**
-     * sets the password
-     *
-     * @param password given user password
-     */
-    public void setPassword(String password) {
-        CrowdControlApplication.aUser.setPassword(password);
+    public ParseUserProfileModel getProfile() {
+        return userProfileModel;
     }
 }

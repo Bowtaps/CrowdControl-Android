@@ -14,17 +14,11 @@ public interface UserModel extends BaseModel {
 
     /**
      * Gets the username for the user. This value should not be changed, as it
-     * is set at creation time and is a unique identifier for this object.
+     * is set at creation time and is used as a unique identifier for this user.
      *
      * @return The user's unique username.
      */
     public String getUsername();
-
-
-    // Get Methods
-    public String getObjectID();
-    public String getUserName();
-    public Object getAuthData();
 
     /**
      * Gets whether the user has verified their email address with the service.
@@ -62,48 +56,10 @@ public interface UserModel extends BaseModel {
     public void setPhone(String phone);
 
     /**
-     * Set all of the information for a User
+     * Gets the {@link UserProfileModel} object linked to this {@link UserModel} object.
      *
-     * @param email The new email address to assign to the user.
-     * @param password The new password being assigned to the user.
-     * @param phone The new phone number to assign to the user.
+     * @return The {@link UserProfileModel} linked to this model.
      */
-    public void setAllUserData ( String email, String password, String phone );
-
-    /**
-     * Log a user into parse
-     *
-     * @param email The new email address to assign to the user.
-     * @param password The new password being assigned to the user.
-     */
-    public void logIntoParseUser ( String email, String password, LogInCallback logInCallback);
-
-    /**
-     * Removes the current log in user
-     */
-    public void logOutOfParseUser ();
-
-    /**
-     * Adds a pointer to the public user information
-     *
-     * @param displayUser holder for the public user information
-     */
-    public void setDisplayUser( ParseObject displayUser);
-
-    /**
-     * checks the local datastore to find the currently logged in user
-     */
-    public void getCurrentUser();
-
-    /**
-     * checks local data with the data on parse and grabs the public user data
-     */
-    public void fetchProfile( );
-
-    /**
-     * updates userinformation from the parse database
-     */
-    public void updateUser();
-
+    public UserProfileModel getProfile();
 
 }
