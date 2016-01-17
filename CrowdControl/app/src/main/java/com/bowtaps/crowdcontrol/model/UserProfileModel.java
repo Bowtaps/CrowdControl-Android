@@ -32,18 +32,4 @@ public interface UserProfileModel extends BaseModel {
      */
     public void setDisplayName(String displayName);
 
-    /**
-     *  returns the id of public user profile
-     *
-     *  @return displayUserIDKey
-     */
-    public String getDisplayDatabaseID();
-
-    /**
-     * adds a pointer back to the private user information
-     *
-     * @param inheritedUser
-     */
-    public void setInheritedUser( ParseUser inheritedUser);
-
 }
