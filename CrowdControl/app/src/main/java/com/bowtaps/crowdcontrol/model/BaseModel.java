@@ -74,7 +74,7 @@ public interface BaseModel {
      *                 is complete. If no object is provided (or null is given),
      *                 then nothing will happen after the object has been saved.
      */
-    public void saveInBackground(SaveCallback callback);
+    public void saveInBackground(final SaveCallback callback);
 
     /**
      * Loads this object from storage. This is a blocking function, so care
@@ -97,7 +97,7 @@ public interface BaseModel {
      *                 then nothing will happen after the object has been
      *                 loaded.
      */
-    public void loadInBackground(LoadCallback callback);
+    public void loadInBackground(final LoadCallback callback);
 
 
 

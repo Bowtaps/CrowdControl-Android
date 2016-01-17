@@ -49,7 +49,7 @@ public interface GroupModel extends BaseModel {
      *
      * @return An {@link ArrayList} of {@link UserProfileModel} objects that belong to the group.
      */
-    public ArrayList<? extends UserProfileModel> getGroupMembers();
+    public List<? extends UserProfileModel> getGroupMembers();
 
     /**
      * Adds a new member to the group.

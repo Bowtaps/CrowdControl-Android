@@ -115,7 +115,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      * @return An {@link ArrayList} of {@ParseUserProfileModel} objects that belong to the group.
      */
     @Override
-    public ArrayList<ParseUserProfileModel> getGroupMembers() {
+    public List<ParseUserProfileModel> getGroupMembers() {
         return new ArrayList<ParseUserProfileModel>(members);
     }
 
