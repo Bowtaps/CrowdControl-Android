@@ -69,7 +69,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      * @param object The {@link ParseUser} object to use as a handle.
      */
     public ParseUserModel(ParseUser object) {
-        this(object, new ParseUserProfileModel());
+        this(object, null);
     }
 
     /**
@@ -78,19 +78,21 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      *
      * @param object The {@link ParseUser} object to use as a handle.
      * @param profile The {@link ParseUserProfileModel} object that is associated with this model.
+     *                If this value is {@code null}, then one will be provided if possible.
      */
     public ParseUserModel(ParseUser object, ParseUserProfileModel profile) {
         super(object);
 
-        // Verify arguments
+        // Resolve a potentially missing profile
         if (profile == null) {
-            throw new IllegalArgumentException("profile cannot be null");
-        }
+            ParseObject profileObject = object.getParseObject(profileKey);
+            if (profileObject == null) {
+                profile = new ParseUserProfileModel();
+                object.put(profileKey, profile.parseObject);
+            } else {
+                profile = new ParseUserProfileModel(profileObject);
+            }
 
-        // Set user's profile to the provided object
-        ParseObject profileObject = object.getParseObject(profileKey);
-        if (profileObject == null || !profile.equals(profileObject)) {
-            parseObject.put(profileKey, profile.parseObject);
         }
 
         userProfileModel = profile;
