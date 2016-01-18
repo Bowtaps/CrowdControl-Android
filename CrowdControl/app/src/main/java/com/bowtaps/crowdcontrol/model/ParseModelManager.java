@@ -1,17 +1,45 @@
 package com.bowtaps.crowdcontrol.model;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
 /**
+ * Parse implementation of the {@link ModelManager} interface.
+ *
  * @author Daniel Andrus
  * @since 2016-01-17
  */
 public class ParseModelManager implements ModelManager {
 
+    /**
+     * An internal reference to the current logged in user. May be {@code null} if no user is logged
+     * in.
+     */
     private ParseUserModel currentUser;
+
+
+
+    /**
+     * The default constructor for this class. Requires a context to initialize the Parse API under,
+     * as well as application identifiers and client keys for authentication and verification.
+     *
+     * @param context The context under which to initialize the Parse API.
+     * @param applicationId The identification code for the application to use when identifying with
+     *                      Parse.
+     * @param clientKey The client key for authenticating with Parse.
+     */
+    public ParseModelManager(Context context, String applicationId, String clientKey) {
+        currentUser = null;
+
+        Parse.enableLocalDatastore(context);
+        Parse.initialize(context, applicationId, clientKey);
+    }
+
+
 
     @Override
     public ParseUserModel logInUser(String username, String password) throws ParseException {
@@ -139,7 +167,7 @@ public class ParseModelManager implements ModelManager {
     }
 
     @Override
-    public UserModel getCurrentUser() {
+    public ParseUserModel getCurrentUser() {
 
         // Verify property is in sync with Parse
         if ((currentUser == null && ParseUser.getCurrentUser() != null)
