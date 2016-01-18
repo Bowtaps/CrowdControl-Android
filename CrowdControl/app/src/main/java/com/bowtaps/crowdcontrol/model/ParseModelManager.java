@@ -7,6 +7,9 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Parse implementation of the {@link ModelManager} interface.
  *
@@ -20,6 +23,8 @@ public class ParseModelManager implements ModelManager {
      * in.
      */
     private ParseUserModel currentUser;
+
+    private ParseGroupModel currentGroup;
 
 
 
@@ -191,5 +196,144 @@ public class ParseModelManager implements ModelManager {
         currentUser = null;
 
         return true;
+    }
+
+    @Override
+    public List<ParseGroupModel> fetchAllGroups() throws Exception {
+        return ParseGroupModel.getAll();
+    }
+
+    @Override
+    public void fetchAllGroupsInBackground(final BaseModel.FetchCallback callback) {
+
+        // Define and execute an AsyncTask to perform the background fetch
+        new AsyncTask<Object, Void, List<ParseGroupModel>>() {
+
+            private BaseModel.FetchCallback callback;
+            private ParseException exception;
+
+            @Override
+            public void onPreExecute() {
+
+                // Initialize variables
+                exception = null;
+            }
+
+            @Override
+            public List<ParseGroupModel> doInBackground(final Object ... params) {
+
+                // Extract parameters to convenience variables
+                this.callback = (BaseModel.FetchCallback) params[0];
+
+                // Attempt fetch from storage
+                List<ParseGroupModel> result = null;
+                try {
+                    result = ParseGroupModel.getAll();
+                } catch (ParseException ex) {
+                    exception = ex;
+                }
+
+                return result;
+            }
+
+            @Override
+            public void onPostExecute(List<ParseGroupModel> result) {
+
+                // Execute callback if one is provided
+                if (callback != null) {
+                    callback.doneFetchingModels(result, exception);
+                }
+            }
+        }.execute(callback);
+    }
+
+    @Override
+    public GroupModel getCurrentGroup() {
+        return currentGroup;
+    }
+
+    @Override
+    public void setCurrentGroup(GroupModel group) {
+
+        // Verify parameter
+        if (group == null) {
+            currentGroup = null;
+        } else if (group instanceof ParseGroupModel) {
+            currentGroup = (ParseGroupModel) group;
+        } else {
+            throw new IllegalArgumentException("group parameter must be an instance of ParseGroupModel");
+        }
+    }
+
+    @Override
+    public GroupModel fetchCurrentGroup() throws Exception {
+
+        // Verify user is logged in
+        ParseUserModel userModel = getCurrentUser();
+        if (userModel != null) {
+            setCurrentGroup(ParseGroupModel.getGroupContainingUser(userModel.getProfile()));
+        } else {
+            setCurrentGroup(null);
+        }
+
+        return getCurrentGroup();
+    }
+
+    @Override
+    public void fetchCurrentGroupInBackground(final BaseModel.LoadCallback callback) {
+
+        // Verify user is logged in
+        ParseUserModel userModel = getCurrentUser();
+        if (userModel == null) {
+            setCurrentGroup(null);
+
+            // Return control to calling thread
+            if (callback != null) {
+                callback.doneLoadingModel(getCurrentGroup(), null);
+            }
+            return;
+        }
+
+        // Define and execute an AsyncTask to perform the background fetch
+        new AsyncTask<Object, Void, ParseGroupModel>() {
+
+            private BaseModel.LoadCallback callback;
+            private ParseException exception;
+
+            @Override
+            public void onPreExecute() {
+
+                // Initialize variables
+                exception = null;
+            }
+
+            @Override
+            public ParseGroupModel doInBackground(final Object ... params) {
+
+                // Extract parameters to convenience variables
+                ParseUserProfileModel profileModel = (ParseUserProfileModel) params[0];
+                this.callback = (BaseModel.LoadCallback) params[1];
+
+                ParseGroupModel result = null;
+
+                // Attempt fetch from storage
+                try {
+                    result = ParseGroupModel.getGroupContainingUser(profileModel);
+                } catch (ParseException ex) {
+                    exception = ex;
+                }
+
+                return result;
+            }
+
+            @Override
+            public void onPostExecute(ParseGroupModel result) {
+
+                // Execute callback if one is provided
+                if (callback != null) {
+                    callback.doneLoadingModel(result, exception);
+                }
+            }
+        }.execute(userModel.getProfile(), callback);
     }
 }

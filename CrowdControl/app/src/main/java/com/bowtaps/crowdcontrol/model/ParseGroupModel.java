@@ -112,7 +112,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     /**
      * Gets the list of users associated with the current group.
      *
-     * @return An {@link ArrayList} of {@ParseUserProfileModel} objects that belong to the group.
+     * @return A {@link List} of {@ParseUserProfileModel} objects that belong to the group.
      */
     @Override
     public List<ParseUserProfileModel> getGroupMembers() {
@@ -258,5 +258,52 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
                 }
             }
         });
+    }
+
+
+
+    public static List<ParseGroupModel> getAll() throws ParseException {
+        List<ParseGroupModel> result = new ArrayList<ParseGroupModel>();
+
+        // Construct and execute query
+        ParseQuery parseQuery = new ParseQuery(tableName);
+        List<ParseObject> queryResult = parseQuery.find();
+
+        // Create model objects for query results
+        for (ParseObject parseObject : queryResult) {
+            result.add(new ParseGroupModel(parseObject));
+        }
+
+        return result;
+    }
+
+    public static ParseGroupModel getGroupContainingUser(UserProfileModel profile) throws ParseException {
+        ParseGroupModel result = null;
+
+        // Verify parameters
+        if (profile == null || !(profile instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("profile must be instance of ParseUserProfileModel");
+        }
+
+        // Construct and execute query
+        ParseQuery groupQuery = new ParseQuery(tableName);
+        List<ParseObject> groupResult = groupQuery.find();
+
+        for (ParseObject parseGroup : groupResult) {
+
+            // Construct and execute query for group members
+            ParseQuery memberQuery = parseGroup.getRelation(groupMembersKey).getQuery();
+            memberQuery.whereEqualTo("objectId", ((ParseUserProfileModel) profile).getId());
+            memberQuery.setLimit(1);
+            List<ParseObject> memberResult = memberQuery.find();
+
+            // Search members column for matches with given user profile
+            if (memberResult.size() > 0) {
+                result = new ParseGroupModel(parseGroup);
+                break;
+            }
+        }
+
+        return result;
     }
 }

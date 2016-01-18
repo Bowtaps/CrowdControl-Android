@@ -1,5 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
+import java.util.List;
+
 /**
  * A class dedicated for providing model functionality that does not belong in any individual
  * model, such as logging users in, signing up new users, or getting the current user.
@@ -20,4 +22,16 @@ public interface ModelManager {
     public UserModel getCurrentUser();
 
     public Boolean logOutCurrentUser() throws Exception;
+
+    public List<? extends GroupModel> fetchAllGroups() throws Exception;
+
+    public void fetchAllGroupsInBackground(final BaseModel.FetchCallback callback);
+
+    public GroupModel getCurrentGroup();
+
+    public void setCurrentGroup(GroupModel group);
+
+    public GroupModel fetchCurrentGroup() throws Exception;
+
+    public void fetchCurrentGroupInBackground(final BaseModel.LoadCallback callback);
 }

@@ -1,6 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * The base model interface, providing access to core model functionality,
@@ -141,5 +142,26 @@ public interface BaseModel {
          *           exception object if an error occurred.
          */
         public void doneLoadingModel(BaseModel object, Exception ex);
+    }
+
+    /**
+     * The callback interface that should be used for asynchornous loading operations that can
+     * return multiple objects as a result.
+     */
+    public interface FetchCallback {
+
+        /**
+         * This method is called after completion of an asynchronous background fetch on a set
+         * of models. It accepts the fetched models and an exception object should something go
+         * wrong.
+         *
+         * @param results the results of the asynchronous fetch operation. If the operation was
+         *                a success but no objects match the fetch critera, this list will be
+         *                empty.
+         * @param ex The exception that occurred, if any. This value will be {@code null} if the
+         *           operation was successful and will be a valid {@link Exception} if an error
+         *           occurred.
+         */
+        public void doneFetchingModels(List<? extends BaseModel> results, Exception ex);
     }
 }
