@@ -58,10 +58,6 @@
             android:label="@string/title_activity_group_join" >
         </activity>
         <activity
-            android:name=".CreateAccountActivity"
-            android:label="@string/title_activity_create_account" >
-        </activity>
-        <activity
             android:name=".SignupActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName=".WelcomeActivity" >

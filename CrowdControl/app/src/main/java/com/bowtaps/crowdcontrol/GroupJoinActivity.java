@@ -34,6 +34,12 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     private CustomParseAdapter mGroupListAdapter;
     private ListView mGroupListView;
 
+    /*
+     *  uses the quarry adapter (@link CustomParseAdapter) to show the Group data from Parse
+     *  In a list view
+     *
+     *  @see CustomParseAdapter
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +70,9 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         mButtonSettings.setOnClickListener(this);
     }
 
+    /*
+     *  Creates the menu
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -71,6 +80,12 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         return true;
     }
 
+    /*
+     *  Determines which item in the list view is selected
+     *
+     *  @see CustomParseAdapter
+     *  @see GroupNavigationActivity
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -86,7 +101,10 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         return super.onOptionsItemSelected(item);
     }
 
-
+    /*
+     *  Determines which button was pressed and launches the code related to
+     *  that button
+     */
     @Override
     public void onClick(View view) {
         // Handles clicks on items in view
@@ -107,8 +125,12 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    /*
+     *  Grabs the click in the list view and then Joins the Group that was clicked on
+     */
     @Override
     public void onItemClick(AdapterView parent, View view, int position, long id){
+        //TODO request to join group instead of just joining it
         CrowdControlApplication.aGroup = mGroupListAdapter.getItem(position);
         ParseGroupModel parseGroupModel = new ParseGroupModel(mGroupListAdapter.getItem(position));
         parseGroupModel.AddNewMember(CrowdControlApplication.aProfile);
@@ -117,7 +139,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void doneSavingModel(BaseModel object, Exception ex) {
                 //TODO catch ex for error checking
-                finish();
+                //finish();
             }
         });
 
@@ -135,10 +157,21 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         launchCreateGroupActivity();
     }
 
+    /*
+     *  Code ran if settings button is pushed. Launches the settings
+     *  activity
+     *
+     *  @see SettingsActivity
+     */
     private void onSettingsButtonClick(Button button) {
         launchSettingsActivity();
     }
 
+    /*
+     *  Launches the (@Link SettingsActivity)
+     *
+     *  @see SettingsActivity
+     */
     private void launchSettingsActivity() {
         Intent myIntent = new Intent(this, SettingsActivity.class);
         this.startActivity(myIntent);
@@ -154,6 +187,11 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         this.startActivity(myIntent);
     }
 
+    /*
+     *  Launches the (@Link GroupNavigationActivity)
+     *
+     *  @see GroupNavigationActivity
+     */
     private void launchGroupNavigationActivity() {
         Intent myIntent = new Intent(this, GroupNavigationActivity.class);
         this.startActivity(myIntent);

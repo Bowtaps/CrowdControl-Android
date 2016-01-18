@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bowtaps.crowdcontrol.model.ParseUserModel;
+import com.bowtaps.crowdcontrol.model.ParseUserProfileModel;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -51,18 +52,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private ParseUser mUser;
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
-
     // UI references.
-    private AutoCompleteTextView mUserNameView;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
 
+    /**
+     * Initiallizes the Views from the (@Link activity_login.xml) and listens for
+     * a log in attempt
+     *
+     * @param savedInstanceState saves anything typed into the user input text boxes
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,35 +126,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
                         }
                     });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
         }
         return false;
     }
 
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
-    }
-
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
+     * Attempts log into an existing account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -194,21 +177,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView.requestFocus();
         } else {
 
-//            final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
-//            dialog.setMessage(getString(R.string.com_parse_ui_progress_dialog_text));
-//            dialog.show();
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            //showProgress(true);
-//            mAuthTask = new UserLoginTask( email, password);
-//            mAuthTask.execute((Void) null);
-//
-//            mEmailView.setError("Email and Password Don't Match");
-//            mPasswordView.setError("Email and Password Don't Match");
-//
-//            focusView = mEmailView;
-//            focusView.requestFocus();
-            mUser.logInInBackground(email, password, new LogInCallback(){
+            CrowdControlApplication.aUser = new ParseUser();
+            final ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
+            //ParseUserProfileModel parseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
+
+
+            parseUserModel.logIntoParseUser(email, password, new LogInCallback(){
                 @Override
                 public void done(ParseUser user, ParseException e) {
 //                    dialog.dismiss();
@@ -221,25 +195,37 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         focusView = mEmailView;
                         focusView.requestFocus();
                     } else {
+                        // sets user from the call back function???
+                        CrowdControlApplication.aUser = user;
+                        //fetch profile after login
+                        parseUserModel.updateUser();
+
+
                         // Start an intent for the dispatch activity
                         launchGroupJoinActivity();
+                        finish();
                     }
                 }
             });
         }
     }
 
-
-    /*
-     *  Determine the validity of the email
+    /**
+     * Determine the validity of the email
+     *
+     * @param email entered email
+     * @return boolean for if the string is valid
      */
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return email.contains("@") || email.contains(".");
     }
 
-    /*
-     *  Determine the validity of the password
+    /**
+     * Determines the validity of the password
+     *
+     * @param password the enetered password
+     * @return boolean, true or false if password valid
      */
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
@@ -248,6 +234,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     /**
      * Shows the progress UI and hides the login form.
+     * Used for backwards compatability
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
@@ -282,6 +269,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    /**
+     * Uses a click listener to determine if the user has entered ay data into the login form
+     *
+     * @param i the box entry data is collected from
+     * @param bundle the actual data in the box
+     * @return  The data from the entry box
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
@@ -299,6 +293,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
+    /**
+     * interates though the entry boxes and grabs the form data
+     * finally adds the entered email into the auto complete for later use
+     *
+     * @param cursorLoader loads data from a given cursor
+     * @param cursor clicks enter by user into form
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         List<String> emails = new ArrayList<>();
@@ -311,6 +312,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         addEmailsToAutoComplete(emails);
     }
 
+    /**
+     * resets loader for another attempt
+     */
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
@@ -340,70 +344,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
-    }
-
-    /**
-     * Represents an asynchronous login task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask( String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-                ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
-                parseUserModel.logIntoParseUser(mEmail, mPassword, new LogInCallback() {
-                    @Override
-                    public void done(ParseUser user, ParseException e) {
-                        if (user != null) {
-                            // If user exist and authenticated, send user to GroupJoinActivity
-                            Intent intent = new Intent(
-                                    LoginActivity.this,
-                                    GroupJoinActivity.class);
-                            startActivity(intent);
-                            Toast.makeText(getApplicationContext(),
-                                    "Successfully Logged in",
-                                    Toast.LENGTH_LONG).show();
-                            finish();
-                        } else {
-                            Toast.makeText(
-                                    getApplicationContext(),
-                                    "No such user exist, please signup",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
     }
 
     /**

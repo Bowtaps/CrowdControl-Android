@@ -18,6 +18,14 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
     Button mLogoutButton;
 
+    /**
+     *
+     * @param savedInstanceState
+     *
+     * Sets up the SettingsActivity page and initializes the page elements. Also sets the listener
+     * for clicks and currently has a "dummy" fab element that is currently included for example,
+     * and to be repurposed later.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +50,13 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
         });
     }
 
+    /**
+     *
+     * @param view
+     *
+     * Handles the click event depending on the element that was clicked on. Currently only the
+     * Logout button is clickable.
+     */
     @Override
     public void onClick(View view) {
         // Handles clicks on items in view
@@ -58,10 +73,20 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
         }
     }
 
+    /**
+     *
+     * @param view
+     *
+     * Calls the launchLogoutActivity() method.
+     */
     private void onLogoutButtonClick(Button view) {
         launchLogoutActivity();
     }
 
+    /**
+     * Retrieves the current user and logs them out. The intent is then set to direct to the SignupActivity
+     * when the user is logged out.
+     */
     //TODO: Should make sure to leave a group first before logging out.
     private void launchLogoutActivity() {
         ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);

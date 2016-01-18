@@ -1,12 +1,19 @@
 package com.bowtaps.crowdcontrol.model;
+import android.util.Log;
+
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
+import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import java.util.List;
 
 /**
  * Created by 1959760 on 10/24/2015.
@@ -76,6 +83,12 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
         return ((ParseObject) parseObject).getParseUser(groupMembersKey);
     }
 
+    /**
+     * puts the new group information into the group application variable
+     *
+     * @param groupName entered group name
+     * @param groupDescription entered group description
+     */
     public void SetGroupData(String groupName, String groupDescription) {
 
         // Add Group info into the single global instance of group
@@ -90,12 +103,34 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel{
 
     }
 
+    /**
+     * adds a new member to the active group
+     *
+     * @param userProfile - the new group member
+     */
     public void AddNewMember( ParseObject userProfile ) {
         //TODO this isn't catching empty profiles!!!!
-        if ( CrowdControlApplication.aProfile == null ) {
+        if ( CrowdControlApplication.aProfile == null || CrowdControlApplication.aProfile.getObjectId() == null ) {
             throw(new NullPointerException());
         }
         ParseRelation relation = CrowdControlApplication.aGroup.getRelation("GroupMembers");
-        relation.add( userProfile );
+        relation.add(userProfile);
+    }
+
+    public void LeaveGroup( ParseObject userProfile ) {
+        if (CrowdControlApplication.aUser == null ){
+            throw(new NullPointerException());
+        }
+
+        //ParseQuery<ParseObject> query = ParseQuery.getQuery("GroupMemebers");
+        //String profileId = userProfile.getObjectId();
+        //query.whereEqualTo("objectId", profileId);
+
+        ParseRelation<ParseObject> relation = parseObject.getRelation("GroupMembers");
+        relation.remove(userProfile);
+
+        parseObject.saveInBackground();
+        //TODO: Ideally, we should be error checking this instead of just trusting it.
+
     }
 }

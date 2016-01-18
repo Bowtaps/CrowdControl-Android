@@ -2,6 +2,7 @@ package com.bowtaps.crowdcontrol.model;
 
 import com.google.android.gms.vision.barcode.Barcode;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.util.List;
@@ -43,5 +44,19 @@ public interface GroupModel extends BaseModel {
      *         group.
      */
     public void SetGroupData(String groupDescription, String groupName);
+
+    /**
+     * adds a new member to the active group
+     *
+     * @param userProfile - the new group member
+     */
+    public void AddNewMember( ParseObject userProfile );
+
+    /**
+     * Removes a user from a group
+     *
+     * @param userProfile - user being removed
+     */
+    public void LeaveGroup( ParseObject userProfile );
 
 }

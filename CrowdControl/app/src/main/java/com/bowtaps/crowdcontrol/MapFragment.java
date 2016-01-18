@@ -42,16 +42,34 @@ public class MapFragment extends Fragment {
     }
 
 
+    /**
+     * Requires empty public constructor
+     */
     public MapFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * resumes any saved instant
+     *
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
 
+    /**
+     * starts the View
+     *
+     * @param inflater  Grabs the Layout
+     * @param container Container for the view
+     * @param savedInstanceState    resumed instant state
+     * @return  returns a view to the parent Activity
+     *
+     * @see GroupNavigationActivity
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
