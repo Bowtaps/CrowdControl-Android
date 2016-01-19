@@ -36,6 +36,7 @@ import android.widget.TextView;
 import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.bowtaps.crowdcontrol.model.ParseUserProfileModel;
+import com.bowtaps.crowdcontrol.model.UserModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -446,7 +447,9 @@ public class SignupActivity extends AppCompatActivity
         protected Boolean doInBackground(Void... params) {
 
             try {
-                CrowdControlApplication.getInstance().getModelManager().logInUser(mUserName, mPassword);
+                UserModel userModel = CrowdControlApplication.getInstance().getModelManager().createUser(mEmail, mEmail, mPassword);
+                userModel.getProfile().setDisplayName(mUserName);
+                userModel.getProfile().save();
                 return true;
             } catch (Exception ex) {
                 return false;
