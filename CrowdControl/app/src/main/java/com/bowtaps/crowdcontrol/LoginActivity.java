@@ -180,17 +180,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView.requestFocus();
         } else {
 
-            CrowdControlApplication.getInstance().getModelManager().createUserInBackground(email, email, password, new BaseModel.SaveCallback() {
+            CrowdControlApplication.getInstance().getModelManager().logInUserInBackground(email, password, new BaseModel.LoadCallback() {
                 @Override
-                public void doneSavingModel(BaseModel object, Exception ex) {
+                public void doneLoadingModel(BaseModel object, Exception ex) {
 
                     // Verify operation was successful
                     if (ex != null) {
 
                         // Display error prompts and select username again
-                        mEmailView.setError("Username and password did not match.");
                         mPasswordView.setError("Username and password did not match.");
-                        mEmailView.requestFocus();
+                        mPasswordView.requestFocus();
                     } else {
 
                         // Launch new activity on success

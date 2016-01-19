@@ -50,7 +50,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      * Internal cache of group members. This list is populated when {@link #load()} or
      * {@link #loadInBackground(LoadCallback)} is called.
      */
-    private ArrayList<ParseUserProfileModel> members;
+    private List<ParseUserProfileModel> members;
 
 
     /**
@@ -69,6 +69,8 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      */
     public ParseGroupModel(ParseObject object) {
         super(object);
+
+        members = new ArrayList<ParseUserProfileModel>();
     }
 
     /**

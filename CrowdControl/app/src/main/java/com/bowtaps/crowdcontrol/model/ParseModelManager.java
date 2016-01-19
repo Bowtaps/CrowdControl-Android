@@ -57,7 +57,12 @@ public class ParseModelManager implements ModelManager {
 
         // Create new model using the Parse user
         ParseUserModel userModel = new ParseUserModel(parseUser);
-        userModel.load();
+        if (userModel.getProfile().wasModified()) {
+            userModel.getProfile().save();
+            userModel.save();
+        } else {
+            userModel.getProfile().load();
+        }
 
         return userModel;
     }
@@ -116,9 +121,9 @@ public class ParseModelManager implements ModelManager {
         userModel.setEmail(email);
 
         // Try saving everything
+        userModel.getProfile().save();
         ((ParseUser) userModel.parseObject).signUp();
         userModel.save();
-        userModel.getProfile().save();
 
         // Return user once everything is saved
         return userModel;

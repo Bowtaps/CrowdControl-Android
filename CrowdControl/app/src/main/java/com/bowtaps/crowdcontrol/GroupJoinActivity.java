@@ -16,6 +16,7 @@ import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.UserModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -49,6 +50,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_group_join);
 
         // Initialize list adapter for mGroupListView
+        mGroupList = new ArrayList<GroupModel>();
         mGroupListAdapter = new GroupModelAdapter(this, mGroupList);
 
         // Initialize ListView and set initial view to mMainAdapter
@@ -148,25 +150,39 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         //TODO request to join group instead of just joining it
 
         // Get the selected group
-        GroupModel groupModel = mGroupListAdapter.getItem(position);
-        UserModel userModel = CrowdControlApplication.getInstance().getModelManager().getCurrentUser();
+        final GroupModel groupModel = mGroupListAdapter.getItem(position);
+        final UserModel userModel = CrowdControlApplication.getInstance().getModelManager().getCurrentUser();
 
-        if (!groupModel.addGroupMember(userModel.getProfile())) {
-            Log.d(TAG, "Unable to add user to group. User may already be member of group.");
-        }
-
-        groupModel.saveInBackground(new BaseModel.SaveCallback() {
+        // First load members from current group
+        groupModel.loadInBackground(new BaseModel.LoadCallback() {
             @Override
-            public void doneSavingModel(BaseModel object, Exception ex) {
+            public void doneLoadingModel(BaseModel object, Exception ex) {
 
                 // Verify operation was successful
-                if (ex != null) {
-                    Log.d(TAG, "Unable to save group model");
+                if (object == null || ex != null) {
+                    Log.d(TAG, "Unable to load group model");
                     return;
                 }
 
-                CrowdControlApplication.getInstance().getModelManager().setCurrentGroup((GroupModel) object);
-                launchGroupNavigationActivity();
+                if (!groupModel.addGroupMember(userModel.getProfile())) {
+                    Log.d(TAG, "Unable to add user to group. User may already be member of group.");
+                }
+
+                // After changing the model, attempt to save
+                groupModel.saveInBackground(new BaseModel.SaveCallback() {
+                    @Override
+                    public void doneSavingModel(BaseModel object, Exception ex) {
+
+                        // Verify operation was successful
+                        if (ex != null) {
+                            Log.d(TAG, "Unable to save group model");
+                            return;
+                        }
+
+                        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup((GroupModel) object);
+                        launchGroupNavigationActivity();
+                    }
+                });
             }
         });
     }
