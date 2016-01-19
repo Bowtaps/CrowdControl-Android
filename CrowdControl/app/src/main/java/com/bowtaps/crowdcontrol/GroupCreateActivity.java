@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.bowtaps.crowdcontrol.model.BaseModel;
+import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.ParseGroupModel;
 
 /*
@@ -222,8 +223,9 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         private final String mGroupDescription;
 
 
-        GroupCreateTask(String groupName, String groupDescription) {
-            //Can add more attributes later
+        public GroupCreateTask(String groupName, String groupDescription) {
+
+            // Can add more attributes later
             mGroupName = groupName;
             mGroupDescription = groupDescription;
         }
@@ -235,28 +237,21 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            ParseGroupModel parseGroupModel = new ParseGroupModel(CrowdControlApplication.aGroup);
+            GroupModel groupModel = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
 
             //sets info to single global instance of group
-            parseGroupModel.SetGroupData(mGroupName, mGroupDescription);
+            groupModel.setGroupName(mGroupName);
+            groupModel.setGroupDescription(mGroupDescription);
+            groupModel.addGroupMember(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
 
             try {
-                parseGroupModel.addGroupMember(CrowdControlApplication.aProfile);
+                groupModel.save();
+                return true;
             }
-            catch (NullPointerException nullPointerE){
-                Log.d(TAG, "aProfile wasn't filled properly");
+            catch (Exception ex){
+                Log.d(TAG, "Unable to save new Group");
+                return false;
             }
-
-            parseGroupModel.saveInBackground(new BaseModel.SaveCallback() {
-                @Override
-                public void doneSavingModel(BaseModel object, Exception ex) {
-                //TODO catch ex for error checking
-                    finish();
-                }
-            });
-
-
-            return true;
         }
 
         @Override
@@ -265,8 +260,8 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             showProgress(false);
 
             if (success) {
-                finish();
                 launchGroupNavigationActivity();
+                finish();
             } else {
                 mGroupNameView.requestFocus();
             }

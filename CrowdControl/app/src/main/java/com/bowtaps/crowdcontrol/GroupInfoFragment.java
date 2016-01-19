@@ -2,12 +2,15 @@ package com.bowtaps.crowdcontrol;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bowtaps.crowdcontrol.model.BaseModel;
+import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.ParseGroupModel;
 import com.parse.ParseObject;
 
@@ -27,9 +30,11 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener 
 
     private String mText;
 
-    private ParseObject mGroup;
+    private GroupModel mGroup;
 
     Button mLeaveGroupButton;
+
+    private static final String TAG = GroupInfoFragment.class.getSimpleName();
 
     /**
      * Use this factory method to create a new instance of
@@ -77,8 +82,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mGroup = new ParseObject("Group");
-        mGroup = CrowdControlApplication.aGroup;
+        mGroup = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
         TextView GroupName;
         TextView GroupDescription;
 
@@ -88,8 +92,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener 
         ((TextView) v.findViewById(R.id.group_test)).setText(mText);
         GroupName = (TextView) v.findViewById(R.id.text_group_name);
         GroupDescription = (TextView) v.findViewById(R.id.text_group_description);
-        GroupName.setText(mGroup.get("GroupName").toString());
-        GroupDescription.setText(mGroup.get("GroupDescription").toString());
+        GroupName.setText(mGroup.getGroupName());
+        GroupDescription.setText(mGroup.getGroupDescription());
 
         // Get handles to Buttons
         mLeaveGroupButton = (Button) v.findViewById(R.id.leave_group_button);
@@ -125,11 +129,22 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener 
      */
     //TODO: Should make sure to leave a group first before logging out.
     private void launchLeaveGroupButtonClick() {
-        ParseGroupModel parseGroupModel = new ParseGroupModel(CrowdControlApplication.aGroup);
-        parseGroupModel.removeGroupMember(CrowdControlApplication.aProfile);
+        mGroup.removeGroupMember(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
 
-        getActivity().finish();
-        //Intent myIntent = new Intent(getActivity(), GroupJoinActivity.class);
-        //getActivity().startActivity(myIntent);
+        // Attempt to save change to group in background
+        mGroup.saveInBackground(new BaseModel.SaveCallback() {
+            @Override
+            public void doneSavingModel(BaseModel object, Exception ex) {
+
+                // Verify operation was a success
+                if (ex != null) {
+                    Log.d(TAG, "Unable to save group");
+                    return;
+                }
+
+                CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
+                getActivity().finish();
+            }
+        });
     }
 }

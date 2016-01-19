@@ -13,19 +13,46 @@ import com.bowtaps.crowdcontrol.model.GroupModel;
 import java.util.List;
 
 /**
+ * A subclass of an {@link ArrayAdapter} to be used to adapt a {@link List} of {@link GroupModel}
+ * objects for display in a {@link ListView}.
+ *
  * @author Daniel Andrus
  * @since 2016-01-18
  */
 public class GroupModelAdapter extends ArrayAdapter<GroupModel> {
 
-    public GroupModelAdapter(Context context, int resource) {
-        super(context, resource);
+    /**
+     * Class constructor. Instantiates a new {@link GroupModelAdapter} with no data.
+     *
+     * @param context The context for this adapter.
+     */
+    public GroupModelAdapter(Context context) {
+        super(context, 0);
     }
 
-    public GroupModelAdapter(Context context, int resource, List<GroupModel> items) {
-        super(context, resource, items);
+    /**
+     * Class constructor. Instantiates a new {@link GroupModelAdapter} and initializes it with an
+     * existing {@link List} of {@link GroupModel} objects to use as its data set.
+     *
+     * @param context The context for this adapter.
+     * @param items The data set for this adapter to use.
+     */
+    public GroupModelAdapter(Context context, List<GroupModel> items) {
+        super(context, 0, items);
     }
 
+    /**
+     * Builds and fills a view object that can be used to render an individual item in the data set.
+     *
+     * @param position The numerical index of the item in the data set to build the {@link View}
+     *                 for.
+     * @param convertView The existing {@link View} object to fill with data from the item at
+     *                    position. If this value is null, a new {@link View} will be instantiated
+     *                    and inflated.
+     * @param parent
+     *
+     * @return A {@link View} object ready for display in the {@link ListView}.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

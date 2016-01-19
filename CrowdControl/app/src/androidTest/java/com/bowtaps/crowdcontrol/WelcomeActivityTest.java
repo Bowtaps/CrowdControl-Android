@@ -31,8 +31,8 @@ public class WelcomeActivityTest {
         //TODO: retrieve local user from previous session,
         //assert that it is not null
         //OR that if it is null, it is intended to be null...
-        ParseUser parseUser = new ParseUser();
-        assertEquals(parseUser, CrowdControlApplication.aUser);
+        ParseUser parseUser = ParseUser.getCurrentUser();
+        assertEquals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser(), parseUser);
     }
 
     @After

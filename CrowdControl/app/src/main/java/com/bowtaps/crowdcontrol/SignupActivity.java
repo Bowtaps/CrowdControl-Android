@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,6 +55,8 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class SignupActivity extends AppCompatActivity
         implements LoaderCallbacks<Cursor>,
         View.OnClickListener{
+
+    private static final String TAG = SignupActivity.class.getSimpleName();
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -441,60 +444,13 @@ public class SignupActivity extends AppCompatActivity
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
-
-            // TODO: register the new account here.
-
-            CrowdControlApplication.aUser = new ParseUser();
-            ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
-            ParseUserProfileModel parseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
-
-            //todo phone number is hard coded
-            parseUserModel.setAllUserData(mEmail, mPassword, "605-877-1757");
             try {
-                parseUserModel.signUp();
-            } catch (ParseException e) {
-                e.printStackTrace();
-
+                CrowdControlApplication.getInstance().getModelManager().logInUser(mUserName, mPassword);
+                return true;
+            } catch (Exception ex) {
+                return false;
             }
-            parseUserProfileModel.setDisplayName(mUserName);
-            try {
-                parseUserProfileModel.save();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            parseUserModel.setDisplayUser(CrowdControlApplication.aProfile);
-
-            parseUserModel.saveInBackground(new BaseModel.SaveCallback() {
-                @Override
-                public void doneSavingModel(BaseModel object, Exception ex) {
-                    if (ex != null) {
-                        System.out.println(ex.getMessage());
-                    }
-                    //TODO ex error checking
-                    finish();
-                }
-            });
-
-            parseUserProfileModel.setInheritedUser(CrowdControlApplication.aUser);
-
-            parseUserProfileModel.saveInBackground(new BaseModel.SaveCallback() {
-                @Override
-                public void doneSavingModel(BaseModel object, Exception ex) {
-                    if( ex != null ) {
-                        System.out.println(ex.getMessage());
-                    }
-                    //TODO ex error checking
-                    finish();
-                }
-            });
-
-            //TODO add phone number
-
-            launchGroupJoinActivity();
-
-            return true;
         }
 
         /*
@@ -506,10 +462,10 @@ public class SignupActivity extends AppCompatActivity
             showProgress(false);
 
             if (success) {
+                launchGroupJoinActivity();
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                Log.d(TAG, "Unable to log in user");
             }
         }
 
