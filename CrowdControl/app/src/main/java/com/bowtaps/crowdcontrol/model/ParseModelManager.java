@@ -176,7 +176,7 @@ public class ParseModelManager implements ModelManager {
 
         // Verify property is in sync with Parse
         if ((currentUser == null && ParseUser.getCurrentUser() != null)
-            || !currentUser.equals(ParseUser.getCurrentUser())) {
+            || (currentUser != null && !currentUser.equals(ParseUser.getCurrentUser()))) {
             currentUser = new ParseUserModel(ParseUser.getCurrentUser());
         }
 
