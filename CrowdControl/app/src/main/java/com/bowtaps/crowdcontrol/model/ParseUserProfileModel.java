@@ -23,22 +23,20 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
      */
     private static final String displayNameKey = "DisplayName";
 
+
     /**
-     * Key corresponding to {@link ParseUserProfileModel#setInheritedUser}
+     * Forwarding constructor. Invokes {@link #ParseUserProfileModel(ParseObject)} with a new
+     * {@link ParseObject}, which will cause this model to create a new row in the database if it
+     * is saved.
      */
-    private static final String parentParseUserIDKey = "UserID";
+    public ParseUserProfileModel() {
+        this(new ParseObject(tableName));
+    }
 
     /**
-     * Key corresponding to {@link ParseUserProfileModel#getDisplayDatabaseID}
-     */
-    private static final String displayUserIDKey = "ObjectID";
-
-
-    /**
-     * The class constructor. Initializes the model from an existing
-     * {@link ParseObject}.
+     * The class constructor. Initializes the model from an existing {@link ParseObject}.
      *
-     * @param object The object to use as a handle.
+     * @param object The object to use as a handle. This value cannot be {@code null}.
      */
     public ParseUserProfileModel(ParseObject object) {
         super(object);
@@ -51,10 +49,8 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
      */
     @Override
     public String getDisplayName() {
-        return (String) parseObject.get(displayNameKey);
+        return parseObject.getString(displayNameKey);
     }
-
-
 
     /**
      * Sets the user's display name.
@@ -65,22 +61,4 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
     public void setDisplayName(String displayName) {
         parseObject.put(displayNameKey, displayName);
     }
-
-    /**
-     *  returns the id of public user profile
-     *
-     *  @return displayUserIDKey
-     */
-    public String getDisplayDatabaseID() { return (String) parseObject.get(displayUserIDKey);}
-
-    /**
-     * adds a pointer back to the private user information
-     *
-     * @param inheritedUser
-     */
-    public void setInheritedUser( ParseUser inheritedUser)
-    {
-        parseObject.put(parentParseUserIDKey, inheritedUser );
-    }
-
 }
