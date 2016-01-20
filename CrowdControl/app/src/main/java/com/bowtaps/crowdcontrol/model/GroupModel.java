@@ -17,18 +17,20 @@ import java.util.List;
 public interface GroupModel extends BaseModel {
 
     /**
-     * Gets the description of the group.
+     * Gets the {@link UserProfileModel} of the leader of the group or {@code null} if there is no
+     * leader.
      *
-     * @return The description of the group.
+     * @return The {@link UserProfileModel} of the leader of the group or {@code null} if there is
+     *         no leader.
      */
-    public String getGroupDescription();
+    public UserProfileModel getGroupLeader();
 
     /**
-     * Sets the description of the group.
+     * Sets the given user as this group's designated leader.
      *
-     * @param description The new description of the group.
+     * @param leader The profile of the user to make the leader.
      */
-    public void setGroupDescription(String description);
+    public void setGroupLeader(UserProfileModel leader);
 
     /**
      * Gets the name of the group.
@@ -43,6 +45,20 @@ public interface GroupModel extends BaseModel {
      * @param name The new name of the group.
      */
     public void setGroupName(String name);
+
+    /**
+     * Gets the description of the group.
+     *
+     * @return The description of the group.
+     */
+    public String getGroupDescription();
+
+    /**
+     * Sets the description of the group.
+     *
+     * @param description The new description of the group.
+     */
+    public void setGroupDescription(String description);
 
     /**
      * Gets the list of users associated with the current group.

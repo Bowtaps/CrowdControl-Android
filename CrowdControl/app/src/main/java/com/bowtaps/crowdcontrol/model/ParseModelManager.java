@@ -24,6 +24,10 @@ public class ParseModelManager implements ModelManager {
      */
     private ParseUserModel currentUser;
 
+    /**
+     * An internal reference to the group to which the currently logged-in user belongs. May be
+     * {@code null} if no user is logged in or if they do not belong to any group.
+     */
     private ParseGroupModel currentGroup;
 
 
@@ -340,5 +344,76 @@ public class ParseModelManager implements ModelManager {
                 }
             }
         }.execute(userModel.getProfile(), callback);
+    }
+
+    @Override
+    public ParseGroupModel createGroup(UserProfileModel leader, String name, String description) throws Exception
+    {
+        // Validate parameters
+        if (leader != null && !(leader instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("leader parameter must be an instance of ParseUserProfileModel");
+        }
+
+        ParseGroupModel groupModel = new ParseGroupModel();
+        groupModel.setGroupLeader(leader);
+        groupModel.addGroupMember(leader);
+        groupModel.setGroupName(name);
+        groupModel.setGroupDescription(description);
+        groupModel.save();
+        return groupModel;
+    }
+
+    @Override
+    public void createGroupInBackground(UserProfileModel leader, String name, String description, final BaseModel.SaveCallback callback)
+    {
+        // Validate parameters
+        if (leader != null && !(leader instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("leader parameter must be an instance of ParseUserProfileModel");
+        }
+
+        // Define and execute an AsyncTask to perform the background create
+        new AsyncTask<Object, Void, ParseGroupModel>() {
+
+            private BaseModel.SaveCallback callback;
+            private Exception exception;
+
+            @Override
+            public void onPreExecute() {
+
+                // Initialize variables
+                exception = null;
+            }
+
+            @Override
+            public ParseGroupModel doInBackground(final Object ... params) {
+
+                // Extract parameters to convenience variables
+                ParseUserProfileModel profileModel = (ParseUserProfileModel) params[0];
+                String name = (String) params[1];
+                String description = (String) params[2];
+                this.callback = (BaseModel.SaveCallback) params[3];
+
+                ParseGroupModel result = null;
+
+                // Attempt fetch from storage
+                try {
+                    result = createGroup(profileModel, name, description);
+                } catch (Exception ex) {
+                    exception = ex;
+                }
+
+                return result;
+            }
+
+            @Override
+            public void onPostExecute(ParseGroupModel result) {
+
+                // Execute callback if one is provided
+                if (callback != null) {
+                    callback.doneSavingModel(result, exception);
+                }
+            }
+        }.execute(leader, name, description, callback);
+
     }
 }

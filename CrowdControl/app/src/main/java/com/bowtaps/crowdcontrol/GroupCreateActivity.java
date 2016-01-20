@@ -221,6 +221,7 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
 
         private final String mGroupName;
         private final String mGroupDescription;
+        private GroupModel mGroupModel;
 
 
         public GroupCreateTask(String groupName, String groupDescription) {
@@ -237,15 +238,11 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            GroupModel groupModel = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
-
-            //sets info to single global instance of group
-            groupModel.setGroupName(mGroupName);
-            groupModel.setGroupDescription(mGroupDescription);
-            groupModel.addGroupMember(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
-
+            mGroupModel = null;
             try {
-                groupModel.save();
+                mGroupModel = CrowdControlApplication.getInstance().getModelManager().createGroup(
+                        CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile(),
+                        mGroupName, mGroupDescription);
                 return true;
             }
             catch (Exception ex){
@@ -260,6 +257,7 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             showProgress(false);
 
             if (success) {
+                CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(mGroupModel);
                 launchGroupNavigationActivity();
                 finish();
             } else {

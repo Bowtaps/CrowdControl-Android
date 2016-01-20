@@ -34,4 +34,8 @@ public interface ModelManager {
     public GroupModel fetchCurrentGroup() throws Exception;
 
     public void fetchCurrentGroupInBackground(final BaseModel.LoadCallback callback);
+
+    public GroupModel createGroup(UserProfileModel leader, String name, String description) throws Exception;
+
+    public void createGroupInBackground(UserProfileModel leader, String name, String description, final BaseModel.SaveCallback callback);
 }

@@ -1,5 +1,6 @@
 package com.bowtaps.crowdcontrol.model;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
@@ -31,9 +32,9 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     private static final String tableName = "Group";
 
     /**
-     * Key corresponding to {@link #getGroupDescription()} and {@link #setGroupDescription(String)}.
+     * Key corresponding to {@link #getGroupLeader()} and {@link #setGroupLeader(UserProfileModel)}.
      */
-    private static final String groupDescriptionKey = "GroupDescription";
+    private static final String leaderKey = "GroupLeader";
 
     /**
      * Key corresponding to {@link #getGroupName()} and {@link #setGroupName(String)}.
@@ -41,10 +42,22 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     private static final String groupNameKey = "GroupName";
 
     /**
+     * Key corresponding to {@link #getGroupDescription()} and {@link #setGroupDescription(String)}.
+     */
+    private static final String groupDescriptionKey = "GroupDescription";
+
+    /**
      * Key corresponding to {@link #getGroupMembers()} and
      */
     private static final String groupMembersKey = "GroupMembers";
 
+
+    /**
+     * Internally cached group leader. This value is set when either {@link #load()},
+     * {@link #loadInBackground(LoadCallback)}, or {@link #setGroupLeader(UserProfileModel)} are
+     * invoked. This value can be gotten via a call to {@link #getGroupLeader()}.
+     */
+    private ParseUserProfileModel leader;
 
     /**
      * Internal cache of group members. This list is populated when {@link #load()} or
@@ -70,7 +83,65 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     public ParseGroupModel(ParseObject object) {
         super(object);
 
+        leader = null;
         members = new ArrayList<ParseUserProfileModel>();
+    }
+
+    /**
+     * Gets the {@link UserProfileModel} of the leader of the group or {@code null} if there is no
+     * leader.
+     *
+     * @return The {@link UserProfileModel} of the leader of the group or {@code null} if there is
+     *         no leader.
+     */
+    @Override
+    public ParseUserProfileModel getGroupLeader() {
+        return leader;
+    }
+
+    /**
+     * Sets the given user as this group's designated leader.
+     *
+     * @param leader The profile of the user to make the leader. {@code null} is a valid value.
+     */
+    @Override
+    public void setGroupLeader(UserProfileModel leader) {
+
+        // Verify parameters
+        if (leader != null && !(leader instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("leader parameter must be an instance of ParseUserProfileModel");
+        }
+
+        // Handle adding/replacing a leader and removing a leader separately
+        if (leader == null) {
+
+            // Leader is being removed
+            this.leader = null;
+            parseObject.put(leaderKey, null);
+        } else {
+
+            // Leader is being added/replaced
+            this.leader = null;
+            parseObject.put(leaderKey, ((ParseUserProfileModel) leader).parseObject);
+        }
+    }
+
+    /**
+     * Gets the name of the group.
+     *
+     * @return The name of the group.
+     */
+    public String getGroupName() {
+        return parseObject.getString(groupNameKey);
+    }
+
+    /**
+     * Sets the name of the group.
+     *
+     * @param name The new name of the group.
+     */
+    public void setGroupName(String name) {
+        parseObject.put(groupNameKey, name);
     }
 
     /**
@@ -91,24 +162,6 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     @Override
     public void setGroupDescription(String description) {
         parseObject.put(groupDescriptionKey, description);
-    }
-
-    /**
-     * Gets the name of the group.
-     *
-     * @return The name of the group.
-     */
-    public String getGroupName() {
-        return parseObject.getString(groupNameKey);
-    }
-
-    /**
-     * Sets the name of the group.
-     *
-     * @param name The new name of the group.
-     */
-    public void setGroupName(String name) {
-        parseObject.put(groupNameKey, name);
     }
 
     /**
@@ -203,6 +256,18 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         super.load();
         members.clear();
 
+        // Fetch the leader
+        ParseObject parseLeader = parseObject.getParseObject(leaderKey);
+        if (parseLeader == null) {
+
+            // No group leader
+            leader = null;
+        } else if (leader == null || !leader.equals(parseLeader)) {
+
+            // New group leader
+            leader = new ParseUserProfileModel(parseLeader);
+        }
+
         // Fetch objects in relation
         ParseRelation relation = parseObject.getRelation(groupMembersKey);
         ParseQuery query = relation.getQuery();
@@ -227,39 +292,49 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     @Override
     public void loadInBackground(final LoadCallback callback) {
 
+
+
         final ParseGroupModel thisGroup = this;
 
-        // Load group in background
-        super.loadInBackground(new LoadCallback() {
+        // Define and execute an AsyncTask to perform the background fetch
+        new AsyncTask<Object, Void, ParseGroupModel>() {
+
+            private BaseModel.LoadCallback callback;
+            private ParseException exception;
+
             @Override
-            public void doneLoadingModel(BaseModel object, Exception ex) {
+            public void onPreExecute() {
 
-                // Load group members in background
-                if (object != null && ex == null) {
-                    ((ParseGroupModel) object).parseObject.getRelation(groupMembersKey).getQuery().findInBackground(new FindCallback<ParseObject>() {
-                        @Override
-                        public void done(List<ParseObject> objects, ParseException e) {
+                // Initialize variables
+                exception = null;
+            }
 
-                            // Add found users to members array
-                            if (objects != null && e == null) {
-                                for (ParseObject object : objects) {
-                                    members.add(new ParseUserProfileModel(object));
-                                }
-                            }
+            @Override
+            public ParseGroupModel doInBackground(final Object ... params) {
 
-                            // Pass control to caller when complete
-                            if (callback != null) {
-                                callback.doneLoadingModel(thisGroup, e);
-                            }
-                        }
-                    });
-                } else if (callback != null) {
+                // Extract parameters to convenience variables
+                ParseGroupModel model = (ParseGroupModel) params[0];
+                this.callback = (BaseModel.LoadCallback) params[1];
 
-                    // Pass control to caller if an error occurred
-                    callback.doneLoadingModel(object, ex);
+                // Attempt fetch from storage
+                try {
+                    load();
+                } catch (ParseException ex) {
+                    exception = ex;
+                }
+
+                return model;
+            }
+
+            @Override
+            public void onPostExecute(ParseGroupModel result) {
+
+                // Execute callback if one is provided
+                if (callback != null) {
+                    callback.doneLoadingModel(result, exception);
                 }
             }
-        });
+        }.execute(this, callback);
     }
 
 
