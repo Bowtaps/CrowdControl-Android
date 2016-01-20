@@ -9,6 +9,8 @@ import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.sinch.android.rtc.Sinch;
+import com.sinch.android.rtc.SinchClient;
 
 /**
  * The official singleton object for the application.
@@ -33,6 +35,12 @@ public class CrowdControlApplication extends Application {
 
 
 
+    private static final String SINCH_APP_KEY = "52ccd19d-4487-4645-8abf-b13edd57bffd";
+    private static final String SINCH_APP_SECRET = "Ke+GKezurEqC46z33Da5Ig==";
+    private static final String SINCH_ENVIRONMENT = "sandbox.sinch.com";
+
+
+
     /**
      * Performs application setup operations, including initializing class properties and opening
      * connections for storage.
@@ -49,6 +57,17 @@ public class CrowdControlApplication extends Application {
         // Initialize internal properties
         // Initialize parse connection
         modelManager = new ParseModelManager(this, "xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv", "PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi");
+
+        // Initialize Sinch
+        // TODO abstract
+        SinchClient sinchClient = Sinch.getSinchClientBuilder().context(getApplicationContext())
+                .applicationKey(SINCH_APP_KEY)
+                .applicationSecret(SINCH_APP_SECRET)
+                .environmentHost(SINCH_ENVIRONMENT)
+                .userId("")
+                .build();
+        sinchClient.setSupportMessaging(true);
+        sinchClient.setSupportManagedPush(true);
     }
 
     /**
