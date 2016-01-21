@@ -57,12 +57,12 @@ public interface LocationModel extends BaseModel {
      *
      * @param userProfileModel - UserProfileModel of the location recipient
      */
-    public void setTo(ParseUserProfileModel userProfileModel);
+    public void setTo(UserProfileModel userProfileModel);
 
     /**
      * Sets the From field, the user that sent the location.
      *
      * @param userProfileModel - UserProfileModel of the location sender
      */
-    public void setFrom(ParseUserProfileModel userProfileModel);
+    public void setFrom(UserProfileModel userProfileModel);
 }

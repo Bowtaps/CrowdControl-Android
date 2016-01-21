@@ -1,6 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 /**
  * Created by Evan Hammer on 1/19/16.
@@ -115,9 +116,13 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      * @param userProfileModel - UserProfileModel of the location recipient
      */
     @Override
-    public void setTo(ParseUserProfileModel userProfileModel){
+    public void setTo(UserProfileModel userProfileModel){
         //set the user profile
-        this.To = userProfileModel;
+        if(userProfileModel == null){
+            this.To = null;
+        } else{
+            parseObject.put(toKey, ((ParseUserProfileModel) userProfileModel).parseObject);
+        }
     }
 
     /**
@@ -126,8 +131,12 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      * @param userProfileModel - UserProfileModel of the location sender
      */
     @Override
-    public void setFrom(ParseUserProfileModel userProfileModel){
+    public void setFrom(UserProfileModel userProfileModel){
         //set the user profile
-        this.From = userProfileModel;
+        if(userProfileModel == null){
+            this.From = null;
+        } else{
+            parseObject.put(fromKey, ((ParseUserProfileModel) userProfileModel).parseObject);
+        }
     }
 }
