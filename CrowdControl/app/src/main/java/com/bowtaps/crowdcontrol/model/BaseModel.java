@@ -1,6 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * The base model interface, providing access to core model functionality,
@@ -67,18 +68,20 @@ public interface BaseModel {
      * that this function can be called from the main thread without blocking
      * the UI. Upon completion, whether successful or unsuccessful, returns
      * control to the main thread by calling the
-     * @{link SaveCallback.modelSaved()} method on the provided
-     * @{link SaveCallback} object.
+     * {@link SaveCallback#doneSavingModel(BaseModel, Exception)} method on the provided
+     * {@link SaveCallback} object.
      *
      * @param callback The callback object to pass control to once the operation
      *                 is complete. If no object is provided (or null is given),
      *                 then nothing will happen after the object has been saved.
      */
-    public void saveInBackground(SaveCallback callback);
+    public void saveInBackground(final SaveCallback callback);
 
     /**
      * Loads this object from storage. This is a blocking function, so care
      * should be taken to not call this function on the main thread.
+     *
+     * @throws Exception Throws the exception
      */
     public void load() throws Exception;
 
@@ -87,15 +90,15 @@ public interface BaseModel {
      * so that this function can be called from the main thread without blocking
      * the UI. Upon completion, whether successful or unsuccessful, returns
      * control to the main thread by calling the
-     * @{link LoadCallback.modelLoaded()} method on the provided
-     * @{link SaveCallback} object.
+     * {@link LoadCallback#doneLoadingModel(BaseModel, Exception)} method on the provided
+     * {@link LoadCallback} object.
      *
      * @param callback The callback object to pass control to once the operation
      *                 is completed. If no object is provided (or null is given),
      *                 then nothing will happen after the object has been
      *                 loaded.
      */
-    public void loadInBackground(LoadCallback callback);
+    public void loadInBackground(final LoadCallback callback);
 
 
 
@@ -139,5 +142,26 @@ public interface BaseModel {
          *           exception object if an error occurred.
          */
         public void doneLoadingModel(BaseModel object, Exception ex);
+    }
+
+    /**
+     * The callback interface that should be used for asynchornous loading operations that can
+     * return multiple objects as a result.
+     */
+    public interface FetchCallback {
+
+        /**
+         * This method is called after completion of an asynchronous background fetch on a set
+         * of models. It accepts the fetched models and an exception object should something go
+         * wrong.
+         *
+         * @param results the results of the asynchronous fetch operation. If the operation was
+         *                a success but no objects match the fetch critera, this list will be
+         *                empty.
+         * @param ex The exception that occurred, if any. This value will be {@code null} if the
+         *           operation was successful and will be a valid {@link Exception} if an error
+         *           occurred.
+         */
+        public void doneFetchingModels(List<? extends BaseModel> results, Exception ex);
     }
 }

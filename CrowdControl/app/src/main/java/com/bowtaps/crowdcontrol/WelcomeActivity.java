@@ -23,17 +23,11 @@ import com.parse.ParseUser;
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonCreateAccount;
-    ParseUserProfileModel mParseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
-    ParseUserModel mParseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
-    ParseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-
-        mParseUserModel.getCurrentUser();
-        mUser = CrowdControlApplication.aUser;
 
         // Get handles to buttons
         mButtonCreateAccount = (Button) findViewById(R.id.buttonToCreate);
@@ -42,17 +36,15 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         mButtonCreateAccount.setOnClickListener(this);
 
         //This Determines if a user is logged in from a previous run
-        if(mUser != null && mUser.getObjectId() != null){
-            //TODO: This functionality is implying that the GroupJoinActivity is the "Home" page for a logged in user.
-            mParseUserModel.updateUser();
-            //mParseUserProfileModel.initializeFromUser(CrowdControlApplication.aUser);
-            //CrowdControlApplication.aProfile = mUser.getParseObject("CCUser");
+        if (CrowdControlApplication.getInstance().getModelManager().getCurrentUser() != null) {
 
+            // User is already logged in, direct them to application
             launchGroupJoinActivity();
             finish();
 
-        }
-        else{
+        } else {
+
+            // Send user to screen to log in
             launchLoginActivity();
             finish();
         }
@@ -87,7 +79,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
         switch (view.getId()) {
             case R.id.buttonToCreate:
-                onCreateAccountButtonClick((Button) view);
+                onCreateAccountButtonClick();
                 break;
 
             default:
@@ -99,10 +91,9 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
     /**
      * Handles clicks on the buttonToCreate button. Simply launches the {@link SignupActivity}.
      *
-     * @param button  The button object that was clicked.
      * @see           SignupActivity
      */
-    private void onCreateAccountButtonClick(Button button) {
+    private void onCreateAccountButtonClick() {
         launchLoginActivity();
     }
 

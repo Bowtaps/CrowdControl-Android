@@ -5,6 +5,7 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,47 +17,73 @@ import java.util.List;
 public interface GroupModel extends BaseModel {
 
     /**
-     * Gets the general location of the group.
+     * Gets the {@link UserProfileModel} of the leader of the group or {@code null} if there is no
+     * leader.
      *
-     * @return The location of the group in the form of a ParseGeoPoint object.
+     * @return The {@link UserProfileModel} of the leader of the group or {@code null} if there is
+     *         no leader.
      */
-    public ParseGeoPoint getGeneralLocation();
+    public UserProfileModel getGroupLeader();
 
     /**
-     * Gets the description of the current group.
+     * Sets the given user as this group's designated leader.
      *
-     * @return The description string attached to the group.
+     * @param leader The profile of the user to make the leader.
+     */
+    public void setGroupLeader(UserProfileModel leader);
+
+    /**
+     * Gets the name of the group.
+     *
+     * @return The name of the group.
+     */
+    public String getGroupName();
+
+    /**
+     * Sets the name of the group.
+     *
+     * @param name The new name of the group.
+     */
+    public void setGroupName(String name);
+
+    /**
+     * Gets the description of the group.
+     *
+     * @return The description of the group.
      */
     public String getGroupDescription();
 
     /**
+     * Sets the description of the group.
+     *
+     * @param description The new description of the group.
+     */
+    public void setGroupDescription(String description);
+
+    /**
      * Gets the list of users associated with the current group.
      *
-     * @return The list of users as ParseUserModel objects that belong to the
-     *         group.
+     * @return An {@link ArrayList} of {@link UserProfileModel} objects that belong to the group.
      */
-    public ParseUser getGroupMembers();
+    public List<? extends UserProfileModel> getGroupMembers();
 
     /**
-     * Sets the properties for the current group.
+     * Adds a new member to the group.
      *
-     * @return The list of users as ParseUserModel objects that belong to the
-     *         group.
+     * @param profile The {@link UserProfileModel} of the user to be added.
+     *
+     * @return True if the user was successfully added to the group, false if not or if the user is
+     *         already a member of the group.
      */
-    public void SetGroupData(String groupDescription, String groupName);
+    public Boolean addGroupMember(UserProfileModel profile);
 
     /**
-     * adds a new member to the active group
+     * Removes a user from the group.
      *
-     * @param userProfile - the new group member
-     */
-    public void AddNewMember( ParseObject userProfile );
-
-    /**
-     * Removes a user from a group
+     * @param profile The {@link UserProfileModel} of the user to be removed.
      *
-     * @param userProfile - user being removed
+     * @return True if the user was successfully removed from the group, false if not or if the user
+     *         was already not a member of the group.
      */
-    public void LeaveGroup( ParseObject userProfile );
-
+    public Boolean removeGroupMember(UserProfileModel profile);
 }

@@ -1,9 +1,9 @@
 package com.bowtaps.crowdcontrol;
 
 import android.content.Intent;
-import android.media.audiofx.BassBoost;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,11 +11,13 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.bowtaps.crowdcontrol.adapters.CustomParseAdapter;
+import com.bowtaps.crowdcontrol.adapters.GroupModelAdapter;
 import com.bowtaps.crowdcontrol.model.BaseModel;
-import com.bowtaps.crowdcontrol.model.ParseGroupModel;
-import com.parse.ParseObject;
-import com.parse.ParseQueryAdapter;
+import com.bowtaps.crowdcontrol.model.GroupModel;
+import com.bowtaps.crowdcontrol.model.UserModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * This Activity is where a user will either join an existing group or create a
@@ -30,44 +32,59 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     Button mButtonSettings;
 
     // List view pieces
-    private ParseQueryAdapter<ParseObject> mMainAdapter;
-    private CustomParseAdapter mGroupListAdapter;
+    private GroupModelAdapter mGroupListAdapter;
     private ListView mGroupListView;
+    private List<GroupModel> mGroupList;
 
-    /*
-     *  uses the quarry adapter (@link CustomParseAdapter) to show the Group data from Parse
-     *  In a list view
+    private static final String TAG = GroupJoinActivity.class.getSimpleName();
+
+    /**
+     * Uses the query adapter  {@link GroupModelAdapter} to show a list of available groups in a
+     * {@link ListView}.
      *
-     *  @see CustomParseAdapter
+     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_join);
 
-        // Initialize main ParseQueryAdapter
-        mMainAdapter = new ParseQueryAdapter<ParseObject>(this, "Group");
-        mMainAdapter.setTextKey("GroupName");
-
-        //mMainAdapter.setImageKey("image");
-
-        // Initialize the subclass of ParseQueryAdapter
-        mGroupListAdapter = new CustomParseAdapter(this);
+        // Initialize list adapter for mGroupListView
+        mGroupList = new ArrayList<GroupModel>();
+        mGroupListAdapter = new GroupModelAdapter(this, mGroupList);
 
         // Initialize ListView and set initial view to mMainAdapter
         mGroupListView = (ListView) findViewById(R.id.group_list);
         mGroupListView.setAdapter(mGroupListAdapter);
-
         mGroupListView.setOnItemClickListener(this);
-
-        mMainAdapter.loadObjects(); // Querry in CustomParseAdapter
 
         // Get handles to Buttons
         mButtonToTabs = (Button) findViewById(R.id.buttonToTab);
         mButtonSettings = (Button) findViewById(R.id.buttonSettings);
-        // Declare button clicks
+
+        // Declare button click event handlers
         mButtonToTabs.setOnClickListener(this);
         mButtonSettings.setOnClickListener(this);
+
+        // Fetch group list to display
+        CrowdControlApplication.getInstance().getModelManager().fetchAllGroupsInBackground(new BaseModel.FetchCallback() {
+            @Override
+            public void doneFetchingModels(List<? extends BaseModel> results, Exception ex) {
+
+                // Verify operation was successful
+                if (results == null || ex != null) {
+                    Log.d(TAG, "Failed to load group list");
+                    return;
+                }
+
+                // Replace existing list with new results
+                mGroupList.clear();
+                mGroupList.addAll((List<GroupModel>) results);
+
+                // Force update on the list adapter
+                mGroupListAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     /*
@@ -131,19 +148,43 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onItemClick(AdapterView parent, View view, int position, long id){
         //TODO request to join group instead of just joining it
-        CrowdControlApplication.aGroup = mGroupListAdapter.getItem(position);
-        ParseGroupModel parseGroupModel = new ParseGroupModel(mGroupListAdapter.getItem(position));
-        parseGroupModel.AddNewMember(CrowdControlApplication.aProfile);
 
-        parseGroupModel.saveInBackground(new BaseModel.SaveCallback() {
+        // Get the selected group
+        final GroupModel groupModel = mGroupListAdapter.getItem(position);
+        final UserModel userModel = CrowdControlApplication.getInstance().getModelManager().getCurrentUser();
+
+        // First load members from current group
+        groupModel.loadInBackground(new BaseModel.LoadCallback() {
             @Override
-            public void doneSavingModel(BaseModel object, Exception ex) {
-                //TODO catch ex for error checking
-                //finish();
+            public void doneLoadingModel(BaseModel object, Exception ex) {
+
+                // Verify operation was successful
+                if (object == null || ex != null) {
+                    Log.d(TAG, "Unable to load group model");
+                    return;
+                }
+
+                if (!groupModel.addGroupMember(userModel.getProfile())) {
+                    Log.d(TAG, "Unable to add user to group. User may already be member of group.");
+                }
+
+                // After changing the model, attempt to save
+                groupModel.saveInBackground(new BaseModel.SaveCallback() {
+                    @Override
+                    public void doneSavingModel(BaseModel object, Exception ex) {
+
+                        // Verify operation was successful
+                        if (ex != null) {
+                            Log.d(TAG, "Unable to save group model");
+                            return;
+                        }
+
+                        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup((GroupModel) object);
+                        launchGroupNavigationActivity();
+                    }
+                });
             }
         });
-
-        launchGroupNavigationActivity();
     }
 
     /**

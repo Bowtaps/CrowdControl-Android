@@ -6,25 +6,23 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bowtaps.crowdcontrol.R;
-import com.parse.ParseFile;
-import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
-/*
+/**
  *  This Custom Parse Adapter is used to quarry Parse for Group Data and adapt that
  *  data to be displayed in a list view
  *
- *  @See GroupJoinActivity
+ *  @see com.bowtaps.crowdcontrol.GroupJoinActivity
  *  @author Johnny Ackerman
  */
 public class CustomParseAdapter extends ParseQueryAdapter<ParseObject> {
 
-    /*
-     *  This QueryFactory generates a querry used to grab group information
+    /**
+     *  This QueryFactory generates a query used to grab group information
      *
-     *  @see GroupJoinActivity
+     *  @see com.bowtaps.crowdcontrol.GroupJoinActivity
      */
     public CustomParseAdapter(Context context) {
         // Use the QueryFactory to construct a PQA that will show all groups
@@ -39,11 +37,11 @@ public class CustomParseAdapter extends ParseQueryAdapter<ParseObject> {
         });
     }
 
-    /*
+    /**
      * Customize the layout by overriding getItemView. This allows for use of
      * a custom list view, in displaying the list of groups
      *
-     *  @see GroupJoinActivity
+     *  @see com.bowtaps.crowdcontrol.GroupJoinActivity
      */
     @Override
     public View getItemView(ParseObject object, View v, ViewGroup parent) {
