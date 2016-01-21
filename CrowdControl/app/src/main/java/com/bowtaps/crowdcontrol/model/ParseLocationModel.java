@@ -31,6 +31,11 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     private static final String longitudeKey = "Longitude";
 
+    private String latitude;
+    private String longitude;
+    private ParseUserProfileModel To;
+    private ParseUserProfileModel From;
+
     /**
      * The class constructor. Initializes the model from an existing
      * {@link ParseLocationModel}.
@@ -49,7 +54,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public double getLatitude(){
-        return (double) latitude;
+        return Double.parseDouble(latitude);
     }
 
     /**
@@ -60,7 +65,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public double getLongitude(){
-        return (double) ((ParseObject) parseObject).get(longitudeKey);
+        return Double.parseDouble(longitude);
     }
 
     /**
@@ -71,7 +76,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public UserProfileModel getTo(){
-        return (UserProfileModel) ((ParseObject) parseObject).get(toKey);
+        return this.To;
     }
 
     /**
@@ -81,7 +86,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public UserProfileModel getFrom(){
-        return (UserProfileModel) ((ParseObject) parseObject).get(fromKey);
+        return From;
     }
 
     /**
@@ -91,7 +96,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public void setLatitude(double latitude){
-        parseObject.put(latitudeKey, latitude);
+        this.latitude = Double.toString(latitude);
     }
 
     /**
@@ -101,7 +106,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public void setLongitude(double longitude){
-        parseObject.put(longitudeKey, longitude);
+        this.longitude = Double.toString(longitude);
     }
 
     /**
@@ -110,8 +115,9 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      * @param userProfileModel - UserProfileModel of the location recipient
      */
     @Override
-    public void setTo(UserProfileModel userProfileModel){
+    public void setTo(ParseUserProfileModel userProfileModel){
         //set the user profile
+        this.To = userProfileModel;
     }
 
     /**
@@ -120,7 +126,8 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      * @param userProfileModel - UserProfileModel of the location sender
      */
     @Override
-    public void setFrom(UserProfileModel userProfileModel){
+    public void setFrom(ParseUserProfileModel userProfileModel){
         //set the user profile
+        this.From = userProfileModel;
     }
 }

@@ -1,5 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.parse.Parse;
+
 /**
  * Created by Evan Hammer on 1/19/16.
  */
@@ -55,12 +57,12 @@ public interface LocationModel extends BaseModel {
      *
      * @param userProfileModel - UserProfileModel of the location recipient
      */
-    public void setTo(UserProfileModel userProfileModel);
+    public void setTo(ParseUserProfileModel userProfileModel);
 
     /**
      * Sets the From field, the user that sent the location.
      *
      * @param userProfileModel - UserProfileModel of the location sender
      */
-    public void setFrom(UserProfileModel userProfileModel);
+    public void setFrom(ParseUserProfileModel userProfileModel);
 }
