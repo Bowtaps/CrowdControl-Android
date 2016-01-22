@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bowtaps.crowdcontrol.model.GroupModel;
+import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.parse.ParseUser;
 import com.sinch.android.rtc.PushPair;
 import com.sinch.android.rtc.messaging.Message;
@@ -95,7 +96,9 @@ public class MessagingActivity extends Activity {
             return;
         }
 
-        messageService.sendMessage(recipientGroup.getGroupMembers(), messageBody);
+        List<? extends UserProfileModel> recipients = recipientGroup.getGroupMembers();
+        recipients.remove(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
+        messageService.sendMessage(recipients, messageBody);
         messageBodyField.setText("");
     }
 
