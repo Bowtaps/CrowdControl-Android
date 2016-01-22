@@ -45,7 +45,7 @@ public class MessagingActivity extends Activity {
 
         Intent intent = getIntent();
         recipientGroup = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
-        currentUserId = ParseUser.getCurrentUser().getObjectId();
+        currentUserId = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().getId();
 
         messagesList = (ListView) findViewById(R.id.listMessages);
         messageAdapter = new MessageAdapter(this);
