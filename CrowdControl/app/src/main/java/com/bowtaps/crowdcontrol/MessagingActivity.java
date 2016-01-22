@@ -40,6 +40,7 @@ public class MessagingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messaging);
 
+        startService(new Intent(getApplicationContext(), MessageService.class));
         bindService(new Intent(this, MessageService.class), serviceConnection, BIND_AUTO_CREATE);
 
         Intent intent = getIntent();
@@ -102,6 +103,7 @@ public class MessagingActivity extends Activity {
     public void onDestroy() {
         messageService.removeMessageClientListener(messageClientListener);
         unbindService(serviceConnection);
+        stopService(new Intent(this, MessageService.class));
         super.onDestroy();
     }
 
