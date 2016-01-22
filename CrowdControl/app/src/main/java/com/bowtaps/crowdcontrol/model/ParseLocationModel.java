@@ -1,7 +1,12 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
+
+import java.util.List;
 
 /**
  * Created by Evan Hammer on 1/19/16.
@@ -139,4 +144,43 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
             parseObject.put(fromKey, ((ParseUserProfileModel) userProfileModel).parseObject);
         }
     }
+
+    /**
+     * Loads this object from Parse storage synchronously. In addition to the normal functionality
+     * inherited from {@link ParseBaseModel}, this method also fetches and caches the users who
+     * are members of this group.
+     *
+     * @throws ParseException Throws If an exception occurs, throws a {@link ParseException}.
+     *
+     * @see ParseBaseModel#load()
+     */
+    @Override
+    public void load() throws ParseException {
+        super.load();
+
+        // Fetch the "to" pointer
+        ParseObject toUser = parseObject.getParseObject(toKey);
+        if (toUser == null) {
+
+            // No "to" pointer
+            toUser = null;
+        } else if (toUser == null || !toUser.equals(toUser)) {
+
+            // New "to" pointer
+            To = new ParseUserProfileModel(toUser);
+        }
+
+        // Fetch the "from" pointer
+        ParseObject fromUser = parseObject.getParseObject(toKey);
+        if (fromUser == null) {
+
+            // No "from" pointer
+            fromUser = null;
+        } else if (fromUser == null || !fromUser.equals(fromUser)) {
+
+            // New "from" pointer
+            From = new ParseUserProfileModel(fromUser);
+        }
+    }
+
 }
