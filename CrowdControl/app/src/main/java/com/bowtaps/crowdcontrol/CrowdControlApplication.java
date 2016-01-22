@@ -57,17 +57,6 @@ public class CrowdControlApplication extends Application {
         // Initialize internal properties
         // Initialize parse connection
         modelManager = new ParseModelManager(this, "xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv", "PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi");
-
-        // Initialize Sinch
-        // TODO abstract
-        SinchClient sinchClient = Sinch.getSinchClientBuilder().context(getApplicationContext())
-                .applicationKey(SINCH_APP_KEY)
-                .applicationSecret(SINCH_APP_SECRET)
-                .environmentHost(SINCH_ENVIRONMENT)
-                .userId("")
-                .build();
-        sinchClient.setSupportMessaging(true);
-        sinchClient.setSupportManagedPush(true);
     }
 
     /**

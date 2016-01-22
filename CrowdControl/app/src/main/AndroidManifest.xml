@@ -78,6 +78,12 @@
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme" >
         </activity>
+        <service android:name=".MessageService"></service>
+        <activity android:name=".MessagingActivity"
+            android:label="MessagingActivity"
+            android:theme="@style/AppTheme">
+
+        </activity>
     </application>
 
 </manifest>

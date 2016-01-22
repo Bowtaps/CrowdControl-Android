@@ -234,7 +234,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
      *  @see GroupNavigationActivity
      */
     private void launchGroupNavigationActivity() {
-        Intent myIntent = new Intent(this, GroupNavigationActivity.class);
+        Intent myIntent = new Intent(this, MessagingActivity.class);
         this.startActivity(myIntent);
     }
 }
