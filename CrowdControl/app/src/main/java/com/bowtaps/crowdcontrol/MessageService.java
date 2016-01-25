@@ -34,7 +34,7 @@ public class MessageService extends Service implements SinchClientListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        currentUserId = ParseUser.getCurrentUser().getObjectId();
+        currentUserId = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().getId();
 
         if (currentUserId != null && !isSinchClientStarted()) {
             startSinchClient(currentUserId);
@@ -99,8 +99,14 @@ public class MessageService extends Service implements SinchClientListener {
 
     public void sendMessage(List<? extends UserProfileModel> recipients, String textBody) {
         if (messageClient != null) {
-            WritableMessage message = new WritableMessage(recipients.get(0).getId(), textBody);
-            for (int i = 1; i < recipients.size(); i++) message.addRecipient(recipients.get(i).getId());
+            String userId;
+            userId = currentUserId;
+            userId = recipients.get(0).getId();
+            WritableMessage message = new WritableMessage(userId, textBody);
+            for (int i = 1; i < recipients.size(); i++) {
+                userId = recipients.get(i).getId();
+                message.addRecipient(userId);
+            }
             messageClient.send(message);
         }
     }

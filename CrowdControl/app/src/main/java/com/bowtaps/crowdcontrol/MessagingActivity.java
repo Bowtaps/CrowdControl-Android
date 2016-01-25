@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -128,6 +129,8 @@ public class MessagingActivity extends Activity {
         public void onMessageFailed(MessageClient client, Message message,
                                     MessageFailureInfo failureInfo) {
             Toast.makeText(MessagingActivity.this, "Message failed to send.", Toast.LENGTH_LONG).show();
+            Log.d("MessagingActivity", "Message failed to send: " + message.getTextBody());
+            Log.d("MessagingActivity", failureInfo.getSinchError().getMessage());
         }
 
         @Override
@@ -160,15 +163,14 @@ public class MessagingActivity extends Activity {
                 });
             }
             */
+            Log.d("MessagingActivity", "Message received: " + messageBody);
         }
 
         @Override
         public void onMessageSent(MessageClient client, Message message, String recipientId) {
-          
-          
-          
-          final WritableMessage writableMessage = new WritableMessage(message.getRecipientIds().get(0), message.getTextBody());
-          messageAdapter.addMessage(writableMessage, MessageAdapter.DIRECTION_OUTGOING);
+            final WritableMessage writableMessage = new WritableMessage(message.getRecipientIds().get(0), message.getTextBody());
+            messageAdapter.addMessage(writableMessage, MessageAdapter.DIRECTION_OUTGOING);
+            Log.d("MessageActivity", "Message sent: " + message.getTextBody());
         }
 
         @Override
