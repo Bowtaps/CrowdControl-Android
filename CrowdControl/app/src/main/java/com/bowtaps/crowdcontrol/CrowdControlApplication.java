@@ -1,11 +1,13 @@
 package com.bowtaps.crowdcontrol;
 
 import android.app.Application;
+import com.crashlytics.android.Crashlytics;
 import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * The official singleton object for the application.
@@ -33,6 +35,7 @@ public class CrowdControlApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         // Initialize parse
 
