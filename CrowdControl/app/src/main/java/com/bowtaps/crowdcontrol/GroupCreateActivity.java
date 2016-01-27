@@ -279,7 +279,7 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
      * @see GroupNavigationActivity
      */
     private void launchGroupNavigationActivity() {
-        Intent myIntent = new Intent(this, MessagingActivity.class);
+        Intent myIntent = new Intent(this, GroupNavigationActivity.class);
         this.startActivity(myIntent);
     }
 }

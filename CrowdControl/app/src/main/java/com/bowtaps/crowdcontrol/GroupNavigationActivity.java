@@ -42,7 +42,8 @@ public class GroupNavigationActivity extends AppCompatActivity {
         //creating the tabs and adding them to adapter class
         mTabsAdapter.addFragment(GroupInfoFragment.newInstance("Group Information"), "Group Information");
         mTabsAdapter.addFragment(MapFragment.newInstance("Map Fragment"), "Map");
-        mTabsAdapter.addFragment(MessagingFragment.newInstance("Not Implemented"), "Messaging");
+        mTabsAdapter.addFragment(MessagingFragment.newInstance("Messaging"), "Messaging");
+        //mTabsAdapter.addFragment(MessagingFragment.instantiate(this.getBaseContext(), "Messaging"), "Messaging");
         mTabsAdapter.addFragment(EventFragment.newInstance("Suggestions"), "Events");
 
         //setup viewpager to give swipe effect
