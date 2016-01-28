@@ -5,10 +5,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.bowtaps.crowdcontrol.model.ParseLocationManager;
+import com.bowtaps.crowdcontrol.model.SecureLocationManager;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -117,7 +122,10 @@ public class MapFragment extends Fragment {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        SecureLocationManager locationManager = new ParseLocationManager();
+        Pair<Double, Double> location = locationManager.getCurrentLocation();
+        Log.i("Location", location.toString());
+        mMap.addMarker(new MarkerOptions().position(new LatLng(location.first, location.second)).title("Marker"));
     }
 
 

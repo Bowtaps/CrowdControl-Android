@@ -1,5 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
+import android.util.Pair;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ import java.util.List;
  *
  * Created by Joseph Mowry on 1/21/2016.
  */
-public interface LocationManager {
+public interface SecureLocationManager {
 
     /**
      * Retrieves the locations of other members of the current group.
@@ -45,4 +47,10 @@ public interface LocationManager {
      * receiving locations from others.
      */
     public void stopTransmission();
+
+    public boolean getTransmitting();
+
+    public void setTransmitting(boolean transmitting);
+
+    public Pair<Double, Double> getCurrentLocation();
 }
