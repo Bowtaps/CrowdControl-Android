@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -28,6 +29,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     private String mText;
     ImageButton mLocationButton;
     Button mSyncButton;
+    RelativeLayout layout1;
 
     /**
      * Use this factory method to create a new instance of
@@ -83,6 +85,9 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         FragmentTransaction t = getChildFragmentManager().beginTransaction();
         t.add(R.id.map_frame, f);
         t.commit();
+
+        RelativeLayout layout1 = (RelativeLayout) v.findViewById(R.id.relativeLayout);
+        layout1.bringToFront();
 
         // Get handle to button
         mLocationButton = (ImageButton) v.findViewById(R.id.locationButton);

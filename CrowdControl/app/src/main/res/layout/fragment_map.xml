@@ -6,8 +6,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent">
-        
+        android:layout_height="fill_parent"
+        android:id="@+id/relativeLayout">
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
