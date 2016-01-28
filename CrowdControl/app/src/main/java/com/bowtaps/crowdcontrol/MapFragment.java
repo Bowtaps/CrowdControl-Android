@@ -29,7 +29,6 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     private String mText;
     ImageButton mLocationButton;
     Button mSyncButton;
-    RelativeLayout layout1;
 
     /**
      * Use this factory method to create a new instance of
@@ -85,9 +84,6 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         FragmentTransaction t = getChildFragmentManager().beginTransaction();
         t.add(R.id.map_frame, f);
         t.commit();
-
-        RelativeLayout layout1 = (RelativeLayout) v.findViewById(R.id.relativeLayout);
-        layout1.bringToFront();
 
         // Get handle to button
         mLocationButton = (ImageButton) v.findViewById(R.id.locationButton);
