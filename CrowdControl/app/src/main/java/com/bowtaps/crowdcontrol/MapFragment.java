@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -25,7 +26,8 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private String mText;
-    Button mButton;
+    ImageButton mLocationButton;
+    Button mSyncButton;
 
     /**
      * Use this factory method to create a new instance of
@@ -83,10 +85,12 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         t.commit();
 
         // Get handle to button
-        mButton = (Button) v.findViewById(R.id.button);
+        mLocationButton = (ImageButton) v.findViewById(R.id.locationButton);
+        mSyncButton = (Button) v.findViewById(R.id.syncButton);
 
         // Declare button clicks
-        mButton.setOnClickListener(this);
+        mLocationButton.setOnClickListener(this);
+        mSyncButton.setOnClickListener(this);
         return v;
     }
 
@@ -96,8 +100,12 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         // in this case, either the facebook button or the create account button
 
         switch (view.getId()) {
-            case R.id.button:
-                myMethodCall((Button) view);
+            case R.id.locationButton:
+                myMethodCall1((ImageButton) view);
+                break;
+
+            case R.id.syncButton:
+                myMethodCall2((Button) view);
                 break;
 
             default:
@@ -106,7 +114,10 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void myMethodCall(Button view) {
+    private void myMethodCall1(ImageButton view) {
+    }
+
+    private void myMethodCall2(Button view) {
     }
 
     /**
