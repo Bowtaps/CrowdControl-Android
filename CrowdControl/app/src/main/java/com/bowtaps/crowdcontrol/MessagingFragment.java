@@ -101,7 +101,6 @@ public class MessagingFragment extends Fragment {
     public void onDestroy() {
         messageService.removeMessageClientListener(messageClientListener);
         getActivity().unbindService(serviceConnection);
-        getActivity().stopService(new Intent(getActivity(), MessageService.class));
         super.onDestroy();
     }
 
