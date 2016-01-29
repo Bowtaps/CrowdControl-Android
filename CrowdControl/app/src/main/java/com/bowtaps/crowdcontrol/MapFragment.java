@@ -161,7 +161,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(location.first, location.second)).title("Marker"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(0.0, 0.0)).title("Marker"));
     }
 
 
