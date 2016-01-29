@@ -3,21 +3,22 @@
     android:layout_height="match_parent" tools:context="com.bowtaps.crowdcontrol.MapFragment"
     android:id="@+id/map_frame">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sync Group Locations"
-            android:id="@+id/syncButton"
-            android:layout_gravity="left|bottom"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true" />
-
-    <ImageButton
+    <Button
         android:layout_width="wrap_content"
+        android:layout_height="54dp"
+        android:text="Sync Group Locations"
+        android:id="@+id/syncButton"
+        android:layout_gravity="center_horizontal|bottom"
+        android:clickable="true" />
+
+    <Button
+        android:layout_width="54dp"
         android:layout_height="wrap_content"
         android:id="@+id/locationButton"
-        android:src="@android:drawable/ic_menu_mylocation"
-        android:layout_above="@+id/syncButton"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="right|center_vertical" />
+        android:drawableLeft="@android:drawable/ic_menu_mylocation"
+        android:layout_gravity="right|bottom"
+        android:allowUndo="false"
+        android:clickable="true" />
+
+
 </FrameLayout>

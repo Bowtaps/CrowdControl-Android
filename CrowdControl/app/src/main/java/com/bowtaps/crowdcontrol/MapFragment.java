@@ -27,7 +27,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private String mText;
-    ImageButton mLocationButton;
+    Button mLocationButton;
     Button mSyncButton;
 
     /**
@@ -86,8 +86,8 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         t.commit();
 
         // Get handle to button
-        mLocationButton = (ImageButton) v.findViewById(R.id.locationButton);
-        mSyncButton = (Button) v.findViewById(R.id.syncButton);
+        mLocationButton = (Button)v.findViewById(R.id.locationButton);
+        mSyncButton = (Button)v.findViewById(R.id.syncButton);
 
         // Declare button clicks
         mLocationButton.setOnClickListener(this);
@@ -102,7 +102,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
 
         switch (view.getId()) {
             case R.id.locationButton:
-                myMethodCall1((ImageButton) view);
+                myMethodCall1((Button) view);
                 break;
 
             case R.id.syncButton:
@@ -115,7 +115,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void myMethodCall1(ImageButton view) {
+    private void myMethodCall1(Button view) {
     }
 
     private void myMethodCall2(Button view) {
