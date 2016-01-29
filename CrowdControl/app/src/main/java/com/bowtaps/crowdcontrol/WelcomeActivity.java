@@ -24,6 +24,8 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
     Button mButtonCreateAccount;
 
+    private Intent serviceIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,17 +37,26 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         //Declare button clicks
         mButtonCreateAccount.setOnClickListener(this);
 
+
+        //TODO move to implementation
+        //Set up messaging service
+        serviceIntent = new Intent( getApplicationContext(), MessageService.class);
+
+
+
         //This Determines if a user is logged in from a previous run
         if (CrowdControlApplication.getInstance().getModelManager().getCurrentUser() != null) {
 
             // User is already logged in, direct them to application
             launchGroupJoinActivity();
+            startService(serviceIntent);
             finish();
 
         } else {
 
             // Send user to screen to log in
             launchLoginActivity();
+            startService(serviceIntent);
             finish();
         }
     }
@@ -117,5 +128,10 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         Intent myIntent = new Intent(this,GroupJoinActivity.class);
         this.startActivity(myIntent);
     }
+
+//    public void onDestroy() {
+//        stopService(new Intent(this,MessageService.class));
+//        super.onDestroy();
+//    }
 
 }

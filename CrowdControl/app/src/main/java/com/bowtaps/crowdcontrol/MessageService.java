@@ -29,7 +29,7 @@ public class MessageService extends Service implements SinchClientListener {
     private MessageClient messageClient = null;
     private String currentUserId;
     private LocalBroadcastManager broadcaster;
-    private Intent broadcastIntent = new Intent("com.sinch.messagingtutorial.app.ListUsersActivity");
+    private Intent broadcastIntent = new Intent("com.bowtaps.crowdcontrol.GroupNavigationActivity");
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
