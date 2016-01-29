@@ -5,8 +5,16 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.bowtaps.crowdcontrol.adapters.SimpleTabsAdapter;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * This Activity will manage all the tabs related to the current group
@@ -52,6 +60,24 @@ public class GroupNavigationActivity extends AppCompatActivity {
         mTabs = (TabLayout) findViewById(R.id.tabs);
         mTabs.setupWithViewPager(tabsviewPager);
 
+        testCloudCode();
+
+    }
+
+    public void testCloudCode() {
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("group", CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getId());
+        params.put("userProfile", CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().getId());
+        params.put("timestamp", CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getCreated());
+
+        ParseCloud.callFunctionInBackground("fetchGroupUpdates", params, new FunctionCallback<List<ParseObject>>() {
+            public void done(List<ParseObject> results, ParseException e) {
+                if (e != null) {
+                    Log.d("GroupNavigationActivity", "failed cloud code! " + e.getMessage());
+                }
+            }
+        });
     }
 
 }
