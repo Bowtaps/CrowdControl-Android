@@ -1,9 +1,12 @@
 package com.bowtaps.crowdcontrol;
 
 import android.app.Application;
+import android.location.LocationManager;
 
 import com.bowtaps.crowdcontrol.model.ModelManager;
+import com.bowtaps.crowdcontrol.model.ParseLocationManager;
 import com.bowtaps.crowdcontrol.model.ParseModelManager;
+import com.bowtaps.crowdcontrol.model.SecureLocationManager;
 import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
@@ -31,6 +34,8 @@ public class CrowdControlApplication extends Application {
      */
     private ModelManager modelManager = null;
 
+    private SecureLocationManager locationManager = null;
+
 
 
     /**
@@ -49,6 +54,7 @@ public class CrowdControlApplication extends Application {
         // Initialize internal properties
         // Initialize parse connection
         modelManager = new ParseModelManager(this, "xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv", "PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi");
+        locationManager = new ParseLocationManager();
     }
 
     /**
@@ -60,7 +66,9 @@ public class CrowdControlApplication extends Application {
         return modelManager;
     }
 
-
+    public SecureLocationManager getLocationManager(){
+        return locationManager;
+    }
 
     /**
      * Gets the singleton instance of this class. Acts as a convenience function.

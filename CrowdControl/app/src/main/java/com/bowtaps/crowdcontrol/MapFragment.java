@@ -122,9 +122,6 @@ public class MapFragment extends Fragment {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        SecureLocationManager locationManager = new ParseLocationManager();
-        Pair<Double, Double> location = locationManager.getCurrentLocation();
-        Log.i("Location", location.toString());
         mMap.addMarker(new MarkerOptions().position(new LatLng(location.first, location.second)).title("Marker"));
     }
 

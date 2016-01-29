@@ -47,9 +47,10 @@ public class ParseLocationManager implements SecureLocationManager {
     public ParseLocationManager(){
         transmissionInterval = 10;
         memberLocations = null;
+        listener = new GoogleLocationListener();
         locationManager = (LocationManager) CrowdControlApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
         try{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 5, listener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, listener);
         }catch(SecurityException e1){
             //do something
             Log.e("Security Exception", e1.toString());
@@ -64,6 +65,7 @@ public class ParseLocationManager implements SecureLocationManager {
     @Override
     public List<ParseLocationModel> getLocations() throws Exception {
         //if null throw exception
+        this.fetchMembersLocations();
         return this.memberLocations;
     }
 

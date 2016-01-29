@@ -3,6 +3,7 @@ package com.bowtaps.crowdcontrol.Location;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  * Created by Evan Hammer on 1/26/16.
@@ -13,6 +14,10 @@ public class GoogleLocationListener implements LocationListener {
     private int status;
     private boolean providerEnabled;
 
+    public GoogleLocationListener(){
+
+    }
+
 
 
 
@@ -20,6 +25,7 @@ public class GoogleLocationListener implements LocationListener {
     public void onLocationChanged(Location location) {
         this.longitude = location.getLongitude();
         this.latitude = location.getLatitude();
+        //Log.d("location", location.toString());
     }
 
     @Override
