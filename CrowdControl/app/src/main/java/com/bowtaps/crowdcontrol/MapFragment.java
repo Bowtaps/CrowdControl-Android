@@ -8,6 +8,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -19,11 +22,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * A simple {@link Fragment} subclass.
  * Will Display a Google Map and place group members on it
  */
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements View.OnClickListener{
     private static final String ARG_PARAM1 = "param1";
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private String mText;
+    Button mLocationButton;
+    Button mSyncButton;
 
     /**
      * Use this factory method to create a new instance of
@@ -79,7 +84,41 @@ public class MapFragment extends Fragment {
         FragmentTransaction t = getChildFragmentManager().beginTransaction();
         t.add(R.id.map_frame, f);
         t.commit();
+
+        // Get handle to button
+        mLocationButton = (Button)v.findViewById(R.id.locationButton);
+        mSyncButton = (Button)v.findViewById(R.id.syncButton);
+
+        // Declare button clicks
+        mLocationButton.setOnClickListener(this);
+        mSyncButton.setOnClickListener(this);
         return v;
+    }
+
+    @Override
+    public void onClick(View view) {
+        // Handles clicks on items in view
+        // in this case, either the facebook button or the create account button
+
+        switch (view.getId()) {
+            case R.id.locationButton:
+                myMethodCall1((Button) view);
+                break;
+
+            case R.id.syncButton:
+                myMethodCall2((Button) view);
+                break;
+
+            default:
+                // Sorry, you're outta luck
+                break;
+        }
+    }
+
+    private void myMethodCall1(Button view) {
+    }
+
+    private void myMethodCall2(Button view) {
     }
 
     /**
