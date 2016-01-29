@@ -3,6 +3,7 @@ package com.bowtaps.crowdcontrol;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -15,12 +16,16 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bowtaps.crowdcontrol.model.LocationModel;
 import com.bowtaps.crowdcontrol.model.ParseLocationManager;
 import com.bowtaps.crowdcontrol.model.SecureLocationManager;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.text.ParseException;
+import java.util.List;
 
 
 /**
@@ -124,6 +129,25 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     }
 
     private void myMethodCall2(Button view) {
+        SecureLocationManager locationManager = CrowdControlApplication.getInstance().getLocationManager();
+        try{
+            List<? extends LocationModel> group = locationManager.getLocations();
+            for(LocationModel member: group){
+                Double longitude = new Double(member.getLongitude());
+                Double latitude = new Double(member.getLatitude());
+                Log.d("Member Location", longitude.toString() + ", " + latitude.toString());
+                if(mMap != null){
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(member.getId()));
+                }
+                else{
+                    mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_frame))
+                            .getMap();
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(member.getId()));
+                }
+            }
+        }catch(Exception e){
+            Log.e("FetchLocationError", e.toString());
+        }
     }
 
     /**

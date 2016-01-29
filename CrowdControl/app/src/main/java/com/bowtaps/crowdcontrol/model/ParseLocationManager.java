@@ -13,6 +13,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.security.acl.Group;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -148,10 +149,34 @@ public class ParseLocationManager implements SecureLocationManager {
         //get the current user profile
         UserProfileModel profile = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
         ParseQuery query = ParseQuery.getQuery("Location");
-        query.whereEqualTo("To", profile);
+        ParseObject to = ParseObject.createWithoutData("CCUser", profile.getId());
+        query.whereEqualTo("To", to);
         List<ParseObject> response = query.find();
+        ParseLocationModel locationModel;
+        this.memberLocations = null;
+        this.memberLocations = new ArrayList<ParseLocationModel>();
         for (ParseObject obj: response) {
-            Log.d("Location", obj.toString());
+            locationModel = new ParseLocationModel(ParseObject.create("Location"));
+            String latitude = obj.get("Latitude").toString();
+            String longitude = obj.get("Longitude").toString();
+            locationModel.setLatitude(Double.parseDouble(latitude));
+            locationModel.setLongitude(Double.parseDouble(longitude));
+            locationModel.setTo(profile);
+            ParseQuery profileQuery = ParseQuery.getQuery("CCUser");
+            Object from = obj.get("From");
+            ParseUserProfileModel fromProfile = new ParseUserProfileModel((ParseObject)from);
+            fromProfile.load();
+//            Log.d("From objId", fromProfile.getId());
+//            Log.d("From", from.toString());
+//            profileQuery.whereEqualTo("objectId", fromProfile.getId());
+//            List<ParseObject> fromList = profileQuery.find();
+//            Log.d("List length", new Integer(fromList.size()).toString());
+//            locationModel.setFrom(new ParseUserProfileModel(fromList.get(fromList.size() - 1)));
+            boolean added = this.memberLocations.add(locationModel);
+            if(!added){
+                //Replace with throwing an exception
+                Log.e("GroupList", "Error Adding a member to the list");
+            }
         }
     }
 }

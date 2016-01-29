@@ -42,6 +42,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     private ParseUserProfileModel To;
     private ParseUserProfileModel From;
 
+
     /**
      * The class constructor. Initializes the model from an existing
      * {@link ParseLocationModel}.
