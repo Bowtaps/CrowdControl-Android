@@ -51,7 +51,7 @@ public class ParseLocationManager implements SecureLocationManager {
         listener = new GoogleLocationListener();
         locationManager = (LocationManager) CrowdControlApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
         try{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, listener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 1000, listener);
         }catch(SecurityException e1){
             //do something
             Log.e("Security Exception", e1.toString());
@@ -67,6 +67,8 @@ public class ParseLocationManager implements SecureLocationManager {
     public List<ParseLocationModel> getLocations() throws Exception {
         //if null throw exception
         this.fetchMembersLocations();
+        this.transmitting = true;
+        this.broadcastLocation();
         return this.memberLocations;
     }
 
@@ -140,8 +142,26 @@ public class ParseLocationManager implements SecureLocationManager {
             GroupModel group = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
             List<? extends UserProfileModel> groupMembers = group.getGroupMembers();
             //for each member of the group create the location model
+            //create a location object from me to each group member
             for (UserProfileModel user: groupMembers) {
-                //create a location object from me to each group member
+                if (user.getDisplayName() != me.getDisplayName()) {
+                    ParseObject obj = ParseObject.create("Location");
+                    Double lat = this.listener.getLatitude();
+                    Double lng = this.listener.getLongitude();
+                    Log.d("Location: ", "Lat: " + lat + "\nLong: " + lng);
+                    obj.put("Longitude", lng.toString());
+                    obj.put("Latitude", lat.toString());
+                    LocationModel loc = new ParseLocationModel(obj);
+                    loc.setFrom(me);
+                    loc.setTo(user);
+                    try {
+                        loc.save();
+                    } catch (Exception e) {
+                        Log.e("Saving Exception: ", "Error: " + e);
+                    }
+                } else {
+                    Log.i("ME: ", "It catches me in the group");
+                }
             }
         }
     }
@@ -166,12 +186,6 @@ public class ParseLocationManager implements SecureLocationManager {
             Object from = obj.get("From");
             ParseUserProfileModel fromProfile = new ParseUserProfileModel((ParseObject)from);
             fromProfile.load();
-//            Log.d("From objId", fromProfile.getId());
-//            Log.d("From", from.toString());
-//            profileQuery.whereEqualTo("objectId", fromProfile.getId());
-//            List<ParseObject> fromList = profileQuery.find();
-//            Log.d("List length", new Integer(fromList.size()).toString());
-//            locationModel.setFrom(new ParseUserProfileModel(fromList.get(fromList.size() - 1)));
             boolean added = this.memberLocations.add(locationModel);
             if(!added){
                 //Replace with throwing an exception

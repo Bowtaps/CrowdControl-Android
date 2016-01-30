@@ -1,5 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
+import android.util.Log;
+
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -104,6 +106,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     @Override
     public void setLatitude(double latitude){
         this.latitude = Double.toString(latitude);
+        Log.d("Latitude: ", this.latitude);
     }
 
     /**
@@ -114,6 +117,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     @Override
     public void setLongitude(double longitude){
         this.longitude = Double.toString(longitude);
+        Log.d("Longitude: ", this.longitude);
     }
 
     /**

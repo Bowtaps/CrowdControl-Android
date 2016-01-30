@@ -25,7 +25,7 @@ public class GoogleLocationListener implements LocationListener {
     public void onLocationChanged(Location location) {
         this.longitude = location.getLongitude();
         this.latitude = location.getLatitude();
-        //Log.d("location", location.toString());
+        Log.d("location", location.toString());
     }
 
     @Override
