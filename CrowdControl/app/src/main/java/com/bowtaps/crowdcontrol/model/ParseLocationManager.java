@@ -27,7 +27,7 @@ public class ParseLocationManager implements SecureLocationManager {
     /**
      * TODO: doc me, Doc!
      */
-    private List<ParseLocationModel> memberLocations;
+    private List<LocationModel> memberLocations;
 
     /**
      * TODO: doc me, Doc!
@@ -64,7 +64,7 @@ public class ParseLocationManager implements SecureLocationManager {
      * @throws Exception Throws the exception
      */
     @Override
-    public List<ParseLocationModel> getLocations() throws Exception {
+    public List<LocationModel> getLocations() throws Exception {
         //if null throw exception
         this.fetchMembersLocations();
         this.transmitting = true;
@@ -141,6 +141,17 @@ public class ParseLocationManager implements SecureLocationManager {
             UserProfileModel me = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
             GroupModel group = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
             List<? extends UserProfileModel> groupMembers = group.getGroupMembers();
+            ParseQuery oldLoc = ParseQuery.getQuery("Location");
+            ParseObject from = ParseObject.createWithoutData("CCUser", me.getId());
+            oldLoc.whereEqualTo("From", from);
+            try{
+                List<ParseObject> results = oldLoc.find();
+                for(ParseObject oldResult: results){
+                    oldResult.deleteInBackground();
+                }
+            }catch (ParseException e){
+                Log.e("Parse Exception", e.toString());
+            }
             //for each member of the group create the location model
             //create a location object from me to each group member
             for (UserProfileModel user: groupMembers) {
@@ -174,7 +185,7 @@ public class ParseLocationManager implements SecureLocationManager {
         List<ParseObject> response = query.find();
         ParseLocationModel locationModel;
         this.memberLocations = null;
-        this.memberLocations = new ArrayList<ParseLocationModel>();
+        this.memberLocations = new ArrayList<LocationModel>();
         for (ParseObject obj: response) {
             locationModel = new ParseLocationModel(ParseObject.create("Location"));
             String latitude = obj.get("Latitude").toString();

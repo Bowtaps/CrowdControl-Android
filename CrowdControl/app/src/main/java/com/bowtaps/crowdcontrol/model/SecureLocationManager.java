@@ -21,7 +21,7 @@ public interface SecureLocationManager {
      *
      * @throws Exception Throws the exception
      */
-    public List<? extends LocationModel> getLocations() throws Exception;
+    public List<LocationModel> getLocations() throws Exception;
 
     /**
      * Retrieves the interval for sending/receiving location data, set by the user.

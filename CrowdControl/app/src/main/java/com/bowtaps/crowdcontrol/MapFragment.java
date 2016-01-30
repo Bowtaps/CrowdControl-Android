@@ -131,7 +131,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     private void myMethodCall2(Button view) {
         SecureLocationManager locationManager = CrowdControlApplication.getInstance().getLocationManager();
         try{
-            List<? extends LocationModel> group = locationManager.getLocations();
+            List<LocationModel> group = locationManager.getLocations();
             for(LocationModel member: group){
                 Double longitude = new Double(member.getLongitude());
                 Double latitude = new Double(member.getLatitude());

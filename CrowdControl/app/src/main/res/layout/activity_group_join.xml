@@ -17,7 +17,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:background="#0aac19" />
+        android:background="#4f514f" />
 
     <Button
         android:layout_width="wrap_content"
