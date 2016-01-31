@@ -17,6 +17,11 @@ import java.util.List;
 public interface SecureLocationManager {
 
     /**
+     * TODO: Doc me, Doc!
+     */
+    public void initializeLocationRequest();
+
+    /**
      * Retrieves the locations of other members of the current group.
      *
      * @throws Exception Throws the exception

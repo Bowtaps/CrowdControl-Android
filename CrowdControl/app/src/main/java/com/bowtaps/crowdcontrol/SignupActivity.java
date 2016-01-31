@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 /**
  * A login screen that offers registration via email/password.
@@ -204,20 +205,24 @@ public class SignupActivity extends AppCompatActivity
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
             return;
         }
-        if(checkSelfPermission(LOCATION_SERVICE) == PackageManager.PERMISSION_GRANTED){
+        if(checkSelfPermission(ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             Log.d("Location Permissions", "We have permission");
+            CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
             return;
         }
-        if(shouldShowRequestPermissionRationale(LOCATION_SERVICE)){
+        if(shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)){
             Snackbar.make(mEmailView, "Location is required for use in this app", Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.M)
                         @Override
                         public void onClick(View v) {
                             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_FINE_LOCATION);
+                            CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
                         }
                     });
         }else{
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_FINE_LOCATION);
+            CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
         }
     }
 

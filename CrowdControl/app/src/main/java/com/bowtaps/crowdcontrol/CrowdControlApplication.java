@@ -60,8 +60,6 @@ public class CrowdControlApplication extends Application {
         // Initialize internal properties
         // Initialize parse connection
         modelManager = new ParseModelManager(this, "xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv", "PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi");
-        locationManager = new ParseLocationManager();
-
     }
 
     /**
@@ -74,6 +72,11 @@ public class CrowdControlApplication extends Application {
     }
 
     public SecureLocationManager getLocationManager(){
+        if(locationManager == null)
+        {
+            locationManager = new ParseLocationManager();
+        }
+
         return locationManager;
     }
 
