@@ -1,6 +1,8 @@
 package com.bowtaps.crowdcontrol;
 
 
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import com.bowtaps.crowdcontrol.model.LocationModel;
 import com.bowtaps.crowdcontrol.model.ParseLocationManager;
 import com.bowtaps.crowdcontrol.model.SecureLocationManager;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -126,6 +129,11 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     }
 
     private void myMethodCall1(Button view) {
+        Log.d("myMtethodCall1", "Homing button pressed");
+        SecureLocationManager secureLocationManager = CrowdControlApplication.getInstance().getLocationManager();
+        LatLng myLoc = secureLocationManager.getCurrentLocation();
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLoc, 15));
+        Log.d("myMtethodCall1", myLoc.toString());
     }
 
     private void myMethodCall2(Button view) {

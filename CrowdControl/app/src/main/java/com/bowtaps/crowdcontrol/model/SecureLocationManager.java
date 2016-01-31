@@ -2,6 +2,8 @@ package com.bowtaps.crowdcontrol.model;
 
 import android.util.Pair;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.List;
 
 /**
@@ -52,5 +54,5 @@ public interface SecureLocationManager {
 
     public void setTransmitting(boolean transmitting);
 
-    public Pair<Double, Double> getCurrentLocation();
+    public LatLng getCurrentLocation();
 }

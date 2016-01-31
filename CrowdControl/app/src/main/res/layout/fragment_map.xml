@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/locationButton"
         android:drawableLeft="@android:drawable/ic_menu_mylocation"
-        android:layout_gravity="right|bottom"
+        android:layout_gravity="left|bottom"
         android:allowUndo="false"
         android:clickable="true" />
 

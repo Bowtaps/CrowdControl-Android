@@ -1,13 +1,14 @@
 package com.bowtaps.crowdcontrol.model;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
-import android.util.Pair;
 import android.location.LocationManager;
 import android.location.Location;
 
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
 import com.bowtaps.crowdcontrol.Location.GoogleLocationListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -123,13 +124,13 @@ public class ParseLocationManager implements SecureLocationManager {
     }
 
     @Override
-    public Pair<Double, Double> getCurrentLocation() {
+    public LatLng getCurrentLocation() {
         //Get the current location of this device and set the variables
 
         Double latitude = listener.getLatitude();
         Double longitude = listener.getLongitude();
 
-        return Pair.create(latitude, longitude);
+        return new LatLng(latitude,longitude);
     }
 
     private void broadcastLocation(){
