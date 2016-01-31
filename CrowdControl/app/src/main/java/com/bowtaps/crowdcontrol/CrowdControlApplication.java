@@ -1,7 +1,13 @@
 package com.bowtaps.crowdcontrol;
 
+import android.Manifest;
 import android.app.Application;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.Build;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.View;
 
 import com.bowtaps.crowdcontrol.model.ModelManager;
 import com.bowtaps.crowdcontrol.model.ParseLocationManager;
@@ -54,7 +60,6 @@ public class CrowdControlApplication extends Application {
         // Initialize internal properties
         // Initialize parse connection
         modelManager = new ParseModelManager(this, "xJ5uDHyuSDxuMVBhNennSenRo9IRLnHx2g8bfPEv", "PuShwUtOWCdhCa9EmEDWjSuJ0AhFkMy9kJhELxHi");
-        locationManager = new ParseLocationManager();
     }
 
     /**
@@ -67,6 +72,11 @@ public class CrowdControlApplication extends Application {
     }
 
     public SecureLocationManager getLocationManager(){
+        if(locationManager == null)
+        {
+            locationManager = new ParseLocationManager();
+        }
+
         return locationManager;
     }
 
@@ -79,4 +89,6 @@ public class CrowdControlApplication extends Application {
     public static CrowdControlApplication getInstance() {
         return instance;
     }
+
+
 }
