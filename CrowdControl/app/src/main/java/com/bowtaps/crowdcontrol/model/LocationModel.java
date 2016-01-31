@@ -2,6 +2,8 @@ package com.bowtaps.crowdcontrol.model;
 
 import com.parse.Parse;
 
+import java.util.List;
+
 /**
  * Created by Evan Hammer on 1/19/16.
  */

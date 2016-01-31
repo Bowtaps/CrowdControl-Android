@@ -187,5 +187,8 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
             From = new ParseUserProfileModel(fromUser);
         }
     }
-
+    public static List<LocationModel> fetchMemberLocations(){
+        List<LocationModel> groupMemberLocations;
+        return groupMemberLocations = null;
+    }
 }

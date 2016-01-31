@@ -111,6 +111,7 @@ public class SignupActivity extends AppCompatActivity
         mUserNameView = (AutoCompleteTextView) findViewById(R.id.userName);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+        mayRequestLocation();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -152,9 +153,6 @@ public class SignupActivity extends AppCompatActivity
      */
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
-            if(!mayRequestLocation()){
-                return;
-            }
             return;
         }
 
@@ -186,29 +184,6 @@ public class SignupActivity extends AppCompatActivity
         return false;
     }
 
-    /**
-     * Request permission to use the user's location
-     */
-    private boolean mayRequestLocation() {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
-            return true;
-        }
-        if(checkSelfPermission(LOCATION_SERVICE) == PackageManager.PERMISSION_GRANTED){
-            return true;
-        }
-        if(shouldShowRequestPermissionRationale(LOCATION_SERVICE)){
-            Snackbar.make(mEmailView, "Location is required for use in this app", Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_FINE_LOCATION);
-                        }
-                    });
-        }else{
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_FINE_LOCATION);
-        }
-        return false;
-    }
 
     /**
      * Callback received when a permissions request has been completed.
@@ -220,6 +195,29 @@ public class SignupActivity extends AppCompatActivity
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 populateAutoComplete();
             }
+        }
+    }
+    /**
+     * Request permission to use the user's location
+     */
+    private void mayRequestLocation() {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+            return;
+        }
+        if(checkSelfPermission(LOCATION_SERVICE) == PackageManager.PERMISSION_GRANTED){
+            Log.d("Location Permissions", "We have permission");
+            return;
+        }
+        if(shouldShowRequestPermissionRationale(LOCATION_SERVICE)){
+            Snackbar.make(mEmailView, "Location is required for use in this app", Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_FINE_LOCATION);
+                        }
+                    });
+        }else{
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_FINE_LOCATION);
         }
     }
 
