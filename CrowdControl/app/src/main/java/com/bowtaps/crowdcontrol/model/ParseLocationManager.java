@@ -8,6 +8,7 @@ import android.location.Location;
 
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
 import com.bowtaps.crowdcontrol.Location.GoogleLocationListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -133,85 +134,23 @@ public class ParseLocationManager implements SecureLocationManager {
     }
 
     @Override
-    public Pair<Double, Double> getCurrentLocation() {
+    public LatLng getCurrentLocation() {
         //Get the current location of this device and set the variables
 
         Double latitude = listener.getLatitude();
         Double longitude = listener.getLongitude();
 
-        return Pair.create(latitude, longitude);
+        return new LatLng(latitude, longitude);
     }
 
     private void broadcastLocation(){
         //if the transmitting flag is set to true, send the data
         //if the transmitting flag is set to false, leave function
         if(this.transmitting){
-            //Send out the data to all members of the group
-            //First get the group members
-            UserProfileModel me = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
-            GroupModel group = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
-            List<? extends UserProfileModel> groupMembers = group.getGroupMembers();
-            ParseQuery oldLoc = ParseQuery.getQuery("Location");
-            ParseObject from = ParseObject.createWithoutData("CCUser", me.getId());
-            oldLoc.whereEqualTo("From", from);
-            try{
-                List<ParseObject> results = oldLoc.find();
-                for(ParseObject oldResult: results){
-                    oldResult.deleteInBackground();
-                }
-            }catch (ParseException e){
-                Log.e("Parse Exception", e.toString());
-            }
-            //for each member of the group create the location model
-            //create a location object from me to each group member
-            for (UserProfileModel user: groupMembers) {
-                if (user.getDisplayName() != me.getDisplayName()) {
-                    ParseObject obj = ParseObject.create("Location");
-                    Double lat = this.listener.getLatitude();
-                    Double lng = this.listener.getLongitude();
-                    Log.d("Location: ", "Lat: " + lat + "\nLong: " + lng);
-                    obj.put("Longitude", lng.toString());
-                    obj.put("Latitude", lat.toString());
-                    LocationModel loc = new ParseLocationModel(obj);
-                    loc.setFrom(me);
-                    loc.setTo(user);
-                    try {
-                        loc.save();
-                    } catch (Exception e) {
-                        Log.e("Saving Exception: ", "Error: " + e);
-                    }
-                } else {
-                    Log.i("ME: ", "It catches me in the group");
-                }
-            }
+            ParseLocationModel.broadcastLocation();
         }
     }
     private void fetchMembersLocations() throws ParseException {
-        //get the current user profile
-        UserProfileModel profile = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
-        ParseQuery query = ParseQuery.getQuery("Location");
-        ParseObject to = ParseObject.createWithoutData("CCUser", profile.getId());
-        query.whereEqualTo("To", to);
-        List<ParseObject> response = query.find();
-        ParseLocationModel locationModel;
-        this.memberLocations = null;
-        this.memberLocations = new ArrayList<LocationModel>();
-        for (ParseObject obj: response) {
-            locationModel = new ParseLocationModel(ParseObject.create("Location"));
-            String latitude = obj.get("Latitude").toString();
-            String longitude = obj.get("Longitude").toString();
-            locationModel.setLatitude(Double.parseDouble(latitude));
-            locationModel.setLongitude(Double.parseDouble(longitude));
-            locationModel.setTo(profile);
-            ParseQuery profileQuery = ParseQuery.getQuery("CCUser");
-            Object from = obj.get("From");
-            ParseUserProfileModel fromProfile = new ParseUserProfileModel((ParseObject)from);
-            fromProfile.load();
-            boolean added = this.memberLocations.add(locationModel);
-            if(!added){
-                //Replace with throwing an exception
-                Log.e("GroupList", "Error Adding a member to the list");
-            }
-        }
+        memberLocations = ParseLocationModel.fetchMemberLocations();
     }
 }

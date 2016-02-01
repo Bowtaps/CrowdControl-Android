@@ -75,6 +75,7 @@ public class CrowdControlApplication extends Application {
         if(locationManager == null)
         {
             locationManager = new ParseLocationManager();
+            locationManager.initializeLocationRequest();
         }
 
         return locationManager;
