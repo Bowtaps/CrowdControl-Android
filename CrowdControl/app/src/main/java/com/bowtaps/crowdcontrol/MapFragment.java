@@ -1,9 +1,12 @@
 package com.bowtaps.crowdcontrol;
 
 
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import com.bowtaps.crowdcontrol.model.LocationModel;
 import com.bowtaps.crowdcontrol.model.ParseLocationManager;
 import com.bowtaps.crowdcontrol.model.SecureLocationManager;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -37,8 +41,8 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private String mText;
-    Button mLocationButton;
-    Button mSyncButton;
+    FloatingActionButton mLocationButton;
+    FloatingActionButton mSyncButton;
 
     /**
      * Use this factory method to create a new instance of
@@ -96,8 +100,8 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         t.commit();
 
         // Get handle to button
-        mLocationButton = (Button)v.findViewById(R.id.locationButton);
-        mSyncButton = (Button)v.findViewById(R.id.syncButton);
+        mLocationButton = (FloatingActionButton)v.findViewById(R.id.locationButton);
+        mSyncButton = (FloatingActionButton)v.findViewById(R.id.syncButton);
 
         // Declare button clicks
         mLocationButton.setOnClickListener(this);
@@ -112,11 +116,11 @@ public class MapFragment extends Fragment implements View.OnClickListener{
 
         switch (view.getId()) {
             case R.id.locationButton:
-                myMethodCall1((Button) view);
+                myMethodCall1((FloatingActionButton) view);
                 break;
 
             case R.id.syncButton:
-                myMethodCall2((Button) view);
+                myMethodCall2((FloatingActionButton) view);
                 break;
 
             default:
@@ -125,11 +129,17 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void myMethodCall1(Button view) {
+    private void myMethodCall1(FloatingActionButton view) {
+        Log.d("myMtethodCall1", "Homing button pressed");
+        SecureLocationManager secureLocationManager = CrowdControlApplication.getInstance().getLocationManager();
+        LatLng myLoc = secureLocationManager.getCurrentLocation();
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLoc, 15));
+        Log.d("myMtethodCall1", myLoc.toString());
     }
 
-    private void myMethodCall2(Button view) {
+    private void myMethodCall2(FloatingActionButton view) {
         refreshMarkers();
+
     }
 
     /**

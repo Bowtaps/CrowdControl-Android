@@ -212,7 +212,9 @@ public class SignupActivity extends AppCompatActivity
         }
         if(shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)){
             Snackbar.make(mEmailView, "Location is required for use in this app", Snackbar.LENGTH_INDEFINITE)
+
                     .setAction(android.R.string.ok, new View.OnClickListener() {
+
                         @TargetApi(Build.VERSION_CODES.M)
                         @Override
                         public void onClick(View v) {

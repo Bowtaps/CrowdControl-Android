@@ -2,6 +2,7 @@ package com.bowtaps.crowdcontrol.Location;
 
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -23,9 +24,18 @@ public class GoogleLocationListener implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        this.longitude = location.getLongitude();
-        this.latitude = location.getLatitude();
-        Log.d("location", location.toString());
+
+        //Checks to see if the device running this app is an emulator
+        if(Build.FINGERPRINT.contains("generic")) {
+            this.latitude = 44.07082231;      //Joe's house
+            this.longitude = -103.25872087;
+        }
+
+        else{
+            this.longitude = location.getLongitude();
+            this.latitude = location.getLatitude();
+            Log.d("location", location.toString());
+        }
     }
 
     @Override
