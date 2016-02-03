@@ -78,7 +78,9 @@
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme" >
         </activity>
+
         <service android:name=".MessageService"></service>
+        <service android:name=".GroupService"></service>
     </application>
 
 </manifest>
