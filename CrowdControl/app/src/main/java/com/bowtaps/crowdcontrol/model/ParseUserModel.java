@@ -185,4 +185,20 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
         ParseUserModel userModel = new ParseUserModel(parseUser, profileModel);
         return userModel;
     }
+
+    public static ParseUserModel createFromParseObject(ParseObject object) {
+
+        // Verify parameters
+        if (object == null) {
+            return null;
+        }
+        if (!(object instanceof ParseUser)) {
+            return null;
+        }
+
+        // Instantiate a new object
+        ParseUserModel model = new ParseUserModel((ParseUser) object);
+
+        return model;
+    }
 }

@@ -2,14 +2,19 @@ package com.bowtaps.crowdcontrol;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 
+import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
+import com.bowtaps.crowdcontrol.model.UserProfileModel;
 
 import java.lang.ref.WeakReference;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
 
 /**
  * Service for automatically fetching updates to groups and for notifying registered listeners about
@@ -29,7 +34,9 @@ public class GroupService extends Service {
      * List of registered {@link GroupUpdatesListener} objects, implemented using weak references
      * to avoid this service keeping hold of the registered listeners.
      */
-    List<WeakReference<GroupUpdatesListener>> groupUpdatesListeners;
+    private List<WeakReference<GroupUpdatesListener>> groupUpdatesListeners;
+
+    private final Timer timer;
 
 
     /**
@@ -38,6 +45,7 @@ public class GroupService extends Service {
     public GroupService() {
         binder = new GroupServiceBinder();
         groupUpdatesListeners = new LinkedList<WeakReference<GroupUpdatesListener>>();
+        timer = new Timer();
     }
 
     /**
@@ -50,6 +58,17 @@ public class GroupService extends Service {
 
         // Pass command on to superclass
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    /**
+     * Called when the {@link FetchGroupUpdatesTask} is completed.
+     * @param results The results from the cloud code query.
+     */
+    public void onGroupUpdatesFetched(List<? extends BaseModel> results) {
+
+        // TODO forward calls to listeners
+
+        // TODO restarts scheduler
     }
 
     /**
@@ -112,6 +131,66 @@ public class GroupService extends Service {
         }
     }
 
+
+    /**
+     * Internal class that extends {@link AsyncTask} for queries to the database.
+     */
+    private class FetchGroupUpdatesTask extends AsyncTask<Void, Void, List<? extends BaseModel>> {
+
+        /**
+         * The group to fetch updates for.
+         */
+        private final GroupModel group;
+
+        /**
+         * The user to make the call on the behalf of.
+         */
+        private final UserProfileModel user;
+
+        /**
+         * The time to fetch all updates more recent than.
+         */
+        private final Date since;
+
+        /**
+         * Class constructor. Initializes private members.
+         *
+         * @param group The group to fetch updates for.
+         * @param user The user to make the call on the behalf of.
+         * @param since The time to fetch all updates more recent than.
+         */
+        public FetchGroupUpdatesTask(GroupModel group, UserProfileModel user, Date since) {
+            this.group = group;
+            this.user = user;
+            this.since = since;
+        }
+
+        /**
+         * Requests group updates from the application's model manager.
+         *
+         * @param params Unused
+         * @return The results received from the application's model manager.
+         */
+        @Override
+        protected List<? extends BaseModel> doInBackground(Void...params) {
+            try {
+                return CrowdControlApplication.getInstance().getModelManager().fetchGroupUpdates(group, user, since);
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
+        /**
+         * Passes the results to the parent service. Calls
+         * {@link GroupService#onGroupUpdatesFetched(List<? extends BaseModel>)}.
+         *
+         * @param results The results of the asynchronous query.
+         */
+        @Override
+        protected void onPostExecute(List<? extends BaseModel> results) {
+            GroupService.this.onGroupUpdatesFetched(results);
+        }
+    }
 
     /**
      * Binder for communicating with this service using method calls.
