@@ -1,5 +1,6 @@
 package com.bowtaps.crowdcontrol.model;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
@@ -246,8 +247,8 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
                 Double lat = currentLocation.latitude;
                 Double lng = currentLocation.longitude;
                 Log.d("Location: ", "Lat: " + lat + "\nLong: " + lng);
-                obj.put("Longitude", lng.toString());
-                obj.put("Latitude", lat.toString());
+                obj.put(longitudeKey, lng.toString());
+                obj.put(latitudeKey, lat.toString());
                 LocationModel loc = new ParseLocationModel(obj);
                 loc.setFrom(me);
                 loc.setTo(user);
@@ -259,6 +260,43 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
             } else {
                 Log.i("ME: ", "It catches me in the group");
             }
+        }
+    }
+    public static void sendLocationToList(List<UserProfileModel> members){
+        UserProfileModel me = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
+        LatLng currentLocation = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
+        for(UserProfileModel profile: members){
+            if(profile.getDisplayName() != me.getDisplayName()){
+                ParseObject obj = ParseObject.create(tableName);
+                Double lat = currentLocation.latitude;
+                Double lng = currentLocation.longitude;
+                Log.d("Location: ", "Lat: " + lat + "\nLong: " + lng);
+                obj.put(longitudeKey, lng.toString());
+                obj.put(latitudeKey, lat.toString());
+                LocationModel loc = new ParseLocationModel(obj);
+                loc.setFrom(me);
+                loc.setTo(profile);
+                try {
+                    loc.save();
+                } catch (Exception e) {
+                    Log.e("Saving Exception: ", "Error: " + e);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param pObject
+     * @return
+     */
+    @Nullable
+    public static LocationModel createFromParseObject(ParseObject pObject){
+        if(pObject.getClassName().equals(tableName)){
+            LocationModel obj = new ParseLocationModel(pObject);
+            return obj;
+        }
+        else{
+            return null;
         }
     }
 }
