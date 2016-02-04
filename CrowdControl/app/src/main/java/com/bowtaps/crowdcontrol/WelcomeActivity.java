@@ -35,6 +35,8 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         //Declare button clicks
         mButtonCreateAccount.setOnClickListener(this);
 
+
+
         //This Determines if a user is logged in from a previous run
         if (CrowdControlApplication.getInstance().getModelManager().getCurrentUser() != null) {
 

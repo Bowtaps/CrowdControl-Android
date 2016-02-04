@@ -36,6 +36,8 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     private ListView mGroupListView;
     private List<GroupModel> mGroupList;
 
+    private Intent mServiceIntent;
+
     private static final String TAG = GroupJoinActivity.class.getSimpleName();
 
     /**
@@ -48,6 +50,12 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_join);
+
+        //TODO move to implementation
+        //Set up messaging service
+        mServiceIntent = new Intent( getApplicationContext(), MessageService.class);
+
+        startService(mServiceIntent);
 
         // Initialize list adapter for mGroupListView
         mGroupList = new ArrayList<GroupModel>();
@@ -237,4 +245,10 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         Intent myIntent = new Intent(this, GroupNavigationActivity.class);
         this.startActivity(myIntent);
     }
+
+    public void onDestroy() {
+        stopService(new Intent(this,MessageService.class));
+        super.onDestroy();
+    }
+
 }
