@@ -124,15 +124,19 @@ public class GroupService extends Service {
      */
     public void onGroupUpdatesFetched(List<? extends BaseModel> results) {
 
-        // Separate results into buckets based on type
         GroupModel group = null;
         List<UserProfileModel> users = new LinkedList<UserProfileModel>();
 
+        // Separate results into buckets based on type and keep track of most recent update time
         for (BaseModel model : results) {
             if (model instanceof GroupModel) {
                 group = (GroupModel) model;
             } else if (model instanceof UserProfileModel) {
                 users.add((UserProfileModel) model);
+            }
+
+            if (model.getUpdated().after(since)) {
+                since = model.getUpdated();
             }
         }
 

@@ -59,25 +59,5 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         mTabs = (TabLayout) findViewById(R.id.tabs);
         mTabs.setupWithViewPager(tabsviewPager);
-
-        testCloudCode();
-
     }
-
-    public void testCloudCode() {
-
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("group", CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getId());
-        params.put("userProfile", CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().getId());
-        params.put("timestamp", CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getCreated());
-
-        ParseCloud.callFunctionInBackground("fetchGroupUpdates", params, new FunctionCallback<List<ParseObject>>() {
-            public void done(List<ParseObject> results, ParseException e) {
-                if (e != null) {
-                    Log.d("GroupNavigationActivity", "failed cloud code! " + e.getMessage());
-                }
-            }
-        });
-    }
-
 }
