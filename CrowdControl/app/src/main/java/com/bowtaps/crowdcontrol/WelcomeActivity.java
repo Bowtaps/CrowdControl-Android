@@ -1,8 +1,14 @@
 package com.bowtaps.crowdcontrol;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +17,8 @@ import android.widget.Button;
 import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.bowtaps.crowdcontrol.model.ParseUserProfileModel;
 import com.parse.ParseUser;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 /*
  *  This Activity is the first thing launched by the app.
@@ -23,12 +31,13 @@ import com.parse.ParseUser;
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonCreateAccount;
+    int REQUEST_FINE_LOCATION = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-
+        mayRequestLocation();
         // Get handles to buttons
         mButtonCreateAccount = (Button) findViewById(R.id.buttonToCreate);
 
@@ -117,5 +126,20 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         Intent myIntent = new Intent(this,GroupJoinActivity.class);
         this.startActivity(myIntent);
     }
-
+    private void mayRequestLocation() {
+        Log.d("Location Permissions", "In mayRequestLocation");
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+            Log.d("Location Permissions", "First if");
+            CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
+            return;
+        }
+        if(checkSelfPermission(ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            Log.d("Location Permissions", "We have permission");
+            CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
+            return;
+        } else{
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_FINE_LOCATION);
+            CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
+        }
+    }
 }

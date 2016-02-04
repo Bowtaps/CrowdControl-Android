@@ -56,16 +56,20 @@ public class ParseLocationManager implements SecureLocationManager {
 
     public void initializeLocationRequest()
     {
-        this.listener = new GoogleLocationListener();
-        this.locationManager = (LocationManager) CrowdControlApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
-        try{
-            if (this.locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 1000, this.listener);
-            }
+        if(this.listener == null){
+            this.listener = new GoogleLocationListener();
+        }
+        if(this.locationManager == null) {
+            this.locationManager = (LocationManager) CrowdControlApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
+            try{
+                if (this.locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 1000, this.listener);
+                }
 
-        }catch(SecurityException e1){
-            //do something
-            Log.e("Security Exception", e1.toString());
+            }catch(SecurityException e1){
+                //do something
+                Log.e("Security Exception", e1.toString());
+            }
         }
     }
 

@@ -16,7 +16,7 @@ public class GoogleLocationListener implements LocationListener {
     private boolean providerEnabled;
 
     public GoogleLocationListener(){
-
+        Log.d("GoogleLocationListener","Constructer");
     }
 
 
@@ -41,6 +41,7 @@ public class GoogleLocationListener implements LocationListener {
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         this.status = status;
+        Log.d("Location Status", "Status Changed to: " + status);
     }
 
     @Override
