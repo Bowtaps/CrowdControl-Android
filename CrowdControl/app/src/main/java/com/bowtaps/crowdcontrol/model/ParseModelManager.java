@@ -424,13 +424,13 @@ public class ParseModelManager implements ModelManager {
     }
 
     @Override
-    public List<ParseBaseModel> fetchGroupUpdates(GroupModel group, UserProfileModel user, Date since) throws ParseException {
+    public List<ParseBaseModel> fetchGroupUpdates(String groupId, String userPId, Date since) throws ParseException {
 
         // Verify parameters
-        if (group == null) {
+        if (groupId == null) {
             throw new IllegalArgumentException("parameter 'group' cannot be null");
         }
-        if (user == null) {
+        if (userPId == null) {
             throw new IllegalArgumentException("parameter 'user' cannot be null");
         }
         if (since == null) {
@@ -442,8 +442,8 @@ public class ParseModelManager implements ModelManager {
 
         // Construct parameter hash map
         HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("group", group.getId());
-        params.put("userProfile", user.getId());
+        params.put("group", groupId);
+        params.put("userProfile", userPId);
         params.put("timestamp", since);
 
         // Call cloud code

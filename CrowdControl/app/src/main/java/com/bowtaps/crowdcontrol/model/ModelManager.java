@@ -40,5 +40,5 @@ public interface ModelManager {
 
     public void createGroupInBackground(UserProfileModel leader, String name, String description, final BaseModel.SaveCallback callback);
 
-    public List<? extends BaseModel> fetchGroupUpdates(GroupModel group, UserProfileModel user, Date since) throws Exception;
+    public List<? extends BaseModel> fetchGroupUpdates(String groupId, String userId, Date since) throws Exception;
 }
