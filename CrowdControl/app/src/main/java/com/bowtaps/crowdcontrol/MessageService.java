@@ -7,7 +7,6 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
-import com.parse.ParseUser;
 import com.sinch.android.rtc.ClientRegistration;
 import com.sinch.android.rtc.Sinch;
 import com.sinch.android.rtc.SinchClient;

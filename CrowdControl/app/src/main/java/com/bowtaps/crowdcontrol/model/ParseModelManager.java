@@ -2,12 +2,20 @@ package com.bowtaps.crowdcontrol.model;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
+import com.bowtaps.crowdcontrol.CrowdControlApplication;
+import com.parse.FunctionCallback;
 import com.parse.Parse;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -347,8 +355,7 @@ public class ParseModelManager implements ModelManager {
     }
 
     @Override
-    public ParseGroupModel createGroup(UserProfileModel leader, String name, String description) throws Exception
-    {
+    public ParseGroupModel createGroup(UserProfileModel leader, String name, String description) throws Exception {
         // Validate parameters
         if (leader != null && !(leader instanceof ParseUserProfileModel)) {
             throw new IllegalArgumentException("leader parameter must be an instance of ParseUserProfileModel");
@@ -364,8 +371,7 @@ public class ParseModelManager implements ModelManager {
     }
 
     @Override
-    public void createGroupInBackground(UserProfileModel leader, String name, String description, final BaseModel.SaveCallback callback)
-    {
+    public void createGroupInBackground(UserProfileModel leader, String name, String description, final BaseModel.SaveCallback callback) {
         // Validate parameters
         if (leader != null && !(leader instanceof ParseUserProfileModel)) {
             throw new IllegalArgumentException("leader parameter must be an instance of ParseUserProfileModel");
@@ -415,5 +421,60 @@ public class ParseModelManager implements ModelManager {
             }
         }.execute(leader, name, description, callback);
 
+    }
+
+    @Override
+    public List<ParseBaseModel> fetchGroupUpdates(String groupId, String userPId, Date since) throws ParseException {
+
+        // Verify parameters
+        if (groupId == null) {
+            throw new IllegalArgumentException("parameter 'group' cannot be null");
+        }
+        if (userPId == null) {
+            throw new IllegalArgumentException("parameter 'user' cannot be null");
+        }
+        if (since == null) {
+            throw new IllegalArgumentException("parameter 'since' cannot be null");
+        }
+
+        // Our list that will contain our resutls
+        List<ParseBaseModel> results = new LinkedList<ParseBaseModel>();
+
+        // Construct parameter hash map
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("group", groupId);
+        params.put("userProfile", userPId);
+        params.put("timestamp", since);
+
+        // Call cloud code
+        List<Object> parseResults = ParseCloud.callFunction("fetchGroupUpdates", params);
+
+        // Process results
+        for (Object result : parseResults) {
+
+            // Ignore non-ParseObject objects
+            if (!(result instanceof ParseObject)) continue;
+
+            // Cast to more convenient type
+            ParseObject parseResult = (ParseObject) result;
+
+            // If this remains null, then we have no corresponding model for this object
+            ParseBaseModel model = null;
+
+            // Build ParseModel using the given ParseObject of unknown origin
+            if (model == null) {
+                model = ParseGroupModel.createFromParseObject(parseResult);
+            }
+            if (model == null) {
+                model = ParseUserProfileModel.createFromParseObject(parseResult);
+            }
+
+            // Add model to result list if successfully created
+            if (model != null) {
+                results.add(model);
+            }
+        }
+
+        return results;
     }
 }
