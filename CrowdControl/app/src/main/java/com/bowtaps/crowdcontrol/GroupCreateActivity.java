@@ -16,9 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
-import com.bowtaps.crowdcontrol.model.ParseGroupModel;
 
 /*
  *  Controller for the view that handels creating a group!!!

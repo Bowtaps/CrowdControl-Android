@@ -61,4 +61,20 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
     public void setDisplayName(String displayName) {
         parseObject.put(displayNameKey, displayName);
     }
+
+    public static ParseUserProfileModel createFromParseObject(ParseObject object) {
+
+        // Verify parameters
+        if (object == null) {
+            return null;
+        }
+        if (!object.getClassName().equals(tableName)) {
+            return null;
+        }
+
+        // Instantiate a new object
+        ParseUserProfileModel model = new ParseUserProfileModel(object);
+
+        return model;
+    }
 }

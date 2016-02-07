@@ -81,6 +81,8 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="d37e019949486238d0e94a3722a1ee4a30afe722" />
+        <service android:name=".MessageService"></service>
+        <service android:name=".GroupService"></service>
     </application>
 
 </manifest>

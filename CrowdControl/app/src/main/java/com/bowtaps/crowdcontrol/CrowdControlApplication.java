@@ -1,6 +1,7 @@
 package com.bowtaps.crowdcontrol;
 
 import android.app.Application;
+import android.content.Intent;
 
 
 import com.bowtaps.crowdcontrol.model.ModelManager;
@@ -8,12 +9,8 @@ import com.bowtaps.crowdcontrol.model.ParseModelManager;
 
 import com.crashlytics.android.Crashlytics;
 
-import com.parse.Parse;
-import com.parse.ParseClassName;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
 import io.fabric.sdk.android.Fabric;
+import com.parse.ParseClassName;
 
 /**
  * The official singleton object for the application.
@@ -35,6 +32,12 @@ public class CrowdControlApplication extends Application {
      * The {@link ModelManager} responsible for data storage and retrieval.
      */
     private ModelManager modelManager = null;
+
+    public boolean isMessageServiceStarted;
+
+    private static final String SINCH_APP_KEY = "52ccd19d-4487-4645-8abf-b13edd57bffd";
+    private static final String SINCH_APP_SECRET = "Ke+GKezurEqC46z33Da5Ig==";
+    private static final String SINCH_ENVIRONMENT = "sandbox.sinch.com";
 
 
 
@@ -76,5 +79,10 @@ public class CrowdControlApplication extends Application {
      */
     public static CrowdControlApplication getInstance() {
         return instance;
+    }
+
+    public void onDestroy() {
+        stopService(new Intent(this,MessageService.class));
+        //super.onDestroy();
     }
 }

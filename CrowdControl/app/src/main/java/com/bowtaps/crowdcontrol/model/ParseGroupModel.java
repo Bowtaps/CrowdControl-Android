@@ -383,4 +383,20 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
 
         return result;
     }
+
+    public static ParseGroupModel createFromParseObject(ParseObject object) {
+
+        // Verify parameters
+        if (object == null) {
+            return null;
+        }
+        if (!object.getClassName().equals(tableName)) {
+            return null;
+        }
+
+        // Instantiate a new object
+        ParseGroupModel model = new ParseGroupModel(object);
+
+        return model;
+    }
 }

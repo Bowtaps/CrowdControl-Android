@@ -1,5 +1,6 @@
 package com.bowtaps.crowdcontrol.model;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,4 +39,6 @@ public interface ModelManager {
     public GroupModel createGroup(UserProfileModel leader, String name, String description) throws Exception;
 
     public void createGroupInBackground(UserProfileModel leader, String name, String description, final BaseModel.SaveCallback callback);
+
+    public List<? extends BaseModel> fetchGroupUpdates(String groupId, String userId, Date since) throws Exception;
 }

@@ -79,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
     /**
      *
-     * @param view
+     *
      *
      * Calls the launchLogoutActivity() method.
      */
@@ -103,6 +103,13 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
      * when the user is logged out.
      */
     private void launchLogoutActivity() {
+
+        //Todo move to messaging implentation
+        //stop the messaging service
+        stopService(new Intent(getApplicationContext(), MessageService.class));
+
+        //Todo Question --- does this log out the ParseUser?!?!?
+
         Intent myIntent = new Intent(this, SignupActivity.class);
         this.startActivity(myIntent);
     }
