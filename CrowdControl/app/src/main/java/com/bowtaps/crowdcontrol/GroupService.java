@@ -33,6 +33,11 @@ public class GroupService extends Service {
     private static final String TAG = "GroupService";
 
     /**
+     * Flag indicating that this {@link GroupService} is running.
+     */
+    private static Boolean running = false;
+
+    /**
      * Key to use when passing a {@link GroupModel} ID over an {@link Intent}.
      */
     public static final String INTENT_GROUP_ID_KEY = "group";
@@ -57,7 +62,7 @@ public class GroupService extends Service {
     /**
      * Timer object used for periodically fetching updates from the server.
      */
-    private final Timer timer;
+    private Timer timer;
 
     /**
      * The task to execute on repeat.
@@ -69,13 +74,14 @@ public class GroupService extends Service {
      */
     private Date since;
 
+
     /**
      * Default constructor for this object. Initializes properties.
      */
     public GroupService() {
         binder = new GroupServiceBinder();
         groupUpdatesListeners = new LinkedList<WeakReference<GroupUpdatesListener>>();
-        timer = new Timer();
+        timer = null;
     }
 
     /**
@@ -94,7 +100,10 @@ public class GroupService extends Service {
         }
 
         // Stop any currently running timers
-        timer.cancel();
+        if (timer != null) {
+            timer.cancel();
+        }
+        timer = new Timer();
 
         // Define task to run
         final Handler handler = new Handler();
@@ -113,10 +122,43 @@ public class GroupService extends Service {
 
         // Begin repeating ask
         timer.schedule(timerTask, 5000);
-        
+
+        // Set the running flag
+        running = true;
+
         // Pass command on to superclass
         return super.onStartCommand(intent, flags, startId);
     }
+
+    /**
+     * @see Service#onBind(Intent)
+     *
+     * @return Instance of {@link GroupService.GroupServiceBinder} that the bound entity can
+     *         use to communicate with this service.
+     */
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
+    /**
+     * Called when this {@link Service} is destroyed. Attempts to stop and
+     * cancel all timers and de-registers all registered listeners.
+     *
+     * @see Service#onDestroy()
+     */
+    @Override
+    public void onDestroy() {
+        running = false;
+
+        timer.cancel();
+        timerTask.cancel();
+        groupUpdatesListeners.clear();
+
+        super.onDestroy();
+    }
+
+
 
     /**
      * Called when the {@link FetchGroupUpdatesTask} is completed.
@@ -173,18 +215,6 @@ public class GroupService extends Service {
     }
 
     /**
-     * @see Service#onBind(Intent)
-     *
-     * @return Instance of {@link GroupService.GroupServiceBinder} that the bound entity can
-     *         use to communicate with this service.
-     */
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
-
-
-    /**
      * Registers a new {@link GroupUpdatesListener} listener object that will receive callbacks
      * when this service detects that a groupId has been updated. Registering a listener will not
      * not create a strong reference, meaning that the object can be cleaned up by garbage,
@@ -230,20 +260,6 @@ public class GroupService extends Service {
         if (reference != null) {
             groupUpdatesListeners.remove(reference);
         }
-    }
-
-
-    /**
-     * Called when this {@link Service} is destroyed. Attempts to stop and
-     * cancel all timers and de-registers all registered listeners.
-     *
-     * @see Service#onDestroy()
-     */
-    @Override
-    public void onDestroy() {
-        timer.cancel();
-        timerTask.cancel();
-        groupUpdatesListeners.clear();
     }
 
 
@@ -332,5 +348,15 @@ public class GroupService extends Service {
      */
     public interface GroupUpdatesListener {
         public void onReceivedGroupUpdate(GroupModel group);
+    }
+
+
+    /**
+     * Checks if the service is currently running.
+     *
+     * @return {@code true} if this service is running, {@code false} if not.
+     */
+    public static Boolean isRunning() {
+        return running;
     }
 }

@@ -4,13 +4,7 @@ import android.app.Application;
 
 import com.bowtaps.crowdcontrol.model.ModelManager;
 import com.bowtaps.crowdcontrol.model.ParseModelManager;
-import com.parse.Parse;
 import com.parse.ParseClassName;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
-import com.sinch.android.rtc.Sinch;
-import com.sinch.android.rtc.SinchClient;
 
 /**
  * The official singleton object for the application.
