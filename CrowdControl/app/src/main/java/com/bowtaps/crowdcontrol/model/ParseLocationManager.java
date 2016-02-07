@@ -81,9 +81,9 @@ public class ParseLocationManager implements SecureLocationManager {
     @Override
     public List<LocationModel> getLocations() throws Exception {
         //if null throw exception
-        this.fetchMembersLocations();
-        this.transmitting = true;
-        this.broadcastLocation();
+        //this.fetchMembersLocations();
+        //this.transmitting = true;
+        //this.broadcastLocation();
         return this.memberLocations;
     }
 
@@ -157,4 +157,11 @@ public class ParseLocationManager implements SecureLocationManager {
     private void fetchMembersLocations() throws ParseException {
         memberLocations = ParseLocationModel.fetchMemberLocations();
     }
+
+    /**
+     * public void updateLocations(List<LocationModel>){
+     *     //Go through the memberLocations and update any locations that are contained in the list
+     * }
+     * checkout HashMaps
+     */
 }
