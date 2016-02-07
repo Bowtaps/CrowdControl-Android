@@ -74,6 +74,9 @@ public class GroupService extends Service {
      */
     private Date since;
 
+    private String groupId;
+    private String userPId;
+
 
     /**
      * Default constructor for this object. Initializes properties.
@@ -90,14 +93,26 @@ public class GroupService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        // Set the running flag
+        running = true;
+
+        if (intent == null) {
+            stopSelf(startId);
+            return START_STICKY;
+        }
+
         // Extract intent arguments
         final String groupId = intent.getStringExtra(INTENT_GROUP_ID_KEY);
         final String userPId = intent.getStringExtra(INTENT_USER_ID_KEY);
 
         // Verify parameters
         if (groupId == null || userPId == null) {
-            return 1;
+            stopSelf(startId);
+            return START_STICKY;
         }
+
+        this.groupId = groupId;
+        this.userPId = userPId;
 
         // Stop any currently running timers
         if (timer != null) {
@@ -123,11 +138,8 @@ public class GroupService extends Service {
         // Begin repeating ask
         timer.schedule(timerTask, 5000);
 
-        // Set the running flag
-        running = true;
-
         // Pass command on to superclass
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     /**
@@ -151,8 +163,13 @@ public class GroupService extends Service {
     public void onDestroy() {
         running = false;
 
-        timer.cancel();
-        timerTask.cancel();
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (timerTask != null) {
+            timerTask.cancel();
+        }
         groupUpdatesListeners.clear();
 
         super.onDestroy();
@@ -211,6 +228,19 @@ public class GroupService extends Service {
         }
 
         // Restart the timer only after everything else is done
+        timer = new Timer();
+        final Handler handler = new Handler();
+        timerTask = new TimerTask() {
+
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        new FetchGroupUpdatesTask(groupId, userPId, since).execute();
+                    }
+                });
+            }
+        };
         timer.schedule(timerTask, 5000);
     }
 
