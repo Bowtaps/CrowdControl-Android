@@ -33,7 +33,7 @@ import java.util.List;
  * create an instance of this fragment.
  * This Fragment will handle all messaging between user and group
  */
-public class MessagingFragment extends Fragment {
+public class MessagingFragment extends Fragment implements GroupService.GroupUpdatesListener {
 
     private String mRecipientId;
     private EditText mMessageBodyField;
@@ -178,6 +178,11 @@ public class MessagingFragment extends Fragment {
         mMessageService.removeMessageClientListener(mMessageClientListener);
         getActivity().unbindService(mServiceConnection);
         super.onDestroy();
+    }
+
+    @Override
+    public void onReceivedGroupUpdate(GroupModel group) {
+        mRecipientGroup = group;
     }
 
     /**
