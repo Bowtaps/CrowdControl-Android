@@ -32,14 +32,10 @@ public class GroupNavigationActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private BroadcastReceiver receiver = null;
 
+    private GroupInfoFragment mGroupInfoFragment;
+
     /*
-     *  sets up the (@Link SimpleTabsAdapter) and adds in the possible Fragments
-     *
-     *  @see SimpleTabsAdapter
-     *  @see GroupInfoFragment
-     *  @see MapFragment
-     *  @see MessageingFragment
-     *  @see EventFragment
+     *  Sets up the (@Link SimpleTabsAdapter) and adds in tabs and their fragments.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +51,11 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         mTabsAdapter = new SimpleTabsAdapter(getSupportFragmentManager());
 
-        //creating the tabs and adding them to adapter class
-        mTabsAdapter.addFragment(GroupInfoFragment.newInstance("Group Information"), "Group Information");
+        // Create fragment objects
+        mGroupInfoFragment = GroupInfoFragment.newInstance("Group Information");
+
+        // Add fragments to tab manager
+        mTabsAdapter.addFragment(mGroupInfoFragment, "Group Information");
         mTabsAdapter.addFragment(MapFragment.newInstance("Map Fragment"), "Map");
 
 
@@ -85,6 +84,8 @@ public class GroupNavigationActivity extends AppCompatActivity {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 GroupNavigationActivity.this.groupServiceBinder = (GroupService.GroupServiceBinder) service;
+
+                GroupNavigationActivity.this.groupServiceBinder.addGroupUpdatesListener(mGroupInfoFragment);
             }
 
             @Override
@@ -92,6 +93,13 @@ public class GroupNavigationActivity extends AppCompatActivity {
                 GroupNavigationActivity.this.groupServiceBinder = null;
             }
         }, BIND_IMPORTANT);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        groupServiceBinder.removeGroupUpdatesListener(mGroupInfoFragment);
     }
 
     private void setUpReceiver() {
