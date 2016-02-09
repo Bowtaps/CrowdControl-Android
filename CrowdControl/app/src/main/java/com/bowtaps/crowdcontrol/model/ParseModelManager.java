@@ -437,17 +437,19 @@ public class ParseModelManager implements ModelManager {
             throw new IllegalArgumentException("parameter 'since' cannot be null");
         }
 
-        // Our list that will contain our resutls
-        List<ParseBaseModel> results = new LinkedList<ParseBaseModel>();
+        // Our list that will contain our results
+        List<ParseBaseModel> results = new LinkedList<>();
 
         // Construct parameter hash map
-        HashMap<String, Object> params = new HashMap<String, Object>();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("group", groupId);
         params.put("userProfile", userPId);
         params.put("timestamp", since);
 
         // Call cloud code
         List<Object> parseResults = ParseCloud.callFunction("fetchGroupUpdates", params);
+        List<ParseObject> parseGroupMembers = new ArrayList<>();
+        ParseObject parseGroupObject = null;
 
         // Process results
         for (Object result : parseResults) {
@@ -458,20 +460,19 @@ public class ParseModelManager implements ModelManager {
             // Cast to more convenient type
             ParseObject parseResult = (ParseObject) result;
 
-            // If this remains null, then we have no corresponding model for this object
-            ParseBaseModel model = null;
-
             // Build ParseModel using the given ParseObject of unknown origin
-            if (model == null) {
-                model = ParseGroupModel.createFromParseObject(parseResult);
+            if (ParseGroupModel.compatibleWithParseObject(parseResult)) {
+                parseGroupObject = parseResult;
+            } else {
+                parseGroupMembers.add(parseResult);
             }
-            if (model == null) {
-                model = ParseUserProfileModel.createFromParseObject(parseResult);
-            }
+        }
 
-            // Add model to result list if successfully created
-            if (model != null) {
-                results.add(model);
+        // Create group object using received member objects
+        if (parseGroupObject != null) {
+            ParseGroupModel groupModel = ParseGroupModel.createFromParseObject(parseGroupObject, parseGroupMembers);
+            if (groupModel != null) {
+                results.add(groupModel);
             }
         }
 

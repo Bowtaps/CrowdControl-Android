@@ -12,7 +12,6 @@ import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 
-import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,7 +56,7 @@ public class GroupService extends Service {
      * List of registered {@link GroupUpdatesListener} objects, implemented using weak references
      * to avoid this service keeping hold of the registered listeners.
      */
-    private List<WeakReference<GroupUpdatesListener>> groupUpdatesListeners;
+    private List<GroupUpdatesListener> groupUpdatesListeners;
 
     /**
      * Timer object used for periodically fetching updates from the server.
@@ -83,7 +82,7 @@ public class GroupService extends Service {
      */
     public GroupService() {
         binder = new GroupServiceBinder();
-        groupUpdatesListeners = new LinkedList<WeakReference<GroupUpdatesListener>>();
+        groupUpdatesListeners = new LinkedList<>();
         timer = null;
     }
 
@@ -184,7 +183,7 @@ public class GroupService extends Service {
     public void onGroupUpdatesFetched(List<? extends BaseModel> results) {
 
         GroupModel group = null;
-        List<UserProfileModel> users = new LinkedList<UserProfileModel>();
+        List<UserProfileModel> users = new LinkedList<>();
 
         // Separate results into buckets based on type and keep track of most recent update time
         for (BaseModel model : results) {
@@ -199,31 +198,16 @@ public class GroupService extends Service {
             }
         }
 
-        // Forward calls to listeners, removing null references
+        // Forward calls to listeners
         if (group != null) {
-            List<WeakReference<GroupUpdatesListener>> toRemove = null;
-            for (WeakReference<GroupUpdatesListener> ref : groupUpdatesListeners) {
+            for (GroupUpdatesListener ref : groupUpdatesListeners) {
 
-                // Make sure listener still exists
-                if (ref.get() == null) {
-
-                    // Create empty list only when needed (lazy)
-                    if (toRemove == null) {
-                        toRemove = new LinkedList<>();
-                    }
-                    toRemove.add(ref);
-                } else {
-                    try {
-                        ref.get().onReceivedGroupUpdate(group);
-                    } catch (Exception ex) {
-                        Log.d(TAG, "Exception thrown while executing onReceivedGroupUpdates");
-                    }
+                // Invoke callback method call
+                try {
+                    ref.onReceivedGroupUpdate(group);
+                } catch (Exception ex) {
+                    Log.d(TAG, "Exception thrown while executing onReceivedGroupUpdates");
                 }
-            }
-
-            // Remove null references
-            if (toRemove != null && !toRemove.isEmpty()) {
-                groupUpdatesListeners.removeAll(toRemove);
             }
         }
 
@@ -246,9 +230,10 @@ public class GroupService extends Service {
 
     /**
      * Registers a new {@link GroupUpdatesListener} listener object that will receive callbacks
-     * when this service detects that a groupId has been updated. Registering a listener will not
-     * not create a strong reference, meaning that the object can be cleaned up by garbage,
-     * collection, even if it is still registered with this service.
+     * when this service detects that a groupId has been updated. This maintains a strong reference
+     * to the listener object, which means it must be deregistered with a call to
+     * {@link #removeGroupUpdatesListener(GroupUpdatesListener)} before it can be reclaimed by
+     * garbage collection.
      *
      * @param listener The listener object to register.
      */
@@ -258,12 +243,12 @@ public class GroupService extends Service {
         if (listener == null) return;
 
         // Ensure listener is not already registered
-        for (WeakReference<GroupUpdatesListener> ref : groupUpdatesListeners) {
-            if (ref.get() == listener) return;
+        for (GroupUpdatesListener registeredListener : groupUpdatesListeners) {
+            if (registeredListener == listener) return;
         }
 
         // Add listener to list
-        groupUpdatesListeners.add(new WeakReference<GroupUpdatesListener>(listener));
+        groupUpdatesListeners.add(listener);
     }
 
     /**
@@ -277,19 +262,8 @@ public class GroupService extends Service {
         // Ensure listener is not null
         if (listener == null) return;
 
-        // Search list for matching listener
-        WeakReference<GroupUpdatesListener> reference = null;
-        for (WeakReference<GroupUpdatesListener> ref : groupUpdatesListeners) {
-            if (ref.get() == listener) {
-                reference = ref;
-                break;
-            }
-        }
-
         // Remove reference from list
-        if (reference != null) {
-            groupUpdatesListeners.remove(reference);
-        }
+        groupUpdatesListeners.remove(listener);
     }
 
 
@@ -343,7 +317,7 @@ public class GroupService extends Service {
 
         /**
          * Passes the results to the parent service. Calls
-         * {@link GroupService#onGroupUpdatesFetched(List<? extends BaseModel>)}.
+         * {@link GroupService#onGroupUpdatesFetched(List)}.
          *
          * @param results The results of the asynchronous query.
          */
@@ -377,7 +351,7 @@ public class GroupService extends Service {
      * Listener interface for receiving groupId updates.
      */
     public interface GroupUpdatesListener {
-        public void onReceivedGroupUpdate(GroupModel group);
+        void onReceivedGroupUpdate(GroupModel group);
     }
 
 

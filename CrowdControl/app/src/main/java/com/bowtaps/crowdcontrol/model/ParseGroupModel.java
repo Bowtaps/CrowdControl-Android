@@ -384,18 +384,39 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         return result;
     }
 
-    public static ParseGroupModel createFromParseObject(ParseObject object) {
+    public static Boolean compatibleWithParseObject(ParseObject object) {
+        return (object != null &&  object.getClassName().equals(tableName));
+    }
+
+    public static ParseGroupModel createFromParseObject(ParseObject groupObject) {
+        return createFromParseObject(groupObject, null);
+    }
+
+    public static ParseGroupModel createFromParseObject(ParseObject groupObject, List<ParseObject> memberObjects) {
 
         // Verify parameters
-        if (object == null) {
+        if (groupObject == null) {
             return null;
         }
-        if (!object.getClassName().equals(tableName)) {
+        if (!groupObject.getClassName().equals(tableName)) {
             return null;
         }
 
         // Instantiate a new object
-        ParseGroupModel model = new ParseGroupModel(object);
+        ParseGroupModel model = new ParseGroupModel(groupObject);
+
+        // Hard set members list
+        if (memberObjects != null) {
+            model.members.clear();
+
+            // Turn ParseObjects into models and add to internal list
+            for (ParseObject memberObject : memberObjects) {
+                ParseUserProfileModel memberModel = ParseUserProfileModel.createFromParseObject(memberObject);
+                if (memberModel != null) {
+                    model.members.add(memberModel);
+                }
+            }
+        }
 
         return model;
     }
