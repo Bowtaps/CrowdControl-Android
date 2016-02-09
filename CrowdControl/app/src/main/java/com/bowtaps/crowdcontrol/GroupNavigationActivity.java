@@ -24,22 +24,20 @@ import com.bowtaps.crowdcontrol.adapters.SimpleTabsAdapter;
  */
 public class GroupNavigationActivity extends AppCompatActivity {
 
-    TabLayout mTabs;
+    private TabLayout mTabs;
     private ViewPager tabsviewPager;
     private SimpleTabsAdapter mTabsAdapter;
     private GroupService.GroupServiceBinder groupServiceBinder;
 
     private ProgressDialog progressDialog;
     private BroadcastReceiver receiver = null;
+    private ServiceConnection mServiceConnection;
+
+    private GroupInfoFragment mGroupInfoFragment;
+    private MessagingFragment mMessagingFragment;
 
     /*
-     *  sets up the (@Link SimpleTabsAdapter) and adds in the possible Fragments
-     *
-     *  @see SimpleTabsAdapter
-     *  @see GroupInfoFragment
-     *  @see MapFragment
-     *  @see MessageingFragment
-     *  @see EventFragment
+     *  Sets up the (@Link SimpleTabsAdapter) and adds in tabs and their fragments.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +53,14 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         mTabsAdapter = new SimpleTabsAdapter(getSupportFragmentManager());
 
-        //creating the tabs and adding them to adapter class
-        mTabsAdapter.addFragment(GroupInfoFragment.newInstance("Group Information"), "Group Information");
+        // Create fragment objects
+        mGroupInfoFragment = GroupInfoFragment.newInstance("Group Information");
+        mMessagingFragment = MessagingFragment.newInstance("Messaging");
+
+        // Add fragments to tab manager
+        mTabsAdapter.addFragment(mGroupInfoFragment, "Group Information");
         mTabsAdapter.addFragment(MapFragment.newInstance("Map Fragment"), "Map");
-
-
-        //mTabsAdapter.addFragment(MessagingFragment.newInstance("Messaging"), "Messaging");
-        //mTabsAdapter.addFragment(MessagingFragment.instantiate(this.getBaseContext(), "Messaging"), "Messaging");
-
-        mTabsAdapter.addFragment(MessagingFragment.newInstance("Messaging"), "Messaging");
+        mTabsAdapter.addFragment(mMessagingFragment, "Messaging");
         mTabsAdapter.addFragment(EventFragment.newInstance("Suggestions"), "Events");
 
         //setup viewpager to give swipe effect
@@ -81,17 +78,32 @@ public class GroupNavigationActivity extends AppCompatActivity {
         }
 
         groupServiceBinder = null;
-        bindService(new Intent(getApplicationContext(), GroupService.class), new ServiceConnection() {
+        mServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 GroupNavigationActivity.this.groupServiceBinder = (GroupService.GroupServiceBinder) service;
+
+                GroupNavigationActivity.this.groupServiceBinder.addGroupUpdatesListener(mGroupInfoFragment);
+                GroupNavigationActivity.this.groupServiceBinder.addGroupUpdatesListener(mMessagingFragment);
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
                 GroupNavigationActivity.this.groupServiceBinder = null;
             }
-        }, BIND_IMPORTANT);
+        };
+
+        bindService(new Intent(getApplicationContext(), GroupService.class), mServiceConnection, BIND_IMPORTANT);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        groupServiceBinder.removeGroupUpdatesListener(mGroupInfoFragment);
+        groupServiceBinder.removeGroupUpdatesListener(mMessagingFragment);
+
+        unbindService(mServiceConnection);
     }
 
     private void setUpReceiver() {
