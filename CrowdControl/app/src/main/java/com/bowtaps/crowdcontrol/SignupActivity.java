@@ -112,7 +112,7 @@ public class SignupActivity extends AppCompatActivity
         mUserNameView = (AutoCompleteTextView) findViewById(R.id.userName);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
-        mayRequestLocation();
+        //mayRequestLocation();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -211,17 +211,17 @@ public class SignupActivity extends AppCompatActivity
             return;
         }
         if(shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)){
-            Snackbar.make(mEmailView, "Location is required for use in this app", Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(mEmailView, "Location is required for use in this app", Snackbar.LENGTH_INDEFINITE)
 
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        .setAction(android.R.string.ok, new View.OnClickListener() {
 
-                        @TargetApi(Build.VERSION_CODES.M)
-                        @Override
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_FINE_LOCATION);
-                            CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
-                        }
-                    });
+                            @TargetApi(Build.VERSION_CODES.M)
+                            @Override
+                            public void onClick(View v) {
+                                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_FINE_LOCATION);
+                                CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
+                            }
+                        });
         }else{
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_FINE_LOCATION);
             CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
