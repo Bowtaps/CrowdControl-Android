@@ -9,7 +9,10 @@ import com.bowtaps.crowdcontrol.location.GoogleLocationListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseException;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Parse implementation of the location manager. Fully implements the
@@ -20,9 +23,9 @@ import java.util.List;
 public class ParseLocationManager implements SecureLocationManager {
 
     /**
-     * TODO: doc me, Doc!
+     * Cached locations, cached by the profile ID of the user they belong to.
      */
-    private List<LocationModel> memberLocations;
+    private Map<String, LocationModel> memberLocations;
 
     /**
      * TODO: doc me, Doc!
@@ -68,17 +71,22 @@ public class ParseLocationManager implements SecureLocationManager {
     }
 
     /**
-     * Retrieves the locations of other members of the current group.
-     *
-     * @throws Exception Throws the exception
+     * @see SecureLocationManager#getLocations()
      */
     @Override
-    public List<LocationModel> getLocations() throws Exception {
-        //if null throw exception
+    public List<LocationModel> getLocations() {
+        return new ArrayList<>(memberLocations.values());
+    }
+
+    /**
+     * @see SecureLocationManager#loadAllLocations()
+     */
+    @Override
+    public List<LocationModel> loadAllLocations() throws ParseException {
         this.fetchMembersLocations();
         this.transmitting = true;
         this.broadcastLocation();
-        return this.memberLocations;
+        return getLocations();
     }
 
     /**
@@ -141,6 +149,56 @@ public class ParseLocationManager implements SecureLocationManager {
         return new LatLng(latitude, longitude);
     }
 
+    @Override
+    public void updateLocations(Collection<? extends LocationModel> locations) {
+
+        // Add each location in collection to cache
+        if (locations != null) {
+            for (LocationModel location : locations) {
+                if (location.getFrom() != null) {
+                    memberLocations.put(location.getFrom().getId(), location);
+                }
+            }
+        }
+    }
+
+    /**
+     * @see SecureLocationManager#getUserLocation(UserProfileModel)
+     */
+    @Override
+    public LocationModel getUserLocation(UserProfileModel userProfileModel) {
+
+        // Verify parameters
+        if (userProfileModel == null) {
+            return null;
+        }
+
+        // Return cached data, if any
+        if (memberLocations.containsKey(userProfileModel.getId())) {
+            return memberLocations.get(userProfileModel.getId());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @see SecureLocationManager#getUserLocations(Collection)
+     */
+    public List<LocationModel> getUserLocations(Collection<? extends UserProfileModel> users) {
+        List<LocationModel> locations = new ArrayList<>();
+
+        if (users != null) {
+            for (UserProfileModel user : users) {
+                LocationModel location = getUserLocation(user);
+                if (location != null) {
+                    locations.add(location);
+                }
+            }
+        }
+
+        return locations;
+    }
+
     private void broadcastLocation(){
         //if the transmitting flag is set to true, send the data
         //if the transmitting flag is set to false, leave function
@@ -149,13 +207,7 @@ public class ParseLocationManager implements SecureLocationManager {
         }
     }
     private void fetchMembersLocations() throws ParseException {
-        memberLocations = ParseLocationModel.fetchMemberLocations();
+        memberLocations.clear();
+        updateLocations(ParseLocationModel.fetchMemberLocations());
     }
-
-    /**
-     * public void updateLocations(List<LocationModel>){
-     *     //Go through the memberLocations and update any locations that are contained in the list
-     * }
-     * checkout HashMaps
-     */
 }

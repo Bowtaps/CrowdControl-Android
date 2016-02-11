@@ -192,8 +192,9 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
             From = new ParseUserProfileModel(fromUser);
         }
     }
-    public static List<LocationModel> fetchMemberLocations() throws ParseException{
-        List<LocationModel> groupMemberLocations = new ArrayList<LocationModel>();;
+
+    public static List<ParseLocationModel> fetchMemberLocations() throws ParseException{
+        List<ParseLocationModel> groupMemberLocations = new ArrayList<>();
         //get the current user profile
         UserProfileModel profile = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
         ParseQuery query = ParseQuery.getQuery(tableName);
