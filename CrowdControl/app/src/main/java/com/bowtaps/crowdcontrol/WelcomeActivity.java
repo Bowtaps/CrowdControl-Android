@@ -23,6 +23,7 @@ import com.bowtaps.crowdcontrol.model.ParseUserProfileModel;
 import com.parse.ParseUser;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.READ_CONTACTS;
 
 /*
  *  This Activity is the first thing launched by the app.
@@ -37,13 +38,13 @@ public class WelcomeActivity extends AppCompatActivity
 
     Button mButtonCreateAccount;
     int REQUEST_FINE_LOCATION = 0;
+    int REQUEST_READ_CONTACTS = 0;
     private AutoCompleteTextView mLocationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        mayRequestLocation();
         // Get handles to buttons
         mButtonCreateAccount = (Button) findViewById(R.id.buttonToCreate);
 
@@ -51,7 +52,7 @@ public class WelcomeActivity extends AppCompatActivity
         mButtonCreateAccount.setOnClickListener(this);
 
         mLocationView = (AutoCompleteTextView) findViewById(R.id.location);
-        mayRequestLocation();
+        requestAppPermissions();
 
 
         //This Determines if a user is logged in from a previous run
@@ -136,6 +137,11 @@ public class WelcomeActivity extends AppCompatActivity
         Intent myIntent = new Intent(this,GroupJoinActivity.class);
         this.startActivity(myIntent);
     }
+
+    private void requestAppPermissions(){
+        mayRequestLocation();
+        mayRequestContacts();
+    }
     private void mayRequestLocation() {
         Log.d("Location Permissions", "In mayRequestLocation");
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
@@ -166,6 +172,28 @@ public class WelcomeActivity extends AppCompatActivity
         }
     }
 
+    private void mayRequestContacts() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
+            Snackbar.make(mLocationView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+        }
+    }
+
+
     /**
      * Callback received when a permissions request has been completed.
      */
@@ -176,6 +204,10 @@ public class WelcomeActivity extends AppCompatActivity
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d("Location Permissions", "user supplied");
                 CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
+            }
+        }else if (requestCode == REQUEST_READ_CONTACTS) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("Permissions", "successful permissions for read contacts");
             }
         }
     }

@@ -133,8 +133,8 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         Log.d("myMtethodCall1", "Homing button pressed");
         SecureLocationManager secureLocationManager = CrowdControlApplication.getInstance().getLocationManager();
         LatLng myLoc = secureLocationManager.getCurrentLocation();
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLoc, 15));
         Log.d("myMtethodCall1", myLoc.toString());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLoc, 15));
     }
 
     private void myMethodCall2(FloatingActionButton view) {

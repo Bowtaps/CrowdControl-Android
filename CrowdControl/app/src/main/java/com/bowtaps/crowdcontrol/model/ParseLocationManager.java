@@ -81,9 +81,9 @@ public class ParseLocationManager implements SecureLocationManager {
     @Override
     public List<LocationModel> getLocations() throws Exception {
         //if null throw exception
-        //this.fetchMembersLocations();
-        //this.transmitting = true;
-        //this.broadcastLocation();
+        this.fetchMembersLocations();
+        this.transmitting = true;
+        this.broadcastLocation();
         return this.memberLocations;
     }
 
