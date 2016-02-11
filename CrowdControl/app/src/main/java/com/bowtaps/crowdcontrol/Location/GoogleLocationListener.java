@@ -1,4 +1,4 @@
-package com.bowtaps.crowdcontrol.Location;
+package com.bowtaps.crowdcontrol.location;
 
 import android.location.Location;
 import android.location.LocationListener;

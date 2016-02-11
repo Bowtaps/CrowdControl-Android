@@ -290,10 +290,9 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      * @return
      */
     @Nullable
-    public static LocationModel createFromParseObject(ParseObject pObject){
+    public static ParseLocationModel createFromParseObject(ParseObject pObject){
         if(pObject.getClassName().equals(tableName)){
-            LocationModel obj = new ParseLocationModel(pObject);
-            return obj;
+            return new ParseLocationModel(pObject);
         }
         else{
             return null;

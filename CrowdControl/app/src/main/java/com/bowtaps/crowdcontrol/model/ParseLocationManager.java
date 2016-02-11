@@ -2,19 +2,13 @@ package com.bowtaps.crowdcontrol.model;
 
 import android.content.Context;
 import android.util.Log;
-import android.util.Pair;
 import android.location.LocationManager;
-import android.location.Location;
 
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
-import com.bowtaps.crowdcontrol.Location.GoogleLocationListener;
+import com.bowtaps.crowdcontrol.location.GoogleLocationListener;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
-import java.security.acl.Group;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
