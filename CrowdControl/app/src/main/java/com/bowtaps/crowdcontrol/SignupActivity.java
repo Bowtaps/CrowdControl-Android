@@ -1,5 +1,6 @@
 package com.bowtaps.crowdcontrol;
 
+import android.Manifest;
 import android.app.Activity;
 
 import android.animation.Animator;
@@ -38,6 +39,9 @@ import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.bowtaps.crowdcontrol.model.ParseUserProfileModel;
 import com.bowtaps.crowdcontrol.model.UserModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseRelation;
@@ -49,13 +53,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 /**
  * A login screen that offers registration via email/password.
  */
 public class SignupActivity extends AppCompatActivity
         implements LoaderCallbacks<Cursor>,
-        View.OnClickListener{
+        OnClickListener {
 
     private static final String TAG = SignupActivity.class.getSimpleName();
 
@@ -63,6 +68,11 @@ public class SignupActivity extends AppCompatActivity
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+
+    /**
+     * Id to identify FINE_LOCATION permission request.
+     */
+    private static final int REQUEST_FINE_LOCATION = 0;
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -80,6 +90,11 @@ public class SignupActivity extends AppCompatActivity
     Button mFacebookButton;
     Button mTwitterButton;
     Button mEmailButton;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     /*
      *  Sets up the form to gather input from the user for registration and
@@ -97,6 +112,7 @@ public class SignupActivity extends AppCompatActivity
         mUserNameView = (AutoCompleteTextView) findViewById(R.id.userName);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+        //mayRequestLocation();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -128,6 +144,9 @@ public class SignupActivity extends AppCompatActivity
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     /*
@@ -153,7 +172,7 @@ public class SignupActivity extends AppCompatActivity
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
             Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                    .setAction(android.R.string.ok, new OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
                         public void onClick(View v) {
@@ -166,6 +185,7 @@ public class SignupActivity extends AppCompatActivity
         return false;
     }
 
+
     /**
      * Callback received when a permissions request has been completed.
      */
@@ -176,6 +196,35 @@ public class SignupActivity extends AppCompatActivity
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 populateAutoComplete();
             }
+        }
+    }
+    /**
+     * Request permission to use the user's location
+     */
+    private void mayRequestLocation() {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+            return;
+        }
+        if(checkSelfPermission(ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            Log.d("Location Permissions", "We have permission");
+            CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
+            return;
+        }
+        if(shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)){
+                Snackbar.make(mEmailView, "Location is required for use in this app", Snackbar.LENGTH_INDEFINITE)
+
+                        .setAction(android.R.string.ok, new View.OnClickListener() {
+
+                            @TargetApi(Build.VERSION_CODES.M)
+                            @Override
+                            public void onClick(View v) {
+                                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_FINE_LOCATION);
+                                CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
+                            }
+                        });
+        }else{
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_FINE_LOCATION);
+            CrowdControlApplication.getInstance().getLocationManager().initializeLocationRequest();
         }
     }
 
@@ -252,7 +301,7 @@ public class SignupActivity extends AppCompatActivity
     /*
      *  Determine the validity of the username
      */
-    private  boolean isUserNameValid(String username) {
+    private boolean isUserNameValid(String username) {
         //TODO: What makes a valid username??
         return true;
     }
@@ -384,7 +433,9 @@ public class SignupActivity extends AppCompatActivity
     /*
      *  Launches code for when the email button is clicked
      */
-    private void emailButtonClick(Button view) { launchLoginActivity(); }
+    private void emailButtonClick(Button view) {
+        launchLoginActivity();
+    }
 
     /**
      * Launches the {@link LoginActivity}.
@@ -400,6 +451,46 @@ public class SignupActivity extends AppCompatActivity
     }
 
     private void facebookButtonClick(Button view) { //TODO launch facebook login
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Signup Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.bowtaps.crowdcontrol/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Signup Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.bowtaps.crowdcontrol/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
     }
 
     /*

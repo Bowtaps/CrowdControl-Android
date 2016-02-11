@@ -1,15 +1,25 @@
 package com.bowtaps.crowdcontrol;
 
+import android.Manifest;
 import android.app.Application;
 import android.content.Intent;
 
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.os.Build;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.View;
 
 import com.bowtaps.crowdcontrol.model.ModelManager;
+import com.bowtaps.crowdcontrol.model.ParseLocationManager;
 import com.bowtaps.crowdcontrol.model.ParseModelManager;
 
 import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
+import com.bowtaps.crowdcontrol.model.SecureLocationManager;
+import com.parse.Parse;
 import com.parse.ParseClassName;
 
 /**
@@ -38,6 +48,8 @@ public class CrowdControlApplication extends Application {
     private static final String SINCH_APP_KEY = "52ccd19d-4487-4645-8abf-b13edd57bffd";
     private static final String SINCH_APP_SECRET = "Ke+GKezurEqC46z33Da5Ig==";
     private static final String SINCH_ENVIRONMENT = "sandbox.sinch.com";
+    private SecureLocationManager locationManager = null;
+
 
 
 
@@ -69,7 +81,16 @@ public class CrowdControlApplication extends Application {
         return modelManager;
     }
 
+    public SecureLocationManager getLocationManager(){
+        if(locationManager == null)
+        {
+            locationManager = new ParseLocationManager();
+            locationManager.initializeLocationRequest();
+            Log.d("Crowd Control App", "LocationManager was null. Should be set");
+        }
 
+        return locationManager;
+    }
 
     /**
      * Gets the singleton instance of this class. Acts as a convenience function.
