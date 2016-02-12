@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.LocationModel;
 import com.bowtaps.crowdcontrol.model.ParseLocationManager;
 import com.bowtaps.crowdcontrol.model.SecureLocationManager;
@@ -36,7 +37,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  * Will Display a Google Map and place group members on it
  */
-public class MapFragment extends Fragment implements View.OnClickListener{
+public class MapFragment extends Fragment implements View.OnClickListener, GroupService.LocationUpdatesListener {
     private static final String ARG_PARAM1 = "param1";
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -181,29 +182,33 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     }
 
     private void refreshMarkers(){
+
+        // Remove pins from map
         if(mMap != null){
             mMap.clear();
             Log.d("Map Not Null", "We are in here, YAY!!!");
         }
-        SecureLocationManager locationManager = CrowdControlApplication.getInstance().getLocationManager();
-        try{
-            List<LocationModel> group = locationManager.getLocations();
-            for(LocationModel member: group){
-                Double longitude = new Double(member.getLongitude());
-                Double latitude = new Double(member.getLatitude());
-                Log.d("Member Location", longitude.toString() + ", " + latitude.toString());
-                if(mMap != null){
-                    mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(member.getId()));
-                }
-                else{
-                    mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_frame))
-                            .getMap();
-                    mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(member.getId()));
-                }
-            }
-        }catch(Exception e){
-            Log.e("FetchLocationError", e.toString());
+
+        // Get locations for current group members
+        GroupModel group = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
+        List<? extends LocationModel> locations = CrowdControlApplication.getInstance().getLocationManager().getUserLocations(group.getGroupMembers());
+
+        // Put markers on map
+        for (LocationModel location : locations){
+
+            // Build location marker
+            Double longitude = location.getLongitude();
+            Double latitude = location.getLatitude();
+            Log.d("MapFragment", "user location: lat = " + latitude + ", long = " + longitude);
+
+            // Add marker to map
+            if (mMap == null) mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_frame)).getMap();
+            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(location.getFrom().getDisplayName()));
         }
     }
 
+    @Override
+    public void onReceivedLocationUpdate(List<LocationModel> locations) {
+        refreshMarkers();
+    }
 }

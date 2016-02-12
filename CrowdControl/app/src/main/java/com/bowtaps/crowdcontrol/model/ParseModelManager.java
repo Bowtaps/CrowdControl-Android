@@ -134,7 +134,7 @@ public class ParseModelManager implements ModelManager {
 
         // Try saving everything
         userModel.getProfile().save();
-        ((ParseUser) userModel.parseObject).signUp();
+        ((ParseUser) userModel.getParseObject()).signUp();
         userModel.save();
 
         // Return user once everything is saved
@@ -428,10 +428,10 @@ public class ParseModelManager implements ModelManager {
 
         // Verify parameters
         if (groupId == null) {
-            throw new IllegalArgumentException("parameter 'group' cannot be null");
+            throw new IllegalArgumentException("parameter 'groupId' cannot be null");
         }
         if (userPId == null) {
-            throw new IllegalArgumentException("parameter 'user' cannot be null");
+            throw new IllegalArgumentException("parameter 'userPId' cannot be null");
         }
         if (since == null) {
             throw new IllegalArgumentException("parameter 'since' cannot be null");
@@ -448,6 +448,7 @@ public class ParseModelManager implements ModelManager {
 
         // Call cloud code
         List<Object> parseResults = ParseCloud.callFunction("fetchGroupUpdates", params);
+
         List<ParseObject> parseGroupMembers = new ArrayList<>();
         ParseObject parseGroupObject = null;
 
@@ -461,7 +462,10 @@ public class ParseModelManager implements ModelManager {
             ParseObject parseResult = (ParseObject) result;
 
             // Build ParseModel using the given ParseObject of unknown origin
-            if (ParseGroupModel.compatibleWithParseObject(parseResult)) {
+            ParseLocationModel locationModel = ParseLocationModel.createFromParseObject(parseResult);
+            if (locationModel != null) {
+                results.add(locationModel);
+            } else if (ParseGroupModel.compatibleWithParseObject(parseResult)) {
                 parseGroupObject = parseResult;
             } else {
                 parseGroupMembers.add(parseResult);

@@ -10,8 +10,10 @@ import android.util.Log;
 
 import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
+import com.bowtaps.crowdcontrol.model.LocationModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,10 +55,14 @@ public class GroupService extends Service {
     private final GroupServiceBinder binder;
 
     /**
-     * List of registered {@link GroupUpdatesListener} objects, implemented using weak references
-     * to avoid this service keeping hold of the registered listeners.
+     * List of registered {@link GroupUpdatesListener} objects.
      */
     private List<GroupUpdatesListener> groupUpdatesListeners;
+
+    /**
+     * List of registered {@link LocationUpdatesListener} objects.
+     */
+    private List<LocationUpdatesListener> locationUpdatesListeners;
 
     /**
      * Timer object used for periodically fetching updates from the server.
@@ -73,7 +79,14 @@ public class GroupService extends Service {
      */
     private Date since;
 
+    /**
+     * The ID {@link String} of the group to fetch updates for.
+     */
     private String groupId;
+
+    /**
+     * The ID {@link String} of the user to fetch updates for.
+     */
     private String userPId;
 
 
@@ -83,6 +96,7 @@ public class GroupService extends Service {
     public GroupService() {
         binder = new GroupServiceBinder();
         groupUpdatesListeners = new LinkedList<>();
+        locationUpdatesListeners = new LinkedList<>();
         timer = null;
     }
 
@@ -182,8 +196,15 @@ public class GroupService extends Service {
      */
     public void onGroupUpdatesFetched(List<? extends BaseModel> results) {
 
+        // Verify and repair parameters
+        if (results == null)
+        {
+            results = new ArrayList<>();
+        };
+
         GroupModel group = null;
         List<UserProfileModel> users = new LinkedList<>();
+        List<LocationModel> locations = new LinkedList<>();
 
         // Separate results into buckets based on type and keep track of most recent update time
         for (BaseModel model : results) {
@@ -191,6 +212,8 @@ public class GroupService extends Service {
                 group = (GroupModel) model;
             } else if (model instanceof UserProfileModel) {
                 users.add((UserProfileModel) model);
+            } else if (model instanceof LocationModel) {
+                locations.add((LocationModel) model);
             }
 
             if (model.getUpdated().after(since)) {
@@ -206,7 +229,25 @@ public class GroupService extends Service {
                 try {
                     ref.onReceivedGroupUpdate(group);
                 } catch (Exception ex) {
-                    Log.d(TAG, "Exception thrown while executing onReceivedGroupUpdates");
+                    Log.d(TAG, "Exception thrown while handling onReceivedGroupUpdate event");
+                }
+            }
+        }
+
+        // Trigger events of location listeners
+        if (!locations.isEmpty()) {
+
+            // First, send updated locations to location manager
+            CrowdControlApplication.getInstance().getLocationManager().updateLocations(locations);
+
+            // Notify listeners of changes
+            for (LocationUpdatesListener listener : locationUpdatesListeners) {
+
+                // Invoke callback method call
+                try {
+                    listener.onReceivedLocationUpdate(new ArrayList<>(locations));
+                } catch (Exception ex) {
+                    Log.d(TAG, "Exception thrown while handling onReceivedLocationUpdate event");
                 }
             }
         }
@@ -230,8 +271,8 @@ public class GroupService extends Service {
 
     /**
      * Registers a new {@link GroupUpdatesListener} listener object that will receive callbacks
-     * when this service detects that a groupId has been updated. This maintains a strong reference
-     * to the listener object, which means it must be deregistered with a call to
+     * when this service detects that a group has been updated. This maintains a strong reference
+     * to the listener object, which means it must be unregistered with a call to
      * {@link #removeGroupUpdatesListener(GroupUpdatesListener)} before it can be reclaimed by
      * garbage collection.
      *
@@ -243,9 +284,7 @@ public class GroupService extends Service {
         if (listener == null) return;
 
         // Ensure listener is not already registered
-        for (GroupUpdatesListener registeredListener : groupUpdatesListeners) {
-            if (registeredListener == listener) return;
-        }
+        if (groupUpdatesListeners.contains(listener)) return;
 
         // Add listener to list
         groupUpdatesListeners.add(listener);
@@ -255,7 +294,7 @@ public class GroupService extends Service {
      * Unregisters a {@link GroupUpdatesListener} that has been previously registered using
      * {@link #addGroupUpdatesListener(GroupUpdatesListener)}.
      *
-     * @param listener The listener object to register.
+     * @param listener The listener object to unregister.
      */
     public void removeGroupUpdatesListener(GroupUpdatesListener listener) {
 
@@ -264,6 +303,42 @@ public class GroupService extends Service {
 
         // Remove reference from list
         groupUpdatesListeners.remove(listener);
+    }
+
+    /**
+     * Registers a new {@link LocationUpdatesListener} listener object that will receive callbacks
+     * when this service detects that a location has been updated. This maintains a strong reference
+     * to the listener object, which means that it must be unregistered with a call to
+     * {@link #removeLocationUpdatesListener(LocationUpdatesListener)} before it can be reclaimed by
+     * garbage collection.
+     *
+     * @param listener The listener object to register.
+     */
+    public void addLocationUpdatesListener(LocationUpdatesListener listener) {
+
+        // Ensure listener is not null
+        if (listener == null) return;
+
+        // Ensure listener is not already registered
+        if (locationUpdatesListeners.contains(listener)) return;
+
+        // Add listener to list
+        locationUpdatesListeners.add(listener);
+    }
+
+    /**
+     * Unregisters a {@link LocationUpdatesListener} that has been previously registered using
+     * {@link #addLocationUpdatesListener(LocationUpdatesListener)}.
+     *
+     * @param listener The listener object to unregister.
+     */
+    public void removeLocationUpdatesListener(LocationUpdatesListener listener) {
+
+        // Ensure listener is not null
+        if (listener == null) return;
+
+        // Remove reference from list
+        locationUpdatesListeners.remove(listener);
     }
 
 
@@ -345,13 +420,34 @@ public class GroupService extends Service {
         public void removeGroupUpdatesListener(GroupUpdatesListener listener) {
             GroupService.this.removeGroupUpdatesListener(listener);
         }
+
+        /**
+         * @see GroupService#addLocationUpdatesListener(LocationUpdatesListener)
+         */
+        public void addLocationUpdatesListener(LocationUpdatesListener listener) {
+            GroupService.this.addLocationUpdatesListener(listener);
+        }
+
+        /**
+         * @see GroupService#removeLocationUpdatesListener(LocationUpdatesListener)
+         */
+        public void removeLocationUpdatesListener(LocationUpdatesListener listener) {
+            GroupService.this.removeLocationUpdatesListener(listener);
+        }
     }
 
     /**
-     * Listener interface for receiving groupId updates.
+     * Listener interface for receiving group updates.
      */
     public interface GroupUpdatesListener {
         void onReceivedGroupUpdate(GroupModel group);
+    }
+
+    /**
+     * Listener interface for receiving location updates.
+     */
+    public interface LocationUpdatesListener {
+        void onReceivedLocationUpdate(List<LocationModel> locations);
     }
 
 

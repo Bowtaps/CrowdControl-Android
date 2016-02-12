@@ -34,7 +34,9 @@ public class GroupNavigationActivity extends AppCompatActivity {
     private ServiceConnection mServiceConnection;
 
     private GroupInfoFragment mGroupInfoFragment;
+    private MapFragment       mMapFragment;
     private MessagingFragment mMessagingFragment;
+    private EventFragment     mEventFragment;
 
     /*
      *  Sets up the (@Link SimpleTabsAdapter) and adds in tabs and their fragments.
@@ -54,14 +56,16 @@ public class GroupNavigationActivity extends AppCompatActivity {
         mTabsAdapter = new SimpleTabsAdapter(getSupportFragmentManager());
 
         // Create fragment objects
-        mGroupInfoFragment = GroupInfoFragment.newInstance("Group Information");
+        mGroupInfoFragment = GroupInfoFragment.newInstance("Group");
+        mMapFragment       = MapFragment.newInstance("Map");
         mMessagingFragment = MessagingFragment.newInstance("Messaging");
+        mEventFragment     = EventFragment.newInstance("Events");
 
         // Add fragments to tab manager
-        mTabsAdapter.addFragment(mGroupInfoFragment, "Group Information");
-        mTabsAdapter.addFragment(MapFragment.newInstance("Map Fragment"), "Map");
+        mTabsAdapter.addFragment(mGroupInfoFragment, "Group");
+        mTabsAdapter.addFragment(mMapFragment, "Map");
         mTabsAdapter.addFragment(mMessagingFragment, "Messaging");
-        mTabsAdapter.addFragment(EventFragment.newInstance("Suggestions"), "Events");
+        mTabsAdapter.addFragment(mEventFragment, "Events");
 
         //setup viewpager to give swipe effect
         tabsviewPager.setAdapter(mTabsAdapter);
@@ -84,6 +88,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
                 GroupNavigationActivity.this.groupServiceBinder = (GroupService.GroupServiceBinder) service;
 
                 GroupNavigationActivity.this.groupServiceBinder.addGroupUpdatesListener(mGroupInfoFragment);
+                GroupNavigationActivity.this.groupServiceBinder.addLocationUpdatesListener(mMapFragment);
                 GroupNavigationActivity.this.groupServiceBinder.addGroupUpdatesListener(mMessagingFragment);
             }
 
@@ -101,6 +106,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
         super.onDestroy();
 
         groupServiceBinder.removeGroupUpdatesListener(mGroupInfoFragment);
+        groupServiceBinder.removeLocationUpdatesListener(mMapFragment);
         groupServiceBinder.removeGroupUpdatesListener(mMessagingFragment);
 
         unbindService(mServiceConnection);

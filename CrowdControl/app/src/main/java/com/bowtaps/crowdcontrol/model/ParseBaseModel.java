@@ -18,7 +18,7 @@ public class ParseBaseModel implements BaseModel {
     /**
      * The class's handle for interacting with its Parse counterpart.
      */
-    protected final ParseObject parseObject;
+    private final ParseObject parseObject;
 
 
 
@@ -36,6 +36,15 @@ public class ParseBaseModel implements BaseModel {
         }
 
         parseObject = object;
+    }
+
+    /**
+     * Gets the underlying {@link ParseObject} for this model.
+     *
+     * @return The underlying {@link ParseObject} handle.
+     */
+    protected ParseObject getParseObject() {
+        return parseObject;
     }
 
     /**

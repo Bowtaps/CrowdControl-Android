@@ -44,11 +44,6 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     private static final String longitudeKey = "Longitude";
 
-    private String latitude;
-    private String longitude;
-    private ParseUserProfileModel To;
-    private ParseUserProfileModel From;
-
 
     /**
      * The class constructor. Initializes the model from an existing
@@ -68,7 +63,11 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public double getLatitude(){
-        return Double.parseDouble(latitude);
+        try {
+            return Double.parseDouble(getParseObject().getString(latitudeKey));
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
     }
 
     /**
@@ -79,7 +78,11 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public double getLongitude(){
-        return Double.parseDouble(longitude);
+        try {
+            return Double.parseDouble(getParseObject().getString(longitudeKey));
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
     }
 
     /**
@@ -89,8 +92,8 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      *          location.
      */
     @Override
-    public UserProfileModel getTo(){
-        return this.To;
+    public ParseUserProfileModel getTo() {
+        return ParseUserProfileModel.createFromParseObject(getParseObject().getParseObject(toKey));
     }
 
     /**
@@ -99,8 +102,8 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      * @return UserProfileModel containing the user who sent the location.
      */
     @Override
-    public UserProfileModel getFrom(){
-        return From;
+    public ParseUserProfileModel getFrom() {
+        return ParseUserProfileModel.createFromParseObject(getParseObject().getParseObject(fromKey));
     }
 
     /**
@@ -110,8 +113,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public void setLatitude(double latitude){
-        this.latitude = Double.toString(latitude);
-        Log.d("Latitude: ", this.latitude);
+        getParseObject().put(latitudeKey, latitude + "");
     }
 
     /**
@@ -121,8 +123,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public void setLongitude(double longitude){
-        this.longitude = Double.toString(longitude);
-        Log.d("Longitude: ", this.longitude);
+        getParseObject().put(longitudeKey, longitude + "");
     }
 
     /**
@@ -132,12 +133,13 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public void setTo(UserProfileModel userProfileModel){
-        //set the user profile
-        if(userProfileModel == null){
-            this.To = null;
-        } else{
-            parseObject.put(toKey, ((ParseUserProfileModel) userProfileModel).parseObject);
-        }
+
+        // Verify parameters
+        if (userProfileModel == null) return;
+        if (!(userProfileModel instanceof ParseUserProfileModel)) return;
+
+        // set the user profile
+        getParseObject().put(toKey, ((ParseUserProfileModel) userProfileModel).getParseObject());
     }
 
     /**
@@ -147,12 +149,13 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public void setFrom(UserProfileModel userProfileModel){
-        //set the user profile
-        if(userProfileModel == null){
-            this.From = null;
-        } else{
-            parseObject.put(fromKey, ((ParseUserProfileModel) userProfileModel).parseObject);
-        }
+
+        // Verify parameters
+        if (userProfileModel == null) return;
+        if (!(userProfileModel instanceof ParseUserProfileModel)) return;
+
+        // set the user profile
+        getParseObject().put(fromKey, ((ParseUserProfileModel) userProfileModel).getParseObject());
     }
 
     /**
@@ -169,31 +172,16 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
         super.load();
 
         // Fetch the "to" pointer
-        ParseObject toUser = parseObject.getParseObject(toKey);
-        if (toUser == null) {
-
-            // No "to" pointer
-            toUser = null;
-        } else if (toUser == null || !toUser.equals(toUser)) {
-
-            // New "to" pointer
-            To = new ParseUserProfileModel(toUser);
-        }
+        ParseObject toUser = getParseObject().getParseObject(toKey);
+        toUser.fetch();
 
         // Fetch the "from" pointer
-        ParseObject fromUser = parseObject.getParseObject(toKey);
-        if (fromUser == null) {
-
-            // No "from" pointer
-            fromUser = null;
-        } else if (fromUser == null || !fromUser.equals(fromUser)) {
-
-            // New "from" pointer
-            From = new ParseUserProfileModel(fromUser);
-        }
+        ParseObject fromUser = getParseObject().getParseObject(toKey);
+        fromUser.fetch();
     }
-    public static List<LocationModel> fetchMemberLocations() throws ParseException{
-        List<LocationModel> groupMemberLocations = new ArrayList<LocationModel>();;
+
+    public static List<ParseLocationModel> fetchMemberLocations() throws ParseException{
+        List<ParseLocationModel> groupMemberLocations = new ArrayList<>();
         //get the current user profile
         UserProfileModel profile = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
         ParseQuery query = ParseQuery.getQuery(tableName);
@@ -290,10 +278,9 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      * @return
      */
     @Nullable
-    public static LocationModel createFromParseObject(ParseObject pObject){
+    public static ParseLocationModel createFromParseObject(ParseObject pObject){
         if(pObject.getClassName().equals(tableName)){
-            LocationModel obj = new ParseLocationModel(pObject);
-            return obj;
+            return new ParseLocationModel(pObject);
         }
         else{
             return null;
