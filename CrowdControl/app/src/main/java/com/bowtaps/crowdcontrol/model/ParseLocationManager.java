@@ -11,6 +11,7 @@ import com.parse.ParseException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class ParseLocationManager implements SecureLocationManager {
      */
     public ParseLocationManager(){
         transmissionInterval = 10;
-        memberLocations = null;
+        memberLocations = new HashMap<>();
         //listener = new GoogleLocationListener();
         //locationManager = (LocationManager) CrowdControlApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
 

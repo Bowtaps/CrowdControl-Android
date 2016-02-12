@@ -196,7 +196,11 @@ public class GroupService extends Service {
      */
     public void onGroupUpdatesFetched(List<? extends BaseModel> results) {
 
-        if (results == null) return;
+        // Verify and repair parameters
+        if (results == null)
+        {
+            results = new ArrayList<>();
+        };
 
         GroupModel group = null;
         List<UserProfileModel> users = new LinkedList<>();

@@ -1,13 +1,5 @@
 package com.bowtaps.crowdcontrol.model;
 
-import android.os.AsyncTask;
-
-import com.bowtaps.crowdcontrol.CrowdControlApplication;
-
-import com.parse.LogInCallback;
-
-import com.parse.GetCallback;
-import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -88,7 +80,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
             ParseObject profileObject = object.getParseObject(profileKey);
             if (profileObject == null) {
                 profile = new ParseUserProfileModel();
-                object.put(profileKey, profile.parseObject);
+                object.put(profileKey, profile.getParseObject());
             } else {
                 profile = new ParseUserProfileModel(profileObject);
             }
@@ -105,7 +97,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public String getUsername() {
-        return ((ParseUser) parseObject).getUsername();
+        return ((ParseUser) getParseObject()).getUsername();
     }
 
     /**
@@ -115,7 +107,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public Boolean getEmailVerified() {
-        return parseObject.getBoolean(emailVerifiedKey);
+        return getParseObject().getBoolean(emailVerifiedKey);
     }
 
     /**
@@ -125,7 +117,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public String getEmail() {
-        return ((ParseUser) parseObject).getEmail();
+        return ((ParseUser) getParseObject()).getEmail();
     }
 
     /**
@@ -135,7 +127,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public void setEmail(String email) {
-        ((ParseUser) parseObject).setEmail(email);
+        ((ParseUser) getParseObject()).setEmail(email);
     }
 
     /**
@@ -145,7 +137,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public String getPhone() {
-        return parseObject.getString(phoneKey);
+        return getParseObject().getString(phoneKey);
     }
 
     /**
@@ -155,7 +147,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
      */
     @Override
     public void setPhone(String phone) {
-        parseObject.put(phoneKey, phone);
+        getParseObject().put(phoneKey, phone);
     }
 
     /**
@@ -179,11 +171,10 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
         ParseUser parseUser = new ParseUser();
         parseUser.setUsername(username);
         parseUser.setPassword(password);
-        parseUser.put(profileKey, profileModel.parseObject);
+        parseUser.put(profileKey, profileModel.getParseObject());
 
         // Create new user model
-        ParseUserModel userModel = new ParseUserModel(parseUser, profileModel);
-        return userModel;
+        return new ParseUserModel(parseUser, profileModel);
     }
 
     public static ParseUserModel createFromParseObject(ParseObject object) {
@@ -197,8 +188,6 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
         }
 
         // Instantiate a new object
-        ParseUserModel model = new ParseUserModel((ParseUser) object);
-
-        return model;
+        return new ParseUserModel((ParseUser) object);
     }
 }

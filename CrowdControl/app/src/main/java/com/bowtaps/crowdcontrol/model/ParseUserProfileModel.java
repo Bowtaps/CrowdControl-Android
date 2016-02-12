@@ -49,7 +49,7 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
      */
     @Override
     public String getDisplayName() {
-        return parseObject.getString(displayNameKey);
+        return getParseObject().getString(displayNameKey);
     }
 
     /**
@@ -59,7 +59,7 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
      */
     @Override
     public void setDisplayName(String displayName) {
-        parseObject.put(displayNameKey, displayName);
+        getParseObject().put(displayNameKey, displayName);
     }
 
     public static ParseUserProfileModel createFromParseObject(ParseObject object) {

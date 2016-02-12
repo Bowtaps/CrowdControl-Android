@@ -1,19 +1,11 @@
 package com.bowtaps.crowdcontrol.model;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.bowtaps.crowdcontrol.CrowdControlApplication;
-import com.parse.FindCallback;
-import com.parse.Parse;
-import com.parse.ParseACL;
 import com.parse.ParseException;
-import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +76,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         super(object);
 
         leader = null;
-        members = new ArrayList<ParseUserProfileModel>();
+        members = new ArrayList<>();
     }
 
     /**
@@ -117,12 +109,12 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
 
             // Leader is being removed
             this.leader = null;
-            parseObject.put(leaderKey, null);
+            getParseObject().put(leaderKey, null);
         } else {
 
             // Leader is being added/replaced
             this.leader = null;
-            parseObject.put(leaderKey, ((ParseUserProfileModel) leader).parseObject);
+            getParseObject().put(leaderKey, ((ParseUserProfileModel) leader).getParseObject());
         }
     }
 
@@ -132,7 +124,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      * @return The name of the group.
      */
     public String getGroupName() {
-        return parseObject.getString(groupNameKey);
+        return getParseObject().getString(groupNameKey);
     }
 
     /**
@@ -141,7 +133,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      * @param name The new name of the group.
      */
     public void setGroupName(String name) {
-        parseObject.put(groupNameKey, name);
+        getParseObject().put(groupNameKey, name);
     }
 
     /**
@@ -151,7 +143,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      */
     @Override
     public String getGroupDescription() {
-        return parseObject.getString(groupDescriptionKey);
+        return getParseObject().getString(groupDescriptionKey);
     }
 
     /**
@@ -161,17 +153,17 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      */
     @Override
     public void setGroupDescription(String description) {
-        parseObject.put(groupDescriptionKey, description);
+        getParseObject().put(groupDescriptionKey, description);
     }
 
     /**
      * Gets the list of users associated with the current group.
      *
-     * @return A {@link List} of {@ParseUserProfileModel} objects that belong to the group.
+     * @return A {@link List} of {@link ParseUserProfileModel} objects that belong to the group.
      */
     @Override
     public List<ParseUserProfileModel> getGroupMembers() {
-        return new ArrayList<ParseUserProfileModel>(members);
+        return new ArrayList<>(members);
     }
 
     /**
@@ -199,8 +191,8 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         }
 
         // Add the profile to the ParseObject relation
-        ParseRelation relation = parseObject.getRelation(groupMembersKey);
-        relation.add(parseProfile.parseObject);
+        ParseRelation relation = getParseObject().getRelation(groupMembersKey);
+        relation.add(parseProfile.getParseObject());
 
         // Add the profile to this model's cache
         members.add(parseProfile);
@@ -233,8 +225,8 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         }
 
         // Remove the profile from the ParseObject relation
-        ParseRelation relation = parseObject.getRelation(groupMembersKey);
-        relation.remove(parseProfile.parseObject);
+        ParseRelation relation = getParseObject().getRelation(groupMembersKey);
+        relation.remove(parseProfile.getParseObject());
 
         // Remove the profile from this model's cache
         members.remove(parseProfile);
@@ -257,7 +249,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         members.clear();
 
         // Fetch the leader
-        ParseObject parseLeader = parseObject.getParseObject(leaderKey);
+        ParseObject parseLeader = getParseObject().getParseObject(leaderKey);
         if (parseLeader == null) {
 
             // No group leader
@@ -269,7 +261,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         }
 
         // Fetch objects in relation
-        ParseRelation relation = parseObject.getRelation(groupMembersKey);
+        ParseRelation relation = getParseObject().getRelation(groupMembersKey);
         ParseQuery query = relation.getQuery();
         List<ParseObject> results = query.find();
 

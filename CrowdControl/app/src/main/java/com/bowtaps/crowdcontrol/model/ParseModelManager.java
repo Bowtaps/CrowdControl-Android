@@ -134,7 +134,7 @@ public class ParseModelManager implements ModelManager {
 
         // Try saving everything
         userModel.getProfile().save();
-        ((ParseUser) userModel.parseObject).signUp();
+        ((ParseUser) userModel.getParseObject()).signUp();
         userModel.save();
 
         // Return user once everything is saved
