@@ -9,7 +9,7 @@
         android:id="@+id/list_group_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#0fff25" />
+        android:textColor="#ffffff" />
 
     <TextView
         android:id="@+id/list_group_description"

@@ -16,8 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.bowtaps.crowdcontrol.model.BaseModel;
-import com.bowtaps.crowdcontrol.model.ParseGroupModel;
+import com.bowtaps.crowdcontrol.model.GroupModel;
 
 /*
  *  Controller for the view that handels creating a group!!!
@@ -220,10 +219,12 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
 
         private final String mGroupName;
         private final String mGroupDescription;
+        private GroupModel mGroupModel;
 
 
-        GroupCreateTask(String groupName, String groupDescription) {
-            //Can add more attributes later
+        public GroupCreateTask(String groupName, String groupDescription) {
+
+            // Can add more attributes later
             mGroupName = groupName;
             mGroupDescription = groupDescription;
         }
@@ -235,28 +236,17 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            ParseGroupModel parseGroupModel = new ParseGroupModel(CrowdControlApplication.aGroup);
-
-            //sets info to single global instance of group
-            parseGroupModel.SetGroupData(mGroupName, mGroupDescription);
-
+            mGroupModel = null;
             try {
-                parseGroupModel.AddNewMember(CrowdControlApplication.aProfile);
+                mGroupModel = CrowdControlApplication.getInstance().getModelManager().createGroup(
+                        CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile(),
+                        mGroupName, mGroupDescription);
+                return true;
             }
-            catch (NullPointerException nullPointerE){
-                Log.d(TAG, "aProfile wasn't filled properly");
+            catch (Exception ex){
+                Log.d(TAG, "Unable to save new Group");
+                return false;
             }
-
-            parseGroupModel.saveInBackground(new BaseModel.SaveCallback() {
-                @Override
-                public void doneSavingModel(BaseModel object, Exception ex) {
-                //TODO catch ex for error checking
-                    finish();
-                }
-            });
-
-
-            return true;
         }
 
         @Override
@@ -265,8 +255,9 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             showProgress(false);
 
             if (success) {
-                finish();
+                CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(mGroupModel);
                 launchGroupNavigationActivity();
+                finish();
             } else {
                 mGroupNameView.requestFocus();
             }

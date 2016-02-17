@@ -1,20 +1,18 @@
 package com.bowtaps.crowdcontrol;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bowtaps.crowdcontrol.model.BaseModel;
+import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.ParseGroupModel;
-import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.parse.ParseObject;
-
-import org.w3c.dom.Text;
 
 
 /**
@@ -26,15 +24,14 @@ import org.w3c.dom.Text;
  * Will display information of the current group and allow the
  * user to leave the group
  */
-public class GroupInfoFragment extends Fragment implements View.OnClickListener {
+public class GroupInfoFragment extends Fragment implements View.OnClickListener, GroupService.GroupUpdatesListener {
 
-    private static final String ARG_PARAM1 = "param1";
-
-    private String mText;
-
-    private ParseObject mGroup;
-
+    GroupModel mGroup;
     Button mLeaveGroupButton;
+    TextView mGroupNameTextView;
+    TextView mGroupDescriptionTextView;
+
+    private static final String TAG = GroupInfoFragment.class.getSimpleName();
 
     /**
      * Use this factory method to create a new instance of
@@ -47,7 +44,6 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener 
     public static GroupInfoFragment newInstance(String text) {
         GroupInfoFragment fragment = new GroupInfoFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, text);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,10 +60,6 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mText = getArguments().getString(ARG_PARAM1);
-        }
-
     }
 
     /**
@@ -79,36 +71,36 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener 
      * @return
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mGroup = new ParseObject("Group");
-        mGroup = CrowdControlApplication.aGroup;
-        TextView GroupName;
-        TextView GroupDescription;
-
+        mGroup = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_group_info, container, false);
-        ((TextView) v.findViewById(R.id.group_test)).setText(mText);
-        GroupName = (TextView) v.findViewById(R.id.text_group_name);
-        GroupDescription = (TextView) v.findViewById(R.id.text_group_description);
-        GroupName.setText(mGroup.get("GroupName").toString());
-        GroupDescription.setText(mGroup.get("GroupDescription").toString());
 
-        // Get handles to Buttons
+        // Get handles to view elements
         mLeaveGroupButton = (Button) v.findViewById(R.id.leave_group_button);
+        mGroupNameTextView = (TextView) v.findViewById(R.id.text_group_name);
+        mGroupDescriptionTextView = (TextView) v.findViewById(R.id.text_group_description);
 
-        // Declare button clicks
+        // Declare event handlers
         mLeaveGroupButton.setOnClickListener(this);
+
+        // Put group info on screen
+        updateViews();
+
         return v;
     }
 
+    /**
+     * Handles buttons in the UI being clicked.
+     *
+     * @param view The view that was clicked.
+     */
     @Override
     public void onClick(View view) {
-        // Handles clicks on items in view
-        // in this case, either the facebook button or the create account button
 
+        // Handles clicks on items in view
         switch (view.getId()) {
             case R.id.leave_group_button:
                 onLeaveGroupButtonClick((Button) view);
@@ -120,21 +112,52 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener 
         }
     }
 
+    /**
+     * Handles group update events, which trigger when the app receives new information regarding
+     * the group and the members thereof.
+     *
+     * @param group The group that has been updated.
+     */
+    @Override
+    public void onReceivedGroupUpdate(GroupModel group) {
+
+        // Update internally cached group
+        mGroup = group;
+
+        updateViews();
+    }
+
+
+    /**
+     * Causes the currently logged in user to leave the current group.
+     */
     private void onLeaveGroupButtonClick(Button view) {
-        launchLeaveGroupButtonClick();
+        mGroup.removeGroupMember(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
+
+        // Attempt to save change to group in background
+        mGroup.saveInBackground(new BaseModel.SaveCallback() {
+            @Override
+            public void doneSavingModel(BaseModel object, Exception ex) {
+
+                // Verify operation was a success
+                if (ex != null) {
+                    Log.d(TAG, "Unable to save group");
+                    return;
+                }
+
+                CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
+                getActivity().finish();
+            }
+        });
     }
 
     /**
-     * Retrieves the current user and logs them out. The intent is then set to direct to the SignupActivity
-     * when the user is logged out.
+     * Updates views in fragment to reflect the current state of {@link #mGroup}.
      */
-    //TODO: Should make sure to leave a group first before logging out.
-    private void launchLeaveGroupButtonClick() {
-        ParseGroupModel parseGroupModel = new ParseGroupModel(CrowdControlApplication.aGroup);
-        parseGroupModel.LeaveGroup(CrowdControlApplication.aProfile);
+    private void updateViews() {
 
-        getActivity().finish();
-        //Intent myIntent = new Intent(getActivity(), GroupJoinActivity.class);
-        //getActivity().startActivity(myIntent);
+        // Use data from current group to fill UI elements with data
+        mGroupNameTextView.setText(mGroup.getGroupName());
+        mGroupDescriptionTextView.setText(mGroup.getGroupDescription());
     }
 }

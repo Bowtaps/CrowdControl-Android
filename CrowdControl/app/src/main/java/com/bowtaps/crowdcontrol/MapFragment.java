@@ -1,29 +1,49 @@
 package com.bowtaps.crowdcontrol;
 
 
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.bowtaps.crowdcontrol.model.GroupModel;
+import com.bowtaps.crowdcontrol.model.LocationModel;
+import com.bowtaps.crowdcontrol.model.ParseLocationManager;
+import com.bowtaps.crowdcontrol.model.SecureLocationManager;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.text.ParseException;
+import java.util.List;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Will Display a Google Map and place group members on it
  */
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements View.OnClickListener, GroupService.LocationUpdatesListener {
     private static final String ARG_PARAM1 = "param1";
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private String mText;
+    FloatingActionButton mLocationButton;
+    FloatingActionButton mSyncButton;
 
     /**
      * Use this factory method to create a new instance of
@@ -79,7 +99,48 @@ public class MapFragment extends Fragment {
         FragmentTransaction t = getChildFragmentManager().beginTransaction();
         t.add(R.id.map_frame, f);
         t.commit();
+
+        // Get handle to button
+        mLocationButton = (FloatingActionButton)v.findViewById(R.id.locationButton);
+        mSyncButton = (FloatingActionButton)v.findViewById(R.id.syncButton);
+
+        // Declare button clicks
+        mLocationButton.setOnClickListener(this);
+        mSyncButton.setOnClickListener(this);
         return v;
+    }
+
+    @Override
+    public void onClick(View view) {
+        // Handles clicks on items in view
+        // in this case, either the facebook button or the create account button
+
+        switch (view.getId()) {
+            case R.id.locationButton:
+                myMethodCall1((FloatingActionButton) view);
+                break;
+
+            case R.id.syncButton:
+                myMethodCall2((FloatingActionButton) view);
+                break;
+
+            default:
+                // Sorry, you're outta luck
+                break;
+        }
+    }
+
+    private void myMethodCall1(FloatingActionButton view) {
+        Log.d("myMtethodCall1", "Homing button pressed");
+        SecureLocationManager secureLocationManager = CrowdControlApplication.getInstance().getLocationManager();
+        LatLng myLoc = secureLocationManager.getCurrentLocation();
+        Log.d("myMtethodCall1", myLoc.toString());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLoc, 15));
+    }
+
+    private void myMethodCall2(FloatingActionButton view) {
+        refreshMarkers();
+
     }
 
     /**
@@ -117,8 +178,37 @@ public class MapFragment extends Fragment {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(0.0, 0.0)).title("Marker"));
     }
 
+    private void refreshMarkers(){
 
+        // Remove pins from map
+        if(mMap != null){
+            mMap.clear();
+            Log.d("Map Not Null", "We are in here, YAY!!!");
+        }
+
+        // Get locations for current group members
+        GroupModel group = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
+        List<? extends LocationModel> locations = CrowdControlApplication.getInstance().getLocationManager().getUserLocations(group.getGroupMembers());
+
+        // Put markers on map
+        for (LocationModel location : locations){
+
+            // Build location marker
+            Double longitude = location.getLongitude();
+            Double latitude = location.getLatitude();
+            Log.d("MapFragment", "user location: lat = " + latitude + ", long = " + longitude);
+
+            // Add marker to map
+            if (mMap == null) mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_frame)).getMap();
+            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(location.getFrom().getDisplayName()));
+        }
+    }
+
+    @Override
+    public void onReceivedLocationUpdate(List<LocationModel> locations) {
+        refreshMarkers();
+    }
 }

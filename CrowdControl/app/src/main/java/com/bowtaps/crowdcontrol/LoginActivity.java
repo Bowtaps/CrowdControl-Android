@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.bowtaps.crowdcontrol.model.ParseUserProfileModel;
 import com.parse.LogInCallback;
@@ -57,6 +58,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     /**
      * Initiallizes the Views from the (@Link activity_login.xml) and listens for
@@ -177,31 +180,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView.requestFocus();
         } else {
 
-            CrowdControlApplication.aUser = new ParseUser();
-            final ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
-            //ParseUserProfileModel parseUserProfileModel = new ParseUserProfileModel(CrowdControlApplication.aProfile);
-
-
-            parseUserModel.logIntoParseUser(email, password, new LogInCallback(){
+            CrowdControlApplication.getInstance().getModelManager().logInUserInBackground(email, password, new BaseModel.LoadCallback() {
                 @Override
-                public void done(ParseUser user, ParseException e) {
-//                    dialog.dismiss();
-                    if (e != null) {
-                        View focusView = null;
+                public void doneLoadingModel(BaseModel object, Exception ex) {
 
-                        // Show the error message
-                        mEmailView.setError(getString(R.string.login_invalid));
-                        mPasswordView.setError(getString(R.string.login_invalid));
-                        focusView = mEmailView;
-                        focusView.requestFocus();
+                    // Verify operation was successful
+                    if (ex != null) {
+
+                        // Display error prompts and select username again
+                        mPasswordView.setError("Username and password did not match.");
+                        mPasswordView.requestFocus();
                     } else {
-                        // sets user from the call back function???
-                        CrowdControlApplication.aUser = user;
-                        //fetch profile after login
-                        parseUserModel.updateUser();
 
-
-                        // Start an intent for the dispatch activity
+                        // Launch new activity on success
                         launchGroupJoinActivity();
                         finish();
                     }

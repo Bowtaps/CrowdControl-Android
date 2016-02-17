@@ -18,22 +18,8 @@ public class ParseBaseModel implements BaseModel {
     /**
      * The class's handle for interacting with its Parse counterpart.
      */
-    protected final ParseObject parseObject;
+    private final ParseObject parseObject;
 
-    /**
-     * Key corresponding to {@link ParseBaseModel#getId}
-     */
-    private static final String idKey = "objectId";
-
-    /**
-     * Key corresponding to {@link ParseBaseModel#getCreated}
-     */
-    private static final String createdKey = "createdAt";
-
-    /**
-     * Key corresponding to {@link ParseBaseModel#getUpdated}
-     */
-    private static final String updatedKey = "updatedAt";
 
 
     /**
@@ -43,7 +29,22 @@ public class ParseBaseModel implements BaseModel {
      * @param object The object to use as a handle.
      */
     public ParseBaseModel(ParseObject object) {
+
+        // Verify arguments
+        if (object == null) {
+            throw new IllegalArgumentException("object cannot be null");
+        }
+
         parseObject = object;
+    }
+
+    /**
+     * Gets the underlying {@link ParseObject} for this model.
+     *
+     * @return The underlying {@link ParseObject} handle.
+     */
+    protected ParseObject getParseObject() {
+        return parseObject;
     }
 
     /**
@@ -90,8 +91,8 @@ public class ParseBaseModel implements BaseModel {
      * Attempts to save the model to Parse synchronously. This is a blocking
      * function and thus should never be used on the main thread.
      *
-     * @throws Exception If an exception is thrown by Parse, it will be passed
-     *                   on to this function's caller.
+     * @throws ParseException If an exception is thrown by Parse, it will be passed
+     *                        on to this function's caller.
      */
     @Override
     public void save() throws ParseException {
@@ -121,11 +122,11 @@ public class ParseBaseModel implements BaseModel {
     }
 
     /**
-     * Attempts to load the model from parse synchronously. This is a blocking
+     * Attempts to load the model from Parse synchronously. This is a blocking
      * function and thus should never be used on the main thread.
      *
-     * @throws Exception If an exception is thrown by Parse, it will be passed
-     *                   on to this function's caller.
+     * @throws ParseException If an exception is thrown by Parse, it will be passed
+     *                        on to this function's caller.
      */
     @Override
     public void load() throws ParseException {
@@ -152,6 +153,25 @@ public class ParseBaseModel implements BaseModel {
                 }
             }
         });
+    }
+
+    /**
+     * Overrides the {@link #equals(Object)} operator, allowing this object to be used in standard
+     * operations, such as list searching and object comparison.
+     *
+     * @param other The other object to compare this object to.
+     * @return {@code true} if the other object is linked to the same {@link ParseObject},
+     *         {@code false} if not.
+     */
+    @Override
+    public boolean equals(final Object other) {
+        if (other instanceof ParseObject) {
+            return (this.parseObject != null && this.parseObject.equals(other));
+        } else if (other instanceof ParseBaseModel) {
+            return equals(((ParseBaseModel) other).parseObject);
+        } else {
+            return super.equals(other);
+        }
     }
 
 }

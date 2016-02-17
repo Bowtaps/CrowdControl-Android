@@ -1,15 +1,18 @@
 package com.bowtaps.crowdcontrol;
 
 import android.content.Intent;
+import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.bowtaps.crowdcontrol.model.ParseGroupModel;
 import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.parse.ParseUser;
 
@@ -17,6 +20,7 @@ import com.parse.ParseUser;
 public class SettingsActivity extends AppCompatActivity implements OnClickListener{
 
     Button mLogoutButton;
+    private static final String TAG = SettingsActivity.class.getSimpleName();
 
     /**
      *
@@ -64,7 +68,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
         switch (view.getId()) {
             case R.id.logout_button:
-                onLogoutButtonClick((Button) view);
+                onLogoutButtonClick();
                 break;
 
             default:
@@ -75,22 +79,36 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
     /**
      *
-     * @param view
+     *
      *
      * Calls the launchLogoutActivity() method.
      */
-    private void onLogoutButtonClick(Button view) {
-        launchLogoutActivity();
+    private void onLogoutButtonClick() {
+
+        try {
+            if (CrowdControlApplication.getInstance().getModelManager().logOutCurrentUser()) {
+                launchLogoutActivity();
+            } else {
+
+                // Report error to log
+                Log.d(TAG, "User logout failed");
+            }
+        } catch (Exception ex) {
+            Log.d(TAG, "Failed to log user out");
+        }
     }
 
     /**
      * Retrieves the current user and logs them out. The intent is then set to direct to the SignupActivity
      * when the user is logged out.
      */
-    //TODO: Should make sure to leave a group first before logging out.
     private void launchLogoutActivity() {
-        ParseUserModel parseUserModel = new ParseUserModel(CrowdControlApplication.aUser);
-        parseUserModel.logOutOfParseUser();
+
+        //Todo move to messaging implentation
+        //stop the messaging service
+        stopService(new Intent(getApplicationContext(), MessageService.class));
+
+        //Todo Question --- does this log out the ParseUser?!?!?
 
         Intent myIntent = new Intent(this, SignupActivity.class);
         this.startActivity(myIntent);
