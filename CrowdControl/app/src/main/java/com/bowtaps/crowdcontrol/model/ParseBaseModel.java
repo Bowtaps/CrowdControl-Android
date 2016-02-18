@@ -18,7 +18,7 @@ public class ParseBaseModel implements BaseModel {
     /**
      * The class's handle for interacting with its Parse counterpart.
      */
-    private final ParseObject parseObject;
+    private ParseObject parseObject;
 
 
 
@@ -45,6 +45,21 @@ public class ParseBaseModel implements BaseModel {
      */
     protected ParseObject getParseObject() {
         return parseObject;
+    }
+
+    /**
+     * Replaces the underlying {@link ParseObject} for this object.
+     *
+     * @param parseObject The new {@link ParseObject} to attach to this model.
+     */
+    protected void setUnderlyingParseObject(ParseObject parseObject) {
+
+        // Verify parameters
+        if (parseObject == null) {
+            throw new IllegalArgumentException("parseObject cannot be null");
+        }
+
+        this.parseObject = parseObject;
     }
 
     /**

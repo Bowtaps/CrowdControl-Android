@@ -62,4 +62,10 @@ public interface UserModel extends BaseModel {
      */
     public UserProfileModel getProfile();
 
+    /**
+     * Replaces the profile model.
+     *
+     * @param profile The profile object to set.
+     */
+    public void setProfile(UserProfileModel profile);
 }
