@@ -45,6 +45,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
+        setTitle(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupName());
 
         setUpReceiver();
 
