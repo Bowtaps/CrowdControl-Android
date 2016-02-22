@@ -38,6 +38,8 @@ public class GroupNavigationActivity extends AppCompatActivity {
     private MessagingFragment mMessagingFragment;
     private EventFragment     mEventFragment;
 
+    private Intent mServiceIntent;
+
     /*
      *  Sets up the (@Link SimpleTabsAdapter) and adds in tabs and their fragments.
      */
@@ -48,6 +50,12 @@ public class GroupNavigationActivity extends AppCompatActivity {
         setTitle(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupName());
 
         setUpReceiver();
+
+        //TODO move to implementation
+        //Set up messaging service
+        mServiceIntent = new Intent( getApplicationContext(), MessageService.class);
+
+        startService(mServiceIntent);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -111,6 +119,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
         groupServiceBinder.removeGroupUpdatesListener(mMessagingFragment);
 
         unbindService(mServiceConnection);
+        stopService(new Intent(this,MessageService.class));
     }
 
     private void setUpReceiver() {

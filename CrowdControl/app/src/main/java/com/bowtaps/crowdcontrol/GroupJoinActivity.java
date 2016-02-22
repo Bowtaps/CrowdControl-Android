@@ -36,8 +36,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     private ListView mGroupListView;
     private List<GroupModel> mGroupList;
 
-    private Intent mServiceIntent;
-
     private static final String TAG = GroupJoinActivity.class.getSimpleName();
 
     /**
@@ -51,11 +49,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_join);
 
-        //TODO move to implementation
-        //Set up messaging service
-        mServiceIntent = new Intent( getApplicationContext(), MessageService.class);
-
-        startService(mServiceIntent);
 
         // Initialize list adapter for mGroupListView
         mGroupList = new ArrayList<GroupModel>();
@@ -73,6 +66,18 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         // Declare button click event handlers
         mButtonToTabs.setOnClickListener(this);
         mButtonSettings.setOnClickListener(this);
+
+        //check if in a Group
+        try {
+            CrowdControlApplication.getInstance().getModelManager().fetchCurrentGroup();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup() != null )
+        {
+            launchGroupNavigationActivity();
+        }
 
         // Fetch group list to display
         CrowdControlApplication.getInstance().getModelManager().fetchAllGroupsInBackground(new BaseModel.FetchCallback() {
@@ -244,10 +249,11 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     private void launchGroupNavigationActivity() {
         Intent myIntent = new Intent(this, GroupNavigationActivity.class);
         this.startActivity(myIntent);
+        finish();
     }
 
     public void onDestroy() {
-        stopService(new Intent(this,MessageService.class));
+        //stopService(new Intent(this,MessageService.class));
         super.onDestroy();
     }
 
