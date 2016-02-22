@@ -6,6 +6,7 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -66,6 +67,22 @@ public interface GroupModel extends BaseModel {
      * @return An {@link ArrayList} of {@link UserProfileModel} objects that belong to the group.
      */
     public List<? extends UserProfileModel> getGroupMembers();
+
+    /**
+     * Clears all members from this group.
+     *
+     * @return {@code true} if the operation was successful, {@code false} if not.
+     */
+    public Boolean clearGroupMembers();
+
+    /**
+     * Adds multiple user profiles to the group.
+     *
+     * @param profiles The {@link Collection} of users to add as members to this group.
+     *
+     * @return {@code true} if the operation was successful, {@code false} if not.
+     */
+    public Boolean addGroupMembers(Collection<? extends UserProfileModel> profiles);
 
     /**
      * Adds a new member to the group.

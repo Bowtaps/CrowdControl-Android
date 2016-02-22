@@ -160,6 +160,20 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
         return userProfileModel;
     }
 
+    /**
+     * Sets the profile object.
+     *
+     * @param profile The profile object to set.
+     */
+    @Override
+    public void setProfile(UserProfileModel profile) {
+        if (profile == null || !(profile instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("parameter 'profile' must be instance of ParseUserProfileModel");
+        }
+
+        userProfileModel = (ParseUserProfileModel) profile;
+    }
+
 
 
     public static ParseUserModel createFromSignUp(String username, String password) {
