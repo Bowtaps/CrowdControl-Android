@@ -194,7 +194,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
         //get the current user profile
         UserProfileModel profile = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
         ParseQuery query = ParseQuery.getQuery(tableName);
-        query.whereEqualTo(toKey, ((ParseUserProfileModel)profile).getParseObject());
+        query.whereEqualTo(toKey, ((ParseUserProfileModel) profile).getParseObject());
         List<ParseObject> response = query.find();
         ParseLocationModel locationModel;
         for (ParseObject obj: response) {
@@ -359,5 +359,29 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
         else{
             return null;
         }
+    }
+
+    /**
+     * Creates an instance of a {@link ParseLocationModel} from a {@link UserProfileModel} to,
+     * a {@link UserProfileModel} from, and a {@link LatLng} loc.
+     *
+     * @param to The {@link UserProfileModel} that represents the recipient of the location.
+     * @param from The {@link UserProfileModel} that represents the sender of the location.
+     * @param loc The {@link LatLng} object containing the longitude and latitude of the user.
+     * @return A {@link ParseLocationModel} object containing all of the information passed in.
+     */
+    public static ParseLocationModel createLocationModel(UserProfileModel to, UserProfileModel from, LatLng loc){
+        if (to != null && !(to instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("to parameter must be an instance of ParseUserProfileModel");
+        }
+        if(from != null &&  !(from instanceof ParseUserProfileModel)){
+            throw new IllegalArgumentException("from parameter must be an instance of ParseUserProfileModel");
+        }
+        ParseObject obj = ParseObject.create(tableName);
+        obj.put(toKey,((ParseUserProfileModel) to).getParseObject());
+        obj.put(fromKey, ((ParseUserProfileModel) from).getParseObject());
+        obj.put(latitudeKey, ((Double) loc.latitude).toString());
+        obj.put(longitudeKey, ((Double) loc.longitude).toString());
+        return new ParseLocationModel(obj);
     }
 }
