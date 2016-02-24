@@ -1,5 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Date;
 import java.util.List;
 
@@ -45,4 +47,10 @@ public interface ModelManager {
     public void createGroupInBackground(UserProfileModel leader, String name, String description, final BaseModel.SaveCallback callback);
 
     public List<? extends BaseModel> fetchGroupUpdates(String groupId, String userId, Date since) throws Exception;
+
+    public LocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location);
+
+//    public List<? extends LocationModel> fetchLocationsFromUser(UserProfileModel user);
+//
+//    public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user);
 }

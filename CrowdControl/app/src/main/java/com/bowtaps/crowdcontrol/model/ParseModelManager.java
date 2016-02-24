@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.FunctionCallback;
 import com.parse.Parse;
 import com.parse.ParseCloud;
@@ -568,6 +569,10 @@ public class ParseModelManager implements ModelManager {
         }
 
         return results;
+    }
+
+    public ParseLocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location){
+        return ParseLocationModel.createLocationModel(to, from, location);
     }
 
     /**
