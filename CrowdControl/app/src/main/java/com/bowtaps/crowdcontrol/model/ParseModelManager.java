@@ -67,6 +67,48 @@ public class ParseModelManager implements ModelManager {
 
 
     @Override
+    public void deleteModel(BaseModel model) throws ParseException {
+
+        // Verify parameters
+        if (model == null) {
+            throw new IllegalArgumentException("model cannot be null");
+        } else if (!(model instanceof ParseBaseModel)) {
+            throw new IllegalArgumentException("model must be instance of type ParseBaseModel");
+        }
+
+        ParseBaseModel parseModel = (ParseBaseModel) model;
+
+        // Remove from cache
+        if (cachedModels.containsKey(parseModel.getId())) {
+            cachedModels.remove(parseModel.getId());
+        }
+
+        // Delete from storage
+        parseModel.delete();
+    }
+
+    @Override
+    public void deleteModelInBackground(BaseModel model, final BaseModel.DeleteCallback callback) {
+
+        // Verify parameters
+        if (model == null) {
+            throw new IllegalArgumentException("model cannot be null");
+        } else if (!(model instanceof ParseBaseModel)) {
+            throw new IllegalArgumentException("model must be instance of type ParseBaseModel");
+        }
+
+        ParseBaseModel parseModel = (ParseBaseModel) model;
+
+        // Remove from cache
+        if (cachedModels.containsKey(parseModel.getId())) {
+            cachedModels.remove(parseModel.getId());
+        }
+
+        // Delete from storage
+        parseModel.deleteInBackground(callback);
+    }
+
+    @Override
     public ParseUserModel logInUser(String username, String password) throws ParseException {
 
         // Log in user using the Parse API
