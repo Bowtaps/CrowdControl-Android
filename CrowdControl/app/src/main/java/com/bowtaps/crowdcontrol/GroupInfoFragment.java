@@ -147,7 +147,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 }
 
                 CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
-                getActivity().finish();
+                launchGroupJoinActivity();
             }
         });
         //stopService(new Intent(this, MessageService.class));
@@ -161,5 +161,16 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         // Use data from current group to fill UI elements with data
         mGroupNameTextView.setText(mGroup.getGroupName());
         mGroupDescriptionTextView.setText(mGroup.getGroupDescription());
+    }
+
+    /**
+     * Launches the {@link GroupJoinActivity}.
+     *
+     * @see GroupJoinActivity
+     */
+    private void launchGroupJoinActivity() {
+        Intent myIntent = new Intent(getActivity(), GroupJoinActivity.class);
+        this.startActivity(myIntent);
+        getActivity().finish();
     }
 }
