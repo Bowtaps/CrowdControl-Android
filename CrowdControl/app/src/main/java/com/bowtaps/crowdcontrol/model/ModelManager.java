@@ -217,7 +217,9 @@ public interface ModelManager {
 
     public LocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location);
 
-    public List<? extends LocationModel> fetchLocationsFromUser(UserProfileModel user) throws ParseException;
+    public List<? extends LocationModel> fetchLocationsFromUser(UserProfileModel user) throws Exception;
 
-    public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException;
+    public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws Exception;
+
+    public GroupModel joinGroup(GroupModel group) throws Exception;
 }

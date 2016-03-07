@@ -176,6 +176,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         final UserModel userModel = CrowdControlApplication.getInstance().getModelManager().getCurrentUser();
 
         // First load members from current group
+        /*
         groupModel.loadInBackground(new BaseModel.LoadCallback() {
             @Override
             public void doneLoadingModel(BaseModel object, Exception ex) {
@@ -206,7 +207,18 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
                     }
                 });
             }
-        });
+        });*/
+
+        //GroupModel.joinGroup(groupModel.getId());
+        try {
+            CrowdControlApplication.getInstance().getModelManager().joinGroup(groupModel);
+        }
+        catch(Exception e){
+            Log.d(TAG, "Unable to join group");
+        }
+        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup((GroupModel) groupModel);
+        launchGroupNavigationActivity();
+
     }
 
     /**
