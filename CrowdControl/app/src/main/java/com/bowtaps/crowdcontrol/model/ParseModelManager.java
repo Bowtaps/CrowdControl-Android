@@ -570,9 +570,65 @@ public class ParseModelManager implements ModelManager {
 
         return results;
     }
-
+    /**
+     * Creates and returns an instance of a ParseLocationModel with the fields provided by the
+     * parameters.
+     *
+     * @param to The UserProfileModel to create the to field of the object.
+     * @param from The UserProfileModel to fill in the from field.
+     * @param location A LatLng object containing the user's location.
+     *
+     * @return A ParseLocationModel containing the information from the parameters.
+     */
     public ParseLocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location){
-        return ParseLocationModel.createLocationModel(to, from, location);
+        ParseLocationModel loc;
+        try {
+            loc = ParseLocationModel.createLocationModel(to, from, location);
+        }catch (IllegalArgumentException e1){
+            Log.e("Create Location Error", e1.toString());
+            loc = null;
+        }
+        if(loc != null) {
+            loc = (ParseLocationModel) updateCache(loc);
+        }
+        return loc;
+    }
+
+    /**
+     * This function retrieves all of the ParseLocationModels sent from the user that is passed in
+     * the parameters.  After gathering the objects, this function updates the cache.
+     *
+     * @param user UserProfileModel object to search for locations from.
+     *
+     * @return A list of ParseLocationModels that have been sent from the user.
+     */
+    public List<ParseLocationModel> fetchLocationsFromUser(UserProfileModel user) throws ParseException {
+        List<ParseLocationModel> locationModels;
+        int i = 0;
+        //Get the location models from parse
+        locationModels = ParseLocationModel.fetchLocationsSentFromUser(user);
+        for(i=0;i<locationModels.size();i++){
+            locationModels.set(i, (ParseLocationModel) updateCache(locationModels.get(i)));
+        }
+        return locationModels;
+    }
+
+    /**
+     * This function retrieves all of the ParseLocationModels sent to the user that is passed in
+     * the parameters.  After gathering the objects, this function updates the cache.
+     *
+     * @param user UserProfileModel object to search for locations to.
+     *
+     * @return A list of ParseLocationModels that have been sent to the user.
+     */
+    public List<ParseLocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException{
+        List<ParseLocationModel> locationModels;
+        int i = 0;
+        locationModels = ParseLocationModel.fetchLocationsSentToUser(user);
+        for(i = 0; i < locationModels.size(); i++){
+            locationModels.set(i, (ParseLocationModel) updateCache(locationModels.get(i)));
+        }
+        return locationModels;
     }
 
     /**

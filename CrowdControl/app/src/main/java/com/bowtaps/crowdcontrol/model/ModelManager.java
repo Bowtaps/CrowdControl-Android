@@ -1,6 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.ParseException;
 
 import java.util.Date;
 import java.util.List;
@@ -50,7 +51,7 @@ public interface ModelManager {
 
     public LocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location);
 
-//    public List<? extends LocationModel> fetchLocationsFromUser(UserProfileModel user);
-//
-//    public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user);
+    public List<? extends LocationModel> fetchLocationsFromUser(UserProfileModel user) throws ParseException;
+
+    public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException;
 }
