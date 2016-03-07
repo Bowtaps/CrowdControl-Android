@@ -38,6 +38,12 @@ public class GroupNavigationActivity extends AppCompatActivity {
     private MessagingFragment mMessagingFragment;
     private EventFragment     mEventFragment;
 
+    private int[] tabIcons = {
+            R.drawable.ic_setting_light,
+            R.drawable.ic_play_light,
+            R.drawable.common_plus_signin_btn_icon_light
+    };
+
     /*
      *  Sets up the (@Link SimpleTabsAdapter) and adds in tabs and their fragments.
      */
@@ -62,9 +68,9 @@ public class GroupNavigationActivity extends AppCompatActivity {
         //mEventFragment     = EventFragment.newInstance("Events");
 
         // Add fragments to tab manager
-        mTabsAdapter.addFragment(mGroupInfoFragment, "Group");
-        mTabsAdapter.addFragment(mMapFragment, "Map");
-        mTabsAdapter.addFragment(mMessagingFragment, "Messaging");
+        mTabsAdapter.addFragment(mGroupInfoFragment, "");
+        mTabsAdapter.addFragment(mMapFragment, "");
+        mTabsAdapter.addFragment(mMessagingFragment, "");
         //mTabsAdapter.addFragment(mEventFragment, "Events");
 
         //setup viewpager to give swipe effect
@@ -72,6 +78,10 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         mTabs = (TabLayout) findViewById(R.id.tabs);
         mTabs.setupWithViewPager(tabsviewPager);
+
+        mTabs.getTabAt(0).setIcon(tabIcons[0]);
+        mTabs.getTabAt(1).setIcon(tabIcons[1]);
+        mTabs.getTabAt(2).setIcon(tabIcons[2]);
 
         // Start service if it's not working
         if (!GroupService.isRunning()) {
