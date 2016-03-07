@@ -1,9 +1,6 @@
 package com.bowtaps.crowdcontrol.model;
 
-import com.bowtaps.crowdcontrol.CrowdControlApplication;
-import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 
 /**
  * The Parse implementation of the @{link ParseBaseModel} interface.
@@ -62,6 +59,15 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
         getParseObject().put(displayNameKey, displayName);
     }
 
+
+    /**
+     * Creates a new instance of this class using the provided {@link ParseObject} as the underlying
+     * handle into the database.
+     *
+     * @param object The database handle to use when creating this class.
+     * @return The newly created instance of this class that uses the provided {@link ParseObject}
+     * as the underlying object or {@code null} if unable to create the object.
+     */
     public static ParseUserProfileModel createFromParseObject(ParseObject object) {
 
         // Verify parameters

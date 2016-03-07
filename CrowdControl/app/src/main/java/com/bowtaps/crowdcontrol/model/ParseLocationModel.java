@@ -5,18 +5,16 @@ import android.util.Log;
 
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseRelation;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Evan Hammer on 1/19/16.
+ * @author Evan Hammer
+ * @since 2016-01-19
  */
 public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     /**

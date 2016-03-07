@@ -4,9 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.bowtaps.crowdcontrol.CrowdControlApplication;
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.FunctionCallback;
 import com.parse.Parse;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
@@ -46,7 +44,6 @@ public class ParseModelManager implements ModelManager {
     private Map<String, ParseBaseModel> cachedModels;
 
 
-
     /**
      * The default constructor for this class. Requires a context to initialize the Parse API under,
      * as well as application identifiers and client keys for authentication and verification.
@@ -64,8 +61,6 @@ public class ParseModelManager implements ModelManager {
         Parse.enableLocalDatastore(context);
         Parse.initialize(context, applicationId, clientKey);
     }
-
-
 
     @Override
     public void deleteModel(BaseModel model) throws ParseException {
