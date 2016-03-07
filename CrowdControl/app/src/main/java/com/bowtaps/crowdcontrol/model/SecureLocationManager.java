@@ -62,10 +62,25 @@ public interface SecureLocationManager {
      */
     public void stopTransmission();
 
+    /**
+     * Gets whether or not this manager is currently transmitting the user's location.
+     *
+     * @return {@code true} if the manager is transmitting, {@code false} if not.
+     */
     public boolean getTransmitting();
 
+    /**
+     * Sets the internal flag for whether the current manager is transmitting or not.
+     *
+     * @param transmitting The value to set the {@link #getTransmitting()} flag to.
+     */
     public void setTransmitting(boolean transmitting);
 
+    /**
+     * Gets the current location of the current user.
+     *
+     * @return Returns the {@link LatLng} object representing the user's location.
+     */
     public LatLng getCurrentLocation();
 
     /**
