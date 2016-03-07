@@ -40,6 +40,15 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
     private Intent mServiceIntent;
 
+    //sets up icons for tabs
+    private int[] tabIcons = {
+            R.drawable.streamline_person,
+            R.drawable.streamline_map_pin,
+            R.drawable.streamline_bubble,
+            R.drawable.streamline_notebook
+    };
+
+
     /*
      *  Sets up the (@Link SimpleTabsAdapter) and adds in tabs and their fragments.
      */
@@ -68,19 +77,23 @@ public class GroupNavigationActivity extends AppCompatActivity {
         mGroupInfoFragment = GroupInfoFragment.newInstance("Group");
         mMapFragment       = MapFragment.newInstance("Map");
         mMessagingFragment = MessagingFragment.newInstance("Messaging");
-        mEventFragment     = EventFragment.newInstance("Events");
+        //mEventFragment     = EventFragment.newInstance("Events");
 
         // Add fragments to tab manager
-        mTabsAdapter.addFragment(mGroupInfoFragment, "Group");
-        mTabsAdapter.addFragment(mMapFragment, "Map");
-        mTabsAdapter.addFragment(mMessagingFragment, "Messaging");
-        mTabsAdapter.addFragment(mEventFragment, "Events");
+        mTabsAdapter.addFragment(mGroupInfoFragment, "");
+        mTabsAdapter.addFragment(mMapFragment, "");
+        mTabsAdapter.addFragment(mMessagingFragment, "");
+        //mTabsAdapter.addFragment(mEventFragment, "Events");
 
         //setup viewpager to give swipe effect
         tabsviewPager.setAdapter(mTabsAdapter);
 
         mTabs = (TabLayout) findViewById(R.id.tabs);
         mTabs.setupWithViewPager(tabsviewPager);
+
+        mTabs.getTabAt(0).setIcon(tabIcons[0]);
+        mTabs.getTabAt(1).setIcon(tabIcons[1]);
+        mTabs.getTabAt(2).setIcon(tabIcons[2]);
 
         // Start service if it's not working
         if (!GroupService.isRunning()) {
@@ -123,16 +136,16 @@ public class GroupNavigationActivity extends AppCompatActivity {
     }
 
     private void setUpReceiver() {
-//        progressDialog = new ProgressDialog(this);
-//        progressDialog.setTitle("Loading");
-//        progressDialog.setMessage("Please wait...");
-//        progressDialog.show();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Please wait...");
+        progressDialog.show();
 
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Boolean success = intent.getBooleanExtra("success", false);
-//                progressDialog.dismiss();
+                progressDialog.dismiss();
                 if (!success) {
                     Toast.makeText(getApplicationContext(), "Messaging service failed to start", Toast.LENGTH_LONG).show();
                 }

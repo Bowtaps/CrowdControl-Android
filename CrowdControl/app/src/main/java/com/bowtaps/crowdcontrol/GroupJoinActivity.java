@@ -1,8 +1,11 @@
 package com.bowtaps.crowdcontrol;
 
 import android.content.Intent;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +33,8 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
     Button mButtonToTabs;
     Button mButtonSettings;
+
+    Toolbar mToolbar;
 
     // List view pieces
     private GroupModelAdapter mGroupListAdapter;
@@ -67,6 +72,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         mButtonToTabs.setOnClickListener(this);
         mButtonSettings.setOnClickListener(this);
 
+
         //check if in a Group
         try {
             CrowdControlApplication.getInstance().getModelManager().fetchCurrentGroup();
@@ -78,6 +84,13 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         {
             launchGroupNavigationActivity();
         }
+
+        //set up Tool Bar
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mToolbar.setTitle("Join A Group");
+
 
         // Fetch group list to display
         CrowdControlApplication.getInstance().getModelManager().fetchAllGroupsInBackground(new BaseModel.FetchCallback() {
@@ -125,6 +138,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            launchSettingsActivity();
             return true;
         }
 
