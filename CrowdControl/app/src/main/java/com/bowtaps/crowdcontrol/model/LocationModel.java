@@ -1,11 +1,8 @@
 package com.bowtaps.crowdcontrol.model;
 
-import com.parse.Parse;
-
-import java.util.List;
-
 /**
- * Created by Evan Hammer on 1/19/16.
+ * @author Evan Hammer
+ * @since 2016-01-19
  */
 public interface LocationModel extends BaseModel {
 

@@ -1,7 +1,5 @@
 package com.bowtaps.crowdcontrol.model;
 
-import android.util.Pair;
-
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Collection;
