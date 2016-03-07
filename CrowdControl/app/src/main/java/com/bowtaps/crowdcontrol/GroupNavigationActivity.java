@@ -119,7 +119,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
         groupServiceBinder.removeGroupUpdatesListener(mMessagingFragment);
 
         unbindService(mServiceConnection);
-        stopService(new Intent(this,MessageService.class));
+        stopService(new Intent(getApplicationContext(), GroupService.class));
     }
 
     private void setUpReceiver() {

@@ -180,13 +180,21 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
         fromUser.fetch();
     }
 
+    /**
+     * Gathers the locations meant for the current user from Parse and returns a list of
+     * ParseLocationModel objects.
+     *
+     * @throws ParseException Throws If an exception occurs, throws a {@link ParseException}.
+     *
+     * @return A {@link List} of {@link ParseLocationModel} objects that are meant for the
+     *          current user.
+     */
     public static List<ParseLocationModel> fetchMemberLocations() throws ParseException{
         List<ParseLocationModel> groupMemberLocations = new ArrayList<>();
         //get the current user profile
         UserProfileModel profile = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
         ParseQuery query = ParseQuery.getQuery(tableName);
-        ParseObject to = ParseObject.createWithoutData("CCUser", profile.getId());
-        query.whereEqualTo(toKey, to);
+        query.whereEqualTo(toKey, ((ParseUserProfileModel) profile).getParseObject());
         List<ParseObject> response = query.find();
         ParseLocationModel locationModel;
         for (ParseObject obj: response) {
@@ -196,15 +204,10 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
             locationModel.setLatitude(Double.parseDouble(latitude));
             locationModel.setLongitude(Double.parseDouble(longitude));
             locationModel.setTo(profile);
-            ParseQuery profileQuery = ParseQuery.getQuery("CCUser");
             Object from = obj.get(fromKey);
             ParseUserProfileModel fromProfile = new ParseUserProfileModel((ParseObject)from);
             fromProfile.load();
-            boolean added = groupMemberLocations.add(locationModel);
-            if(!added){
-                //Replace with throwing an exception
-                Log.e("GroupList", "Error Adding a member to the list");
-            }
+            groupMemberLocations.add(locationModel);
         }
         return groupMemberLocations;
     }
@@ -230,7 +233,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
         //for each member of the group create the location model
         //create a location object from me to each group member
         for (UserProfileModel user: groupMembers) {
-            if (user.getDisplayName() != me.getDisplayName()) {
+            if (user.getDisplayName().equals(me.getDisplayName())) {
                 ParseObject obj = ParseObject.create(tableName);
                 Double lat = currentLocation.latitude;
                 Double lng = currentLocation.longitude;
@@ -254,7 +257,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
         UserProfileModel me = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
         LatLng currentLocation = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
         for(UserProfileModel profile: members){
-            if(profile.getDisplayName() != me.getDisplayName()){
+            if(profile.getDisplayName().equals(me.getDisplayName())){
                 ParseObject obj = ParseObject.create(tableName);
                 Double lat = currentLocation.latitude;
                 Double lng = currentLocation.longitude;
@@ -274,6 +277,77 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     }
 
     /**
+     * Gathers the locations meant for the user passed into the function from Parse and returns a
+     * list of ParseLocationModel objects.
+     *
+     * @throws ParseException Throws If an exception occurs, throws a {@link ParseException}.
+     * @param user The {@link UserProfileModel} of a user to find the locations on parse that were
+     *             meant for them.
+     *
+     * @return A {@link List} of {@link ParseLocationModel} objects that are meant for the user that
+     * was passed in.
+     */
+    public static List<LocationModel> fetchLocationsSentToUser(UserProfileModel user) throws ParseException{
+        if (user != null && !(user instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("user parameter must be an instance of ParseUserProfileModel");
+        }
+        List<LocationModel> groupMemberLocations = new ArrayList<>();
+        ParseQuery query = ParseQuery.getQuery(tableName);
+        query.whereEqualTo(toKey, ((ParseUserProfileModel) user).getParseObject());
+        List<ParseObject> response = query.find();
+        ParseLocationModel locationModel;
+        for (ParseObject obj: response) {
+            locationModel = new ParseLocationModel(ParseObject.create(tableName));
+            String latitude = obj.get(latitudeKey).toString();
+            String longitude = obj.get(longitudeKey).toString();
+            locationModel.setLatitude(Double.parseDouble(latitude));
+            locationModel.setLongitude(Double.parseDouble(longitude));
+            locationModel.setTo(user);
+            Object from = obj.get(fromKey);
+            ParseUserProfileModel fromProfile = new ParseUserProfileModel((ParseObject)from);
+            fromProfile.load();
+            locationModel.setFrom(fromProfile);
+            groupMemberLocations.add(locationModel);
+        }
+        return groupMemberLocations;
+    }
+
+    /**
+     * Gathers the locations sent from the user passed into the function from Parse and returns a
+     * list of ParseLocationModel objects.
+     *
+     * @throws ParseException Throws If an exception occurs, throws a {@link ParseException}.
+     * @param user The {@link UserProfileModel} of a user to find the locations on parse that were
+     *             sent by them.
+     *
+     * @return A {@link List} of {@link ParseLocationModel} objects that are meant for the user that
+     * was passed in.
+     */
+    public static List<LocationModel> fetchLocationsSentFromUser(UserProfileModel user) throws ParseException{
+        if (user != null && !(user instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("user parameter must be an instance of ParseUserProfileModel");
+        }
+        List<LocationModel> previousLocations = new ArrayList<>();
+        ParseQuery query = ParseQuery.getQuery(tableName);
+        query.whereEqualTo(fromKey, ((ParseUserProfileModel) user).getParseObject());
+        List<ParseObject> response = query.find();
+        ParseLocationModel locationModel;
+        for(ParseObject obj: response){
+            locationModel = new ParseLocationModel(ParseObject.create(tableName));
+            locationModel.setLatitude(Double.parseDouble(obj.getString(latitudeKey)));
+            locationModel.setLongitude(Double.parseDouble(obj.getString(longitudeKey)));
+            locationModel.setFrom(user);
+            //ParseQuery profileQuery = Parse
+            Object to = obj.get(toKey);
+            ParseUserProfileModel toProfile = new ParseUserProfileModel((ParseObject) to);
+            toProfile.load();
+            locationModel.setTo(toProfile);
+            previousLocations.add(locationModel);
+        }
+        return previousLocations;
+    }
+
+    /**
      * @param pObject
      * @return
      */
@@ -285,5 +359,29 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
         else{
             return null;
         }
+    }
+
+    /**
+     * Creates an instance of a {@link ParseLocationModel} from a {@link UserProfileModel} to,
+     * a {@link UserProfileModel} from, and a {@link LatLng} loc.
+     *
+     * @param to The {@link UserProfileModel} that represents the recipient of the location.
+     * @param from The {@link UserProfileModel} that represents the sender of the location.
+     * @param loc The {@link LatLng} object containing the longitude and latitude of the user.
+     * @return A {@link ParseLocationModel} object containing all of the information passed in.
+     */
+    public static ParseLocationModel createLocationModel(UserProfileModel to, UserProfileModel from, LatLng loc){
+        if (to != null && !(to instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("to parameter must be an instance of ParseUserProfileModel");
+        }
+        if(from != null &&  !(from instanceof ParseUserProfileModel)){
+            throw new IllegalArgumentException("from parameter must be an instance of ParseUserProfileModel");
+        }
+        ParseObject obj = ParseObject.create(tableName);
+        obj.put(toKey,((ParseUserProfileModel) to).getParseObject());
+        obj.put(fromKey, ((ParseUserProfileModel) from).getParseObject());
+        obj.put(latitudeKey, ((Double) loc.latitude).toString());
+        obj.put(longitudeKey, ((Double) loc.longitude).toString());
+        return new ParseLocationModel(obj);
     }
 }

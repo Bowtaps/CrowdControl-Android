@@ -12,6 +12,10 @@ import java.util.List;
  */
 public interface ModelManager {
 
+    public void deleteModel(BaseModel model) throws Exception;
+
+    public void deleteModelInBackground(BaseModel model, final BaseModel.DeleteCallback callback);
+
     public UserModel logInUser(String username, String password) throws Exception;
 
     public void logInUserInBackground(String username, String password, final BaseModel.LoadCallback callback);
