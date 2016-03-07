@@ -39,9 +39,10 @@ public class GroupNavigationActivity extends AppCompatActivity {
     private EventFragment     mEventFragment;
 
     private int[] tabIcons = {
-            R.drawable.ic_setting_light,
-            R.drawable.ic_play_light,
-            R.drawable.common_plus_signin_btn_icon_light
+            R.drawable.streamline_person,
+            R.drawable.streamline_map_pin,
+            R.drawable.streamline_bubble,
+            R.drawable.streamline_notebook
     };
 
     /*
