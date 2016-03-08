@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,7 +13,10 @@
         android:layout_column="0"
         android:layout_columnSpan="3"
         android:layout_row="2"
-        android:layout_rowSpan="2" />
+        android:layout_rowSpan="2"
+        android:layout_below="@+id/text_group_name"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="40dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -27,21 +30,37 @@
         android:layout_row="1"
         android:layout_rowSpan="1"
         android:layout_gravity="center_horizontal|bottom"
-        android:clickable="true" />
+        android:clickable="true"
+        android:layout_marginLeft="228dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Group Name"
+        android:text="Group Leader:"
         android:id="@+id/text_group_name"
-        android:layout_marginTop="100dp" />
+        android:layout_marginLeft="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/text_group_name"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Group Information"
-        android:id="@+id/group_test"
-        android:textColor="#ffffff" />
-</FrameLayout>
+        android:text="Group Description"
+        android:id="@+id/groupDesctriptionTitle"
+        android:layout_marginLeft="0dp"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>
