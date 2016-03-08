@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
-import com.bowtaps.crowdcontrol.model.ParseGroupModel;
-import com.parse.ParseObject;
 
 
 /**
@@ -29,7 +27,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
 
     GroupModel mGroup;
     Button mLeaveGroupButton;
-    TextView mGroupNameTextView;
+    TextView mGroupLeaderTextView;
     TextView mGroupDescriptionTextView;
 
     private static final String TAG = GroupInfoFragment.class.getSimpleName();
@@ -81,7 +79,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
 
         // Get handles to view elements
         mLeaveGroupButton = (Button) v.findViewById(R.id.leave_group_button);
-        mGroupNameTextView = (TextView) v.findViewById(R.id.text_group_name);
+        mGroupLeaderTextView = (TextView) v.findViewById(R.id.group_leader_name);
         mGroupDescriptionTextView = (TextView) v.findViewById(R.id.text_group_description);
 
         // Declare event handlers
@@ -159,7 +157,9 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
     private void updateViews() {
 
         // Use data from current group to fill UI elements with data
-        mGroupNameTextView.setText(mGroup.getGroupName());
+        if(mGroup.getGroupLeader() != null){
+            mGroupLeaderTextView.setText(mGroup.getGroupLeader().getDisplayName());
+        }
         mGroupDescriptionTextView.setText(mGroup.getGroupDescription());
     }
 
