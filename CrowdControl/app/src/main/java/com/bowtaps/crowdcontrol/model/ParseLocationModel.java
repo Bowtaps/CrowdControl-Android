@@ -5,18 +5,16 @@ import android.util.Log;
 
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseRelation;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Evan Hammer on 1/19/16.
+ * @author Evan Hammer
+ * @since 2016-01-19
  */
 public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     /**
@@ -287,11 +285,11 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      * @return A {@link List} of {@link ParseLocationModel} objects that are meant for the user that
      * was passed in.
      */
-    public static List<LocationModel> fetchLocationsSentToUser(UserProfileModel user) throws ParseException{
+    public static List<ParseLocationModel> fetchLocationsSentToUser(UserProfileModel user) throws ParseException{
         if (user != null && !(user instanceof ParseUserProfileModel)) {
             throw new IllegalArgumentException("user parameter must be an instance of ParseUserProfileModel");
         }
-        List<LocationModel> groupMemberLocations = new ArrayList<>();
+        List<ParseLocationModel> groupMemberLocations = new ArrayList<>();
         ParseQuery query = ParseQuery.getQuery(tableName);
         query.whereEqualTo(toKey, ((ParseUserProfileModel) user).getParseObject());
         List<ParseObject> response = query.find();
@@ -323,11 +321,11 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      * @return A {@link List} of {@link ParseLocationModel} objects that are meant for the user that
      * was passed in.
      */
-    public static List<LocationModel> fetchLocationsSentFromUser(UserProfileModel user) throws ParseException{
+    public static List<ParseLocationModel> fetchLocationsSentFromUser(UserProfileModel user) throws ParseException{
         if (user != null && !(user instanceof ParseUserProfileModel)) {
             throw new IllegalArgumentException("user parameter must be an instance of ParseUserProfileModel");
         }
-        List<LocationModel> previousLocations = new ArrayList<>();
+        List<ParseLocationModel> previousLocations = new ArrayList<>();
         ParseQuery query = ParseQuery.getQuery(tableName);
         query.whereEqualTo(fromKey, ((ParseUserProfileModel) user).getParseObject());
         List<ParseObject> response = query.find();
@@ -337,7 +335,6 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
             locationModel.setLatitude(Double.parseDouble(obj.getString(latitudeKey)));
             locationModel.setLongitude(Double.parseDouble(obj.getString(longitudeKey)));
             locationModel.setFrom(user);
-            //ParseQuery profileQuery = Parse
             Object to = obj.get(toKey);
             ParseUserProfileModel toProfile = new ParseUserProfileModel((ParseObject) to);
             toProfile.load();

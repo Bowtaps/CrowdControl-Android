@@ -175,7 +175,14 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     }
 
 
-
+    /**
+     * Creates a new instance of this class using the provided username and password. Does not save
+     * the object to storage (see {@link #save()}.
+     * @param username The username to assign to the new user.
+     * @param password The password to assign to the new user.
+     * @return Returns the newly created instance of this class or {@code null} if unable to create
+     * the object.
+     */
     public static ParseUserModel createFromSignUp(String username, String password) {
 
         // Create new profile object
@@ -191,6 +198,14 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
         return new ParseUserModel(parseUser, profileModel);
     }
 
+    /**
+     * Creates a new instance of this class using the provided {@link ParseObject} as the underlying
+     * handle into the database.
+     *
+     * @param object The database handle to use when creating this class.
+     * @return The newly created instance of this class that uses the provided {@link ParseObject}
+     * as the underlying object or {@code null} if unable to create the object.
+     */
     public static ParseUserModel createFromParseObject(ParseObject object) {
 
         // Verify parameters

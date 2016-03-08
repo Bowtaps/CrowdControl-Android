@@ -1,7 +1,5 @@
 package com.bowtaps.crowdcontrol.model;
 
-import com.parse.ParseUser;
-
 /**
  * The interface for user profile models, providing access to public-facing
  * user profile data, such as display name and profile image.

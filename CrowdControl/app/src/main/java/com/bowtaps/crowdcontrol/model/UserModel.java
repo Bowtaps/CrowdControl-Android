@@ -1,8 +1,5 @@
 package com.bowtaps.crowdcontrol.model;
 
-import com.parse.LogInCallback;
-import com.parse.ParseObject;
-
 /**
  * The interface for login user models, providing access to private user
  * data, such as username, email, and phone number.
