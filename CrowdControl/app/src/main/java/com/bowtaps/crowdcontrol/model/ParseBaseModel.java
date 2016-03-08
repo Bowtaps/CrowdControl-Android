@@ -2,7 +2,6 @@ package com.bowtaps.crowdcontrol.model;
 
 import java.util.Date;
 
-import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
