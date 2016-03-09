@@ -48,7 +48,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="You seem to be leaderless"
         android:id="@+id/group_leader_name"
         android:layout_below="@+id/group_leader_title"
         android:layout_alignParentStart="true" />
