@@ -152,7 +152,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
             }
         };
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("com.bowtaps.crowdcontrol"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("com.bowtaps.crowdcontrol.GroupNavigationActivity"));
 
     }
 }
