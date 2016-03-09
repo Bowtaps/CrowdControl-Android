@@ -60,11 +60,9 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         setUpReceiver();
 
-        //TODO move to implementation
-        //Set up messaging service
-        mServiceIntent = new Intent( getApplicationContext(), MessageService.class);
-
-        startService(mServiceIntent);
+//        bindService(new Intent(this, MessageService.class), mServiceConnection, BIND_AUTO_CREATE);
+        //CrowdControlApplication.getInstance().aMessagingServiceIntent
+        //bindService(CrowdControlApplication.getInstance().aMessagingServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
