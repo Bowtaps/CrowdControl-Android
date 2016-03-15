@@ -17,14 +17,14 @@ import com.parse.ParseQueryAdapter;
  *  @see com.bowtaps.crowdcontrol.GroupJoinActivity
  *  @author Johnny Ackerman
  */
-public class CustomParseAdapter extends ParseQueryAdapter<ParseObject> {
+public class GroupParseAdapter extends ParseQueryAdapter<ParseObject> {
 
     /**
      *  This QueryFactory generates a query used to grab group information
      *
      *  @see com.bowtaps.crowdcontrol.GroupJoinActivity
      */
-    public CustomParseAdapter(Context context) {
+    public GroupParseAdapter(Context context) {
         // Use the QueryFactory to construct a PQA that will show all groups
         // currently sorted by the date of which it was created
         super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {

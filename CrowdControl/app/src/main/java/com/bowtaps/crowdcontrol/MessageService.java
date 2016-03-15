@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.sinch.android.rtc.ClientRegistration;
@@ -100,7 +101,10 @@ public class MessageService extends Service implements SinchClientListener {
         if (messageClient != null) {
             String userId;
             userId = currentUserId;
-            userId = recipients.get(0).getId();
+            if (!recipients.isEmpty()) {
+                userId = recipients.get(0).getId();
+            }
+            Log.d("Messaging Service", "Number Of reciepiences: " + recipients.size());
             WritableMessage message = new WritableMessage(userId, textBody);
             for (int i = 1; i < recipients.size(); i++) {
                 userId = recipients.get(i).getId();
