@@ -74,7 +74,9 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
         //setContentView(R.layout.messaging);
 
 
+
         getActivity().bindService(new Intent(getActivity(), MessageService.class), mServiceConnection, getActivity().BIND_AUTO_CREATE);
+
 
         //Intent intent = getIntent();
         mRecipientGroup = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();

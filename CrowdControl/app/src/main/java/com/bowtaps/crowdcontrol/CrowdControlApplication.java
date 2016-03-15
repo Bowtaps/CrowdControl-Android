@@ -43,8 +43,6 @@ public class CrowdControlApplication extends Application {
      */
     private ModelManager modelManager = null;
 
-    public boolean isMessageServiceStarted;
-    public Intent aMessagingServiceIntent;
 
     private static final String SINCH_APP_KEY = "52ccd19d-4487-4645-8abf-b13edd57bffd";
     private static final String SINCH_APP_SECRET = "Ke+GKezurEqC46z33Da5Ig==";
@@ -67,11 +65,6 @@ public class CrowdControlApplication extends Application {
         if (instance == null) {
             instance = this;
         }
-
-        //Set up messaging service
-        aMessagingServiceIntent = new Intent( getApplicationContext(), MessageService.class);
-
-        startService(aMessagingServiceIntent);
 
         // Initialize internal properties
         // Initialize parse connection

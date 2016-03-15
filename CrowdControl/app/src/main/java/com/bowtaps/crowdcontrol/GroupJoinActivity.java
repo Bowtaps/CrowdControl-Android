@@ -36,10 +36,14 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
     Toolbar mToolbar;
 
+
+
     // List view pieces
     private GroupModelAdapter mGroupListAdapter;
     private ListView mGroupListView;
     private List<GroupModel> mGroupList;
+
+    private Intent mMessagingServiceIntent;
 
     private static final String TAG = GroupJoinActivity.class.getSimpleName();
 
@@ -71,6 +75,11 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         // Declare button click event handlers
         mButtonToTabs.setOnClickListener(this);
         mButtonSettings.setOnClickListener(this);
+
+        //Set up messaging service
+        mMessagingServiceIntent = new Intent( getApplicationContext(), MessageService.class);
+
+        startService(mMessagingServiceIntent);
 
 
         //check if in a Group
