@@ -73,6 +73,7 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.messaging);
 
+
         getActivity().bindService(new Intent(getActivity(), MessageService.class), mServiceConnection, getActivity().BIND_AUTO_CREATE);
 
         //Intent intent = getIntent();
@@ -235,6 +236,7 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
         public void onMessageFailed(MessageClient client, Message message,
                                     MessageFailureInfo failureInfo) {
             Toast.makeText(getActivity(), "Message failed to send.", Toast.LENGTH_LONG).show();
+            Log.d("Messaging Fragment", failureInfo.getSinchError().getMessage());
         }
 
         /**
