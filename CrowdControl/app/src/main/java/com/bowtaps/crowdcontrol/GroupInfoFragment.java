@@ -1,5 +1,7 @@
 package com.bowtaps.crowdcontrol;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -131,6 +133,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
      * Causes the currently logged in user to leave the current group.
      */
     private void onLeaveGroupButtonClick(Button view) {
+
         mGroup.removeGroupMember(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
 
         // Attempt to save change to group in background
@@ -172,5 +175,23 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         Intent myIntent = new Intent(getActivity(), GroupJoinActivity.class);
         this.startActivity(myIntent);
         getActivity().finish();
+    }
+
+    /**
+     * Builds a Dialog box
+     *
+     * @param activity
+     * @param title
+     * @param message
+     * @param leaveMessage
+     */
+    public void leaveDialog(Activity activity, String title, CharSequence message, String leaveMessage){
+        AlertDialog.Builder buildThis = new AlertDialog.Builder(activity);
+
+        buildThis.setTitle(title);
+        buildThis.setMessage(message);
+        buildThis.setPositiveButton(leaveMessage, null);
+        buildThis.setNegativeButton("No go back", null);
+        buildThis.show();
     }
 }
