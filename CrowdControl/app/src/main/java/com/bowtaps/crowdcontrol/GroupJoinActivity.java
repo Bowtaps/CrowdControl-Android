@@ -32,7 +32,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
 
     Button mButtonToTabs;
-    Button mButtonSettings;
 
     Toolbar mToolbar;
 
@@ -73,7 +72,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
         // Declare button click event handlers
         mButtonToTabs.setOnClickListener(this);
-        mButtonSettings.setOnClickListener(this);
 
         //Set up messaging service
         mMessagingServiceIntent = new Intent( getApplicationContext(), MessageService.class);

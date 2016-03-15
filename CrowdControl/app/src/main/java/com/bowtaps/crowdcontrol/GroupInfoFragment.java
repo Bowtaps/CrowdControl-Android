@@ -202,7 +202,6 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                         }
 
                         CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
-                        launchGroupJoinActivity();
                     }
                 });
             }
@@ -237,7 +236,6 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                         }
 
                         CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
-                        launchGroupJoinActivity();
                     }
                 });
 
