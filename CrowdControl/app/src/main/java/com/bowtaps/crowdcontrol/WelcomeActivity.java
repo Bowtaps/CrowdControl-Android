@@ -59,6 +59,7 @@ public class WelcomeActivity extends AppCompatActivity
 
         //This Determines if a user is logged in from a previous run
         if (CrowdControlApplication.getInstance().getModelManager().getCurrentUser() != null) {
+            CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().loadInBackground(null);
 
             // User is already logged in, direct them to application
             launchGroupJoinActivity();
