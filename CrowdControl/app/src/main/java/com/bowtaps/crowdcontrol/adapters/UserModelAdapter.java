@@ -61,7 +61,7 @@ public class UserModelAdapter extends ArrayAdapter<UserProfileModel> {
         if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.list_item_member, null);
+            v = vi.inflate(R.layout.list_item_user, null);
         }
 
         UserProfileModel model = getItem(position);

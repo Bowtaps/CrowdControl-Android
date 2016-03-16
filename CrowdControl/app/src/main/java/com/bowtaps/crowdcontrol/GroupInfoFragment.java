@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
 import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
-import com.bowtaps.crowdcontrol.model.UserModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 
 import java.util.ArrayList;
@@ -105,7 +103,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         mUserModelAdapter = new UserModelAdapter(getActivity(), mMemberList);
 
         //Initialize ListView
-        mMemberListView = (ListView) v.findViewById(R.id.member_list_view);
+        mMemberListView = (ListView) v.findViewById(R.id.user_profile_list_view);
         mMemberListView.setAdapter(mUserModelAdapter);
         //mMemberListView.setOnItemClickListener(this);
 
