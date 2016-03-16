@@ -32,7 +32,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
 
     Button mButtonToTabs;
-    Button mButtonSettings;
 
     Toolbar mToolbar;
 
@@ -70,11 +69,9 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
         // Get handles to Buttons
         mButtonToTabs = (Button) findViewById(R.id.buttonToTab);
-        mButtonSettings = (Button) findViewById(R.id.buttonSettings);
 
         // Declare button click event handlers
         mButtonToTabs.setOnClickListener(this);
-        mButtonSettings.setOnClickListener(this);
 
         //Set up messaging service
         mMessagingServiceIntent = new Intent( getApplicationContext(), MessageService.class);
@@ -166,10 +163,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         switch (view.getId()) {
             case R.id.buttonToTab:
                 onCreateButtonClick((Button) view);
-                break;
-
-            case R.id.buttonSettings:
-                onSettingsButtonClick((Button) view);
                 break;
 
             default:
