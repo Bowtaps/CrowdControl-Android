@@ -57,21 +57,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Group Description"
+        android:text="Group Description:"
         android:id="@+id/groupDesctriptionTitle"
         android:layout_marginLeft="0dp"
         android:layout_below="@+id/group_leader_name"
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp" />
 
-    <ScrollView
+    <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/scrollView"
+        android:id="@+id/member_list_view"
         android:layout_below="@+id/text_group_description"
         android:layout_alignParentStart="true"
         android:layout_marginTop="35dp"
         android:layout_alignParentEnd="true"
-        android:layout_above="@+id/leave_group_button" />
+        android:layout_above="@+id/leave_group_button"
+        android:smoothScrollbar="true"
+        android:scrollingCache="false"
+        android:scrollIndicators="right" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Group Members:"
+        android:id="@+id/textView2"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/text_group_description"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

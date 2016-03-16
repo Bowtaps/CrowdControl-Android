@@ -10,12 +10,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
 import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
-import com.parse.ParseException;
+import com.bowtaps.crowdcontrol.model.UserModel;
+import com.bowtaps.crowdcontrol.model.UserProfileModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -34,6 +41,10 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
     TextView mGroupLeaderTextView;
     TextView mGroupDescriptionTextView;
 
+    private UserModelAdapter mUserModelAdapter;
+    private ListView mMemberListView;
+    private List<UserProfileModel> mMemberList;
+
     private static final String TAG = GroupInfoFragment.class.getSimpleName();
 
     /**
@@ -43,7 +54,6 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
      * @param text Test text 1
      * @return A new instance of fragment GroupInfoFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static GroupInfoFragment newInstance(String text) {
         GroupInfoFragment fragment = new GroupInfoFragment();
         Bundle args = new Bundle();
@@ -88,6 +98,16 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
 
         // Declare event handlers
         mLeaveGroupButton.setOnClickListener(this);
+
+
+        // Initialize list adapter
+        mMemberList = new ArrayList<UserProfileModel>();
+        mUserModelAdapter = new UserModelAdapter(getActivity(), mMemberList);
+
+        //Initialize ListView
+        mMemberListView = (ListView) v.findViewById(R.id.member_list_view);
+        mMemberListView.setAdapter(mUserModelAdapter);
+        //mMemberListView.setOnItemClickListener(this);
 
         // Put group info on screen
         updateViews();
@@ -155,6 +175,13 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 mGroupLeaderTextView.setText(mGroup.getGroupLeader().getDisplayName());
             }
             mGroupDescriptionTextView.setText(mGroup.getGroupDescription());
+
+            // Replace existing list with new results
+            mMemberList.clear();
+            if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null)
+                mMemberList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
+            // Force update on the list adapter
+            mUserModelAdapter.notifyDataSetChanged();
         }
         else {
             CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
@@ -259,4 +286,29 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         buildThis.setNegativeButton("No go back", null);
         buildThis.show();
     }
+
+//    /*
+//     *  Grabs the click in the list view and then Joins the Group that was clicked on
+//     */
+//    @Override
+//    public void onItemClick(AdapterView parent, View view, int position, long id) {
+//        //TODO request to join group instead of just joining it
+//
+//        // Get the selected group
+//        final UserProfileModel userProfileModel = mUserModelAdapter.getItem(position);
+//
+//        // First load members from current group
+//        CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().loadInBackground(new BaseModel.LoadCallback() {
+//            @Override
+//            public void doneLoadingModel(BaseModel object, Exception ex) {
+//
+//                // Verify operation was successful
+//                if (object == null || ex != null) {
+//                    Log.d(TAG, "Unable to load group model");
+//                    return;
+//                }
+//
+//            }
+//        });
+//    }
 }

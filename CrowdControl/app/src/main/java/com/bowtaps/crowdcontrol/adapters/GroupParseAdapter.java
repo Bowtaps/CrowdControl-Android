@@ -11,7 +11,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 /**
- *  This Custom Parse Adapter is used to quarry Parse for Group Data and adapt that
+ *  This Custom Parse UserModelAdapter is used to quarry Parse for Group Data and adapt that
  *  data to be displayed in a list view
  *
  *  @see com.bowtaps.crowdcontrol.GroupJoinActivity
