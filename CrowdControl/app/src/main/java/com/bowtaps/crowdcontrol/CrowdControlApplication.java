@@ -43,7 +43,6 @@ public class CrowdControlApplication extends Application {
      */
     private ModelManager modelManager = null;
 
-    public boolean isMessageServiceStarted;
 
     private static final String SINCH_APP_KEY = "52ccd19d-4487-4645-8abf-b13edd57bffd";
     private static final String SINCH_APP_SECRET = "Ke+GKezurEqC46z33Da5Ig==";

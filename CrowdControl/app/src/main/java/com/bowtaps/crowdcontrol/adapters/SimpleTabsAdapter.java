@@ -23,6 +23,7 @@ public class SimpleTabsAdapter extends FragmentPagerAdapter {
     public void addFragment(Fragment fragment, String title) {
         FragmentList.add(fragment);
         FragmentTitles.add(title);
+        //FragmentTitles.
     }
 
     @Override

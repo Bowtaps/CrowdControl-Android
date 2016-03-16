@@ -48,7 +48,7 @@
 
         <activity
             android:name=".GroupNavigationActivity"
-            android:label="TestActivity" >
+            android:label="Group" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".GroupNavigationActivity" />
