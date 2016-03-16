@@ -71,31 +71,13 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.messaging);
-
-
 
         getActivity().bindService(new Intent(getActivity(), MessageService.class), mServiceConnection, getActivity().BIND_AUTO_CREATE);
 
-
-        //Intent intent = getIntent();
         mRecipientGroup = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
-        //mRecipientId = ;
-        //mCurrentUserId = ParseUser.getCurrentUser().getObjectId();
 
-        //mMessagesList = (ListView) findViewById(R.id.listMessages);
         mMessageAdapter = new MessageAdapter(getActivity());
-        //mMessagesList.setAdapter(mMessageAdapter);
         populateMessageHistory();
-
-        //mMessageBodyField = (EditText) findViewById(R.id.messageBodyField);
-
-//        findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                sendMessage();
-//            }
-//        });
     }
 
     /**
