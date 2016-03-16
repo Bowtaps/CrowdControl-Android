@@ -232,31 +232,8 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
          */
         @Override
         public void onIncomingMessage(MessageClient client, final Message message) {
-//            if (message.getSenderId().equals(mRecipientId)) {
-                final WritableMessage writableMessage = new WritableMessage(message.getRecipientIds().get(0), message.getTextBody());
-
-                //only add message to parse database if it doesn't already exist there
-//                ParseQuery<ParseObject> query = ParseQuery.getQuery("ParseMessage");
-//                query.whereEqualTo("sinchId", message.getMessageId());
-//                query.findInBackground(new FindCallback<ParseObject>() {
-//                    @Override
-//                    public void done(List<ParseObject> messageList, com.parse.ParseException e) {
-//                        if (e == null) {
-//                            if (messageList.size() == 0) {
-//                                ParseObject parseMessage = new ParseObject("ParseMessage");
-//                                parseMessage.put("senderId", mCurrentUserId);
-//                                parseMessage.put("mRecipientId", writableMessage.getRecipientIds().get(0));
-//                                parseMessage.put("messageText", writableMessage.getTextBody());
-//                                parseMessage.put("sinchId", message.getMessageId());
-//                                parseMessage.saveInBackground();
-
-                mMessageAdapter.addMessage(writableMessage, MessageAdapter.DIRECTION_INCOMING);
-//                            }
-//                        }
-//                    }
-//                });
-                Log.d("MessagingFragment", "Message received: " + mMessageBody);
-//            }
+            mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_INCOMING);
+            Log.d("MessagingFragment", "Message received: " + mMessageBody);
         }
 
         /**
@@ -269,15 +246,12 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
          */
         @Override
         public void onMessageSent(MessageClient client, Message message, String recipientId) {
-
-
-
-            final WritableMessage writableMessage = new WritableMessage(message.getRecipientIds().get(0), message.getTextBody());
-            mMessageAdapter.addMessage(writableMessage, MessageAdapter.DIRECTION_OUTGOING);
+            mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_OUTGOING);
         }
 
         /**
-         * Callback Method - asks the receiver if the message was received
+         * Callback method, triggered once a message has been successfully delivered to its
+         * destination.
          * @see com.bowtaps.crowdcontrol.MessageService.MessageServiceInterface
          *
          * @param client
