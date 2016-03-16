@@ -73,21 +73,14 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         // Declare button click event handlers
         mButtonToTabs.setOnClickListener(this);
 
-        //Set up messaging service
-        mMessagingServiceIntent = new Intent( getApplicationContext(), MessageService.class);
-
-        startService(mMessagingServiceIntent);
-
-
-        //check if in a Group
+        // Check if in a Group
         try {
             CrowdControlApplication.getInstance().getModelManager().fetchCurrentGroup();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup() != null )
-        {
+        if( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup() != null ) {
             launchGroupNavigationActivity();
         }
 
@@ -223,7 +216,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
      * @see           GroupCreateActivity
      */
     private void onCreateButtonClick(Button button) {
-
         launchCreateGroupActivity();
     }
 
@@ -269,7 +261,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     }
 
     public void onDestroy() {
-        //stopService(new Intent(this,MessageService.class));
         super.onDestroy();
     }
 

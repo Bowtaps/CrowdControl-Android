@@ -62,16 +62,15 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         setUpReceiver();
 
-//        bindService(new Intent(this, MessageService.class), mServiceConnection, BIND_AUTO_CREATE);
-        //CrowdControlApplication.getInstance().aMessagingServiceIntent
-        //bindService(CrowdControlApplication.getInstance().aMessagingServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         tabsviewPager = (ViewPager) findViewById(R.id.tabspager);
 
         mTabsAdapter = new SimpleTabsAdapter(getSupportFragmentManager());
+
+        // Start messaging service
+        startService(new Intent(getApplicationContext(), MessageService.class));
 
         // Create fragment objects
         mGroupInfoFragment = GroupInfoFragment.newInstance("Group");
@@ -95,7 +94,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
         mTabs.getTabAt(1).setIcon(tabIcons[1]);
         mTabs.getTabAt(2).setIcon(tabIcons[2]);
 
-        // Start service if it's not working
+        // Start group service if it's not running
         if (!GroupService.isRunning()) {
             Intent serviceIntent = new Intent(getApplicationContext(), GroupService.class);
             serviceIntent.putExtra(GroupService.INTENT_GROUP_ID_KEY, CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getId());
@@ -103,6 +102,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
             startService(serviceIntent);
         }
 
+        // Bind to group service
         groupServiceBinder = null;
         mServiceConnection = new ServiceConnection() {
             @Override
@@ -119,7 +119,6 @@ public class GroupNavigationActivity extends AppCompatActivity {
                 GroupNavigationActivity.this.groupServiceBinder = null;
             }
         };
-
         bindService(new Intent(getApplicationContext(), GroupService.class), mServiceConnection, BIND_IMPORTANT);
     }
 
