@@ -125,7 +125,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     /*
      *  Determines which item in the list view is selected
      *
-     *  @see GroupParseAdapter
+     *  @see GroupModelAdapter
      *  @see GroupNavigationActivity
      */
     @Override

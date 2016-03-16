@@ -2,18 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="5dp"
     tools:context="com.bowtaps.crowdcontrol.GroupInfoFragment">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="This is a sample description"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/text_group_description"
         android:layout_gravity="center"
-        android:layout_column="0"
-        android:layout_columnSpan="3"
-        android:layout_row="2"
-        android:layout_rowSpan="2"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_below="@+id/groupDesctriptionTitle"
         android:layout_alignParentStart="true" />
 
@@ -40,7 +40,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Group Leader:"
         android:id="@+id/group_leader_title"
-        android:layout_marginLeft="0dp"
+        android:layout_marginLeft="5dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="95dp" />
@@ -49,8 +49,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="You seem to be leaderless"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/group_leader_name"
         android:layout_below="@+id/group_leader_title"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_alignParentStart="true" />
 
     <TextView
@@ -59,7 +62,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Group Description:"
         android:id="@+id/groupDesctriptionTitle"
-        android:layout_marginLeft="0dp"
+        android:layout_marginLeft="5dp"
         android:layout_below="@+id/group_leader_name"
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp" />
@@ -67,10 +70,12 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/member_list_view"
-        android:layout_below="@+id/text_group_description"
+        android:id="@+id/user_profile_list_view"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/group_members"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="35dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_alignParentEnd="true"
         android:layout_above="@+id/leave_group_button"
         android:smoothScrollbar="true"
@@ -82,9 +87,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Group Members:"
-        android:id="@+id/textView2"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="5dp"
+        android:id="@+id/group_members"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
         android:layout_below="@+id/text_group_description"
         android:layout_alignParentStart="true" />
 
