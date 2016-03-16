@@ -254,6 +254,8 @@ public class ParseModelManager implements ModelManager {
         if ((currentUser == null && ParseUser.getCurrentUser() != null)
             || (currentUser != null && !currentUser.equals(ParseUser.getCurrentUser()))) {
             currentUser = new ParseUserModel(ParseUser.getCurrentUser());
+            currentUser = (ParseUserModel) updateCache(currentUser);
+            currentUser.setProfile((ParseUserProfileModel) updateCache(currentUser.getProfile()));
         }
 
         return currentUser;
