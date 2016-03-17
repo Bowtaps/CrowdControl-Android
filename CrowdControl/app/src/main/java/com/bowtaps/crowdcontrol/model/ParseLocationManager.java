@@ -80,17 +80,6 @@ public class ParseLocationManager implements SecureLocationManager {
     }
 
     /**
-     * @see SecureLocationManager#loadAllLocations()
-     */
-    @Override
-    public List<LocationModel> loadAllLocations() throws ParseException {
-        this.fetchMembersLocations();
-        this.transmitting = true;
-        this.broadcastLocation();
-        return getLocations();
-    }
-
-    /**
      * Retrieves the interval for sending/receiving location data, set by the user.
      */
     @Override
@@ -206,9 +195,5 @@ public class ParseLocationManager implements SecureLocationManager {
         if(this.transmitting){
             ParseLocationModel.broadcastLocation();
         }
-    }
-    private void fetchMembersLocations() throws ParseException {
-        memberLocations.clear();
-        updateLocations(ParseLocationModel.fetchMemberLocations());
     }
 }
