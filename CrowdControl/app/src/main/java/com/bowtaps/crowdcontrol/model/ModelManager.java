@@ -222,4 +222,6 @@ public interface ModelManager {
     public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws Exception;
 
     public GroupModel joinGroup(GroupModel group) throws Exception;
+
+    public GroupModel leaveGroup(GroupModel group) throws Exception;
 }

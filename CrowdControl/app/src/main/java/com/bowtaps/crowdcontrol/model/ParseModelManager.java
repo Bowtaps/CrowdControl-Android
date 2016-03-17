@@ -728,4 +728,28 @@ public class ParseModelManager implements ModelManager {
 
         return null;
     }
+
+    public GroupModel leaveGroup(GroupModel group) throws ParseException {
+
+        if (group == null) {
+            throw new IllegalArgumentException("parameter 'group' cannot be null");
+        }
+
+        // Construct parameter hash map
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("group", group.getId());
+
+        ParseObject parseObject = ParseCloud.callFunction("joinGroup", params);
+
+        if (parseObject != null) {
+            ParseBaseModel model = getModelFromParseObject(parseObject);
+
+            if (model instanceof GroupModel) {
+                model = updateCache(model);
+                return (GroupModel) model;
+            }
+        }
+
+        return null;
+    }
 }
