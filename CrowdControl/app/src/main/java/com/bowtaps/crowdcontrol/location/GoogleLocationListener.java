@@ -6,6 +6,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by Evan Hammer on 1/26/16.
  */
@@ -61,5 +63,9 @@ public class GoogleLocationListener implements LocationListener {
     public Double getLatitude(){
         Log.d("getLatitude", this.latitude.toString());
         return this.latitude;
+    }
+    public void setLocation(LatLng newLoc){
+        longitude = newLoc.longitude;
+        latitude = newLoc.latitude;
     }
 }

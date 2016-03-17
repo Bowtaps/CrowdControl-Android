@@ -21,8 +21,11 @@ import android.widget.TextView;
 
 import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.LocationModel;
+import com.bowtaps.crowdcontrol.model.ModelManager;
 import com.bowtaps.crowdcontrol.model.ParseLocationManager;
+import com.bowtaps.crowdcontrol.model.ParseLocationModel;
 import com.bowtaps.crowdcontrol.model.SecureLocationManager;
+import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -134,7 +137,13 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
         Log.d("myMtethodCall1", "Homing button pressed");
         SecureLocationManager secureLocationManager = CrowdControlApplication.getInstance().getLocationManager();
         LatLng myLoc = secureLocationManager.getCurrentLocation();
+        while(myLoc.longitude == 0 && myLoc.latitude == 0){
+            myLoc = secureLocationManager.getCurrentLocation();
+        }
         Log.d("myMtethodCall1", myLoc.toString());
+        if(mMap == null){
+            setUpMapIfNeeded();
+        }
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLoc, 15));
     }
 
@@ -178,32 +187,38 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0.0, 0.0)).title("Marker"));
+        LatLng myLoc = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
+        mMap.addMarker(new MarkerOptions().position(myLoc).title("My Location"));
     }
 
     private void refreshMarkers(){
 
-        // Remove pins from map
-        if(mMap != null){
-            mMap.clear();
-            Log.d("Map Not Null", "We are in here, YAY!!!");
-        }
-
         // Get locations for current group members
-        GroupModel group = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
-        List<? extends LocationModel> locations = CrowdControlApplication.getInstance().getLocationManager().getUserLocations(group.getGroupMembers());
+        ModelManager modelManager = CrowdControlApplication.getInstance().getModelManager();
+        GroupModel group = modelManager.getCurrentGroup();
+        UserProfileModel me = modelManager.getCurrentUser().getProfile();
+        LatLng myLoc = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
+        try {
+            List<? extends LocationModel> locations = CrowdControlApplication.getInstance().getModelManager().fetchLocationsToUser(me);
+            // Remove pins from map
+            if(mMap != null){
+                mMap.clear();
+            }
+            mMap.addMarker(new MarkerOptions().position(myLoc).title("ME!!!"));
+            // Put markers on map
+            for (LocationModel location : locations){
 
-        // Put markers on map
-        for (LocationModel location : locations){
+                // Build location marker
+                Double longitude = location.getLongitude();
+                Double latitude = location.getLatitude();
+                Log.d("MapFragment", "user location: lat = " + latitude + ", long = " + longitude);
 
-            // Build location marker
-            Double longitude = location.getLongitude();
-            Double latitude = location.getLatitude();
-            Log.d("MapFragment", "user location: lat = " + latitude + ", long = " + longitude);
-
-            // Add marker to map
-            if (mMap == null) mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_frame)).getMap();
-            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(location.getFrom().getDisplayName()));
+                // Add marker to map
+                if (mMap == null) mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_frame)).getMap();
+                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(location.getFrom().getDisplayName()));
+            }
+        }catch (com.parse.ParseException e) {
+            Log.d("Exception", e.toString());
         }
     }
 
