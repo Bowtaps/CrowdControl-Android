@@ -178,38 +178,6 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
         fromUser.fetch();
     }
 
-    /**
-     * Gathers the locations meant for the current user from Parse and returns a list of
-     * ParseLocationModel objects.
-     *
-     * @throws ParseException Throws If an exception occurs, throws a {@link ParseException}.
-     *
-     * @return A {@link List} of {@link ParseLocationModel} objects that are meant for the
-     *          current user.
-     */
-    public static List<ParseLocationModel> fetchMemberLocations() throws ParseException{
-        List<ParseLocationModel> groupMemberLocations = new ArrayList<>();
-        //get the current user profile
-        UserProfileModel profile = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
-        ParseQuery query = ParseQuery.getQuery(tableName);
-        query.whereEqualTo(toKey, ((ParseUserProfileModel) profile).getParseObject());
-        List<ParseObject> response = query.find();
-        ParseLocationModel locationModel;
-        for (ParseObject obj: response) {
-            locationModel = new ParseLocationModel(ParseObject.create(tableName));
-            String latitude = obj.get(latitudeKey).toString();
-            String longitude = obj.get(longitudeKey).toString();
-            locationModel.setLatitude(Double.parseDouble(latitude));
-            locationModel.setLongitude(Double.parseDouble(longitude));
-            locationModel.setTo(profile);
-            Object from = obj.get(fromKey);
-            ParseUserProfileModel fromProfile = new ParseUserProfileModel((ParseObject)from);
-            fromProfile.load();
-            groupMemberLocations.add(locationModel);
-        }
-        return groupMemberLocations;
-    }
-
     public static void broadcastLocation(){
         //Send out the data to all members of the group
         //First get the group members

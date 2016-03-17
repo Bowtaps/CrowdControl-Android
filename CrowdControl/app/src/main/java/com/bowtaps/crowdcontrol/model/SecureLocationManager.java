@@ -23,19 +23,11 @@ public interface SecureLocationManager {
     public void initializeLocationRequest();
 
     /**
-     * Gets a complete list of all known {@link LocationModel}s. To load all known locations from
-     * storage, see {@link #loadAllLocations()}.
+     * Gets a complete list of all cached {@link LocationModel}s.
      *
      * @return The {@link List} of cached {@link LocationModel} objects.
      */
     public List<? extends LocationModel> getLocations();
-
-    /**
-     * Fetches all known locations from storage. This is a blocking function.
-     *
-     * @return The {@link List} of {@link LocationModel} objects loaded from storage.
-     */
-    public List<? extends LocationModel> loadAllLocations() throws Exception;
 
     /**
      * Retrieves the interval for sending/receiving location data, set by the user.
