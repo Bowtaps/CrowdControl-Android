@@ -567,6 +567,7 @@ public class ParseModelManager implements ModelManager {
 
         return results;
     }
+
     /**
      * Creates and returns an instance of a ParseLocationModel with the fields provided by the
      * parameters.
