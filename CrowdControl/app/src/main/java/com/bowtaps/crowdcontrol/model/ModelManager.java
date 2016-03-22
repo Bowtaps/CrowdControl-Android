@@ -215,9 +215,37 @@ public interface ModelManager {
      */
     public List<? extends BaseModel> fetchGroupUpdates(String groupId, String userId, Date since) throws Exception;
 
+    /**
+     * Creates a new LocationModel object that can be saved to storage. Initializes the new model
+     * with the provided function parameters.
+     *
+     * @param to The user to whom the location is sent to.
+     * @param from The user by whom the location is generated (typically the current user).
+     * @param location The location object to use as coordinates.
+     * @return The new {@link LocationModel} object if successful or {@code null} if the operation
+     * was unsuccessful.
+     */
     public LocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location);
 
+    /**
+     * Fetches all known locations sent from the given user. Given a {@link UserProfileModel},
+     * fetches all locations from storage that have been sent from that user regardless of whom the
+     * locations were addressed to.
+     *
+     * @param user The user from whom the locations were sent.
+     * @return A list of all locations sent from the requested user.
+     * @throws ParseException Throws an exception if an error occurred for any reason.
+     */
     public List<? extends LocationModel> fetchLocationsFromUser(UserProfileModel user) throws ParseException;
 
+    /**
+     * Fetches all known locations sent to the given user. Given a {@link UserProfileModel}, fetches
+     * all locations from storage that have been sent to that user regardless of whom the locations
+     * were sent by.
+     *
+     * @param user The user to whom the locations were sent.
+     * @return A list of all locations sent to the requested user.
+     * @throws ParseException Throws an exception if an error occurred for any reason.
+     */
     public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException;
 }
