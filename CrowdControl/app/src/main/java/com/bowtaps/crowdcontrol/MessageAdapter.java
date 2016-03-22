@@ -8,27 +8,38 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.bowtaps.crowdcontrol.R;
+import com.sinch.android.rtc.messaging.Message;
 import com.sinch.android.rtc.messaging.WritableMessage;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MessageAdapter extends BaseAdapter {
 
     public static final int DIRECTION_INCOMING = 0;
     public static final int DIRECTION_OUTGOING = 1;
 
-    private List<Pair<WritableMessage, Integer>> messages;
+    private List<Pair<Message, Integer>> messages;
+    private Set<String> messageIds;
     private LayoutInflater layoutInflater;
 
     public MessageAdapter(Activity activity) {
         layoutInflater = activity.getLayoutInflater();
-        messages = new ArrayList<Pair<WritableMessage, Integer>>();
+        messages = new ArrayList<>();
+        messageIds = new HashSet<>();
     }
 
-    public void addMessage(WritableMessage message, int direction) {
+    public void addMessage(Message message, int direction) {
+
+        // Short circuit if the message already exists in the adapter
+        if (messageIds.contains(message.getMessageId())) {
+            return;
+        }
+
         messages.add(new Pair(message, direction));
+        messageIds.add(message.getMessageId());
         notifyDataSetChanged();
     }
 
@@ -61,8 +72,7 @@ public class MessageAdapter extends BaseAdapter {
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         int direction = getItemViewType(i);
 
-        //show message on left or right, depending on if
-        //it's incoming or outgoing
+        // show message on left or right, depending on if it's incoming or outgoing
         if (convertView == null) {
             int res = 0;
             if (direction == DIRECTION_INCOMING) {
@@ -73,7 +83,7 @@ public class MessageAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(res, viewGroup, false);
         }
 
-        WritableMessage message = messages.get(i).first;
+        Message message = messages.get(i).first;
 
         TextView txtMessage = (TextView) convertView.findViewById(R.id.txtMessage);
         txtMessage.setText(message.getTextBody());

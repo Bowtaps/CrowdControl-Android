@@ -1,7 +1,5 @@
 package com.bowtaps.crowdcontrol.model;
 
-import android.util.Pair;
-
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Collection;
@@ -25,19 +23,11 @@ public interface SecureLocationManager {
     public void initializeLocationRequest();
 
     /**
-     * Gets a complete list of all known {@link LocationModel}s. To load all known locations from
-     * storage, see {@link #loadAllLocations()}.
+     * Gets a complete list of all cached {@link LocationModel}s.
      *
      * @return The {@link List} of cached {@link LocationModel} objects.
      */
     public List<? extends LocationModel> getLocations();
-
-    /**
-     * Fetches all known locations from storage. This is a blocking function.
-     *
-     * @return The {@link List} of {@link LocationModel} objects loaded from storage.
-     */
-    public List<? extends LocationModel> loadAllLocations() throws Exception;
 
     /**
      * Retrieves the interval for sending/receiving location data, set by the user.
@@ -64,10 +54,25 @@ public interface SecureLocationManager {
      */
     public void stopTransmission();
 
+    /**
+     * Gets whether or not this manager is currently transmitting the user's location.
+     *
+     * @return {@code true} if the manager is transmitting, {@code false} if not.
+     */
     public boolean getTransmitting();
 
+    /**
+     * Sets the internal flag for whether the current manager is transmitting or not.
+     *
+     * @param transmitting The value to set the {@link #getTransmitting()} flag to.
+     */
     public void setTransmitting(boolean transmitting);
 
+    /**
+     * Gets the current location of the current user.
+     *
+     * @return Returns the {@link LatLng} object representing the user's location.
+     */
     public LatLng getCurrentLocation();
 
     /**

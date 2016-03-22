@@ -4,8 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.bowtaps.crowdcontrol.CrowdControlApplication;
-import com.parse.FunctionCallback;
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.Parse;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
@@ -17,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Parse implementation of the {@link ModelManager} interface.
@@ -38,6 +38,10 @@ public class ParseModelManager implements ModelManager {
      */
     private ParseGroupModel currentGroup;
 
+    /**
+     * Internal cache for created models.
+     */
+    private Map<String, ParseBaseModel> cachedModels;
 
 
     /**
@@ -51,12 +55,54 @@ public class ParseModelManager implements ModelManager {
      */
     public ParseModelManager(Context context, String applicationId, String clientKey) {
         currentUser = null;
+        currentGroup = null;
+        cachedModels = new HashMap<>();
 
         Parse.enableLocalDatastore(context);
         Parse.initialize(context, applicationId, clientKey);
     }
 
+    @Override
+    public void deleteModel(BaseModel model) throws ParseException {
 
+        // Verify parameters
+        if (model == null) {
+            throw new IllegalArgumentException("model cannot be null");
+        } else if (!(model instanceof ParseBaseModel)) {
+            throw new IllegalArgumentException("model must be instance of type ParseBaseModel");
+        }
+
+        ParseBaseModel parseModel = (ParseBaseModel) model;
+
+        // Remove from cache
+        if (cachedModels.containsKey(parseModel.getId())) {
+            cachedModels.remove(parseModel.getId());
+        }
+
+        // Delete from storage
+        parseModel.delete();
+    }
+
+    @Override
+    public void deleteModelInBackground(BaseModel model, final BaseModel.DeleteCallback callback) {
+
+        // Verify parameters
+        if (model == null) {
+            throw new IllegalArgumentException("model cannot be null");
+        } else if (!(model instanceof ParseBaseModel)) {
+            throw new IllegalArgumentException("model must be instance of type ParseBaseModel");
+        }
+
+        ParseBaseModel parseModel = (ParseBaseModel) model;
+
+        // Remove from cache
+        if (cachedModels.containsKey(parseModel.getId())) {
+            cachedModels.remove(parseModel.getId());
+        }
+
+        // Delete from storage
+        parseModel.deleteInBackground(callback);
+    }
 
     @Override
     public ParseUserModel logInUser(String username, String password) throws ParseException {
@@ -69,12 +115,13 @@ public class ParseModelManager implements ModelManager {
 
         // Create new model using the Parse user
         ParseUserModel userModel = new ParseUserModel(parseUser);
-        if (userModel.getProfile().wasModified()) {
-            userModel.getProfile().save();
-            userModel.save();
-        } else {
-            userModel.getProfile().load();
-        }
+        ParseUserProfileModel profileModel = userModel.getProfile();
+
+        profileModel.load();
+
+        userModel = (ParseUserModel) updateCache(userModel);
+        profileModel = (ParseUserProfileModel) updateCache(profileModel);
+        userModel.setProfile(profileModel);
 
         return userModel;
     }
@@ -117,6 +164,11 @@ public class ParseModelManager implements ModelManager {
             @Override
             public void onPostExecute(ParseUserModel result) {
 
+                // Update cache
+                if (result != null) {
+                    result = (ParseUserModel) updateCache(result);
+                }
+
                 // Execute callback if one is provided
                 if (callback != null) {
                     callback.doneLoadingModel(result, exception);
@@ -136,6 +188,8 @@ public class ParseModelManager implements ModelManager {
         userModel.getProfile().save();
         ((ParseUser) userModel.getParseObject()).signUp();
         userModel.save();
+        userModel = (ParseUserModel) updateCache(userModel);
+        userModel.setProfile((ParseUserProfileModel) updateCache(userModel.getProfile()));
 
         // Return user once everything is saved
         return userModel;
@@ -180,9 +234,14 @@ public class ParseModelManager implements ModelManager {
             @Override
             public void onPostExecute(ParseUserModel result) {
 
+                // Update cache
+                if (result != null) {
+                    result = (ParseUserModel) updateCache(result);
+                }
+
                 // Execute callback if one is provided
                 if (callback != null) {
-                    callback.doneSavingModel(result, exception);
+                    callback.doneSavingModel((ParseUserModel) updateCache(result), exception);
                 }
             }
         }.execute(username, email, password, callback);
@@ -195,6 +254,8 @@ public class ParseModelManager implements ModelManager {
         if ((currentUser == null && ParseUser.getCurrentUser() != null)
             || (currentUser != null && !currentUser.equals(ParseUser.getCurrentUser()))) {
             currentUser = new ParseUserModel(ParseUser.getCurrentUser());
+            currentUser = (ParseUserModel) updateCache(currentUser);
+            currentUser.setProfile((ParseUserProfileModel) updateCache(currentUser.getProfile()));
         }
 
         return currentUser;
@@ -217,7 +278,11 @@ public class ParseModelManager implements ModelManager {
 
     @Override
     public List<ParseGroupModel> fetchAllGroups() throws Exception {
-        return ParseGroupModel.getAll();
+        List<ParseGroupModel> groups = ParseGroupModel.getAll();
+        for (int i = 0; i < groups.size(); i++) {
+            groups.set(i, (ParseGroupModel) updateCache(groups.get(i)));
+        }
+        return groups;
     }
 
     @Override
@@ -256,6 +321,13 @@ public class ParseModelManager implements ModelManager {
             @Override
             public void onPostExecute(List<ParseGroupModel> result) {
 
+                // Update cache
+                if (result != null) {
+                    for (int i = 0; i < result.size(); i++) {
+                        result.set(i, (ParseGroupModel) updateCache(result.get(i)));
+                    }
+                }
+
                 // Execute callback if one is provided
                 if (callback != null) {
                     callback.doneFetchingModels(result, exception);
@@ -288,7 +360,7 @@ public class ParseModelManager implements ModelManager {
         // Verify user is logged in
         ParseUserModel userModel = getCurrentUser();
         if (userModel != null) {
-            setCurrentGroup(ParseGroupModel.getGroupContainingUser(userModel.getProfile()));
+            setCurrentGroup((ParseGroupModel) updateCache(ParseGroupModel.getGroupContainingUser(userModel.getProfile())));
         } else {
             setCurrentGroup(null);
         }
@@ -346,6 +418,13 @@ public class ParseModelManager implements ModelManager {
             @Override
             public void onPostExecute(ParseGroupModel result) {
 
+                // Check against cache
+                if (result != null) {
+                    result = (ParseGroupModel) updateCache(result);
+                }
+
+                setCurrentGroup(result);
+
                 // Execute callback if one is provided
                 if (callback != null) {
                     callback.doneLoadingModel(result, exception);
@@ -367,6 +446,7 @@ public class ParseModelManager implements ModelManager {
         groupModel.setGroupName(name);
         groupModel.setGroupDescription(description);
         groupModel.save();
+        groupModel = (ParseGroupModel) updateCache(groupModel);
         return groupModel;
     }
 
@@ -414,13 +494,17 @@ public class ParseModelManager implements ModelManager {
             @Override
             public void onPostExecute(ParseGroupModel result) {
 
+                // Update cache
+                if (result != null) {
+                    result = (ParseGroupModel) updateCache(result);
+                }
+
                 // Execute callback if one is provided
                 if (callback != null) {
-                    callback.doneSavingModel(result, exception);
+                    callback.doneSavingModel(updateCache(result), exception);
                 }
             }
         }.execute(leader, name, description, callback);
-
     }
 
     @Override
@@ -449,8 +533,8 @@ public class ParseModelManager implements ModelManager {
         // Call cloud code
         List<Object> parseResults = ParseCloud.callFunction("fetchGroupUpdates", params);
 
-        List<ParseObject> parseGroupMembers = new ArrayList<>();
-        ParseObject parseGroupObject = null;
+        List<ParseUserProfileModel> groupMembers = new ArrayList<>();
+        ParseGroupModel groupModel = null;
 
         // Process results
         for (Object result : parseResults) {
@@ -462,24 +546,162 @@ public class ParseModelManager implements ModelManager {
             ParseObject parseResult = (ParseObject) result;
 
             // Build ParseModel using the given ParseObject of unknown origin
-            ParseLocationModel locationModel = ParseLocationModel.createFromParseObject(parseResult);
-            if (locationModel != null) {
-                results.add(locationModel);
-            } else if (ParseGroupModel.compatibleWithParseObject(parseResult)) {
-                parseGroupObject = parseResult;
-            } else {
-                parseGroupMembers.add(parseResult);
+            ParseBaseModel model = getModelFromParseObject(parseResult);
+            if (model == null) {
+                // never mind
+            } else if (model instanceof ParseLocationModel) {
+                results.add(model);
+            } else if (model instanceof ParseGroupModel) {
+                groupModel = (ParseGroupModel) model;
+            } else if (model instanceof ParseUserProfileModel) {
+                groupMembers.add((ParseUserProfileModel) model);
             }
         }
 
         // Create group object using received member objects
-        if (parseGroupObject != null) {
-            ParseGroupModel groupModel = ParseGroupModel.createFromParseObject(parseGroupObject, parseGroupMembers);
-            if (groupModel != null) {
-                results.add(groupModel);
-            }
+        if (groupModel != null) {
+            groupModel.clearGroupMembers();
+            groupModel.addGroupMembers(groupMembers);
+            results.add(groupModel);
         }
 
         return results;
+    }
+    /**
+     * Creates and returns an instance of a ParseLocationModel with the fields provided by the
+     * parameters.
+     *
+     * @param to The UserProfileModel to create the to field of the object.
+     * @param from The UserProfileModel to fill in the from field.
+     * @param location A LatLng object containing the user's location.
+     *
+     * @return A ParseLocationModel containing the information from the parameters.
+     */
+    public ParseLocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location){
+        ParseLocationModel loc;
+        try {
+            loc = ParseLocationModel.createLocationModel(to, from, location);
+        }catch (IllegalArgumentException e1){
+            Log.e("Create Location Error", e1.toString());
+            loc = null;
+        }
+        if(loc != null) {
+            loc = (ParseLocationModel) updateCache(loc);
+        }
+        return loc;
+    }
+
+    /**
+     * This function retrieves all of the ParseLocationModels sent from the user that is passed in
+     * the parameters.  After gathering the objects, this function updates the cache.
+     *
+     * @param user UserProfileModel object to search for locations from.
+     *
+     * @return A list of ParseLocationModels that have been sent from the user.
+     */
+    public List<ParseLocationModel> fetchLocationsFromUser(UserProfileModel user) throws ParseException {
+        List<ParseLocationModel> locationModels;
+        int i = 0;
+        //Get the location models from parse
+        locationModels = ParseLocationModel.fetchLocationsSentFromUser(user);
+        for(i=0;i<locationModels.size();i++){
+            locationModels.set(i, (ParseLocationModel) updateCache(locationModels.get(i)));
+        }
+        return locationModels;
+    }
+
+    /**
+     * This function retrieves all of the ParseLocationModels sent to the user that is passed in
+     * the parameters.  After gathering the objects, this function updates the cache.
+     *
+     * @param user UserProfileModel object to search for locations to.
+     *
+     * @return A list of ParseLocationModels that have been sent to the user.
+     */
+    public List<ParseLocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException{
+        List<ParseLocationModel> locationModels;
+        int i = 0;
+        locationModels = ParseLocationModel.fetchLocationsSentToUser(user);
+        for(i = 0; i < locationModels.size(); i++){
+            locationModels.set(i, (ParseLocationModel) updateCache(locationModels.get(i)));
+        }
+        return locationModels;
+    }
+
+    /**
+     * Returns the model stored in cache matching the given model's object ID. If no such object is
+     * stored in cache, then the provided model will be placed in cache and will be returned.
+     *
+     * @param model The model object to compare against in cache.
+     *
+     * @return Returns the model stored in cache.
+     */
+    private ParseBaseModel updateCache(ParseBaseModel model) {
+        if (model == null) return null;
+
+        ParseBaseModel cachedModel;
+
+        if (cachedModels.containsKey(model.getId())) {
+            cachedModel = cachedModels.get(model.getId());
+            if (cachedModel != model) {
+                cachedModel.setUnderlyingParseObject(model.getParseObject());
+            }
+        } else {
+            cachedModels.put(model.getId(), model);
+            cachedModel = model;
+        }
+
+        return cachedModel;
+    }
+
+    /**
+     * Gets an object from cache or creates a corresponding model.
+     *
+     * @param parseObject The ParseObject to check against cache.
+     *
+     * @return The model that has been created or found in cache.
+     */
+    private ParseBaseModel getModelFromParseObject(ParseObject parseObject) {
+        if (parseObject == null) return null;
+
+        ParseBaseModel model;
+
+        // Check cache
+        if (!cachedModels.containsKey(parseObject.getObjectId())) {
+
+            // Try building a group model
+            model = ParseGroupModel.createFromParseObject(parseObject);
+
+            // Try building a location model
+            if (model == null) {
+                model = ParseLocationModel.createFromParseObject(parseObject);
+            }
+
+            // Try building a user model
+            if (model == null) {
+                model = ParseUserModel.createFromParseObject(parseObject);
+            }
+
+            // Try building a user profile model
+            if (model == null) {
+                model = ParseUserProfileModel.createFromParseObject(parseObject);
+            }
+
+            // Put object in cache if a matching model was found
+            if (model != null) {
+                cachedModels.put(parseObject.getObjectId(), model);
+            }
+        } else {
+
+            // Just fetch model from cache
+            model = cachedModels.get(parseObject.getObjectId());
+
+            // Update underlying ParseObject if necessary
+            if (model.getParseObject() != parseObject && !model.getParseObject().equals(parseObject)) {
+                model.setUnderlyingParseObject(parseObject);
+            }
+        }
+
+        return model;
     }
 }

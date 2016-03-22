@@ -1,8 +1,11 @@
 package com.bowtaps.crowdcontrol;
 
 import android.content.Intent;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,14 +32,17 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
 
     Button mButtonToTabs;
-    Button mButtonSettings;
+
+    Toolbar mToolbar;
+
+
 
     // List view pieces
     private GroupModelAdapter mGroupListAdapter;
     private ListView mGroupListView;
     private List<GroupModel> mGroupList;
 
-    private Intent mServiceIntent;
+    private Intent mMessagingServiceIntent;
 
     private static final String TAG = GroupJoinActivity.class.getSimpleName();
 
@@ -51,11 +57,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_join);
 
-        //TODO move to implementation
-        //Set up messaging service
-        mServiceIntent = new Intent( getApplicationContext(), MessageService.class);
-
-        startService(mServiceIntent);
 
         // Initialize list adapter for mGroupListView
         mGroupList = new ArrayList<GroupModel>();
@@ -68,11 +69,27 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
         // Get handles to Buttons
         mButtonToTabs = (Button) findViewById(R.id.buttonToTab);
-        mButtonSettings = (Button) findViewById(R.id.buttonSettings);
 
         // Declare button click event handlers
         mButtonToTabs.setOnClickListener(this);
-        mButtonSettings.setOnClickListener(this);
+
+        // Check if in a Group
+        try {
+            CrowdControlApplication.getInstance().getModelManager().fetchCurrentGroup();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup() != null ) {
+            launchGroupNavigationActivity();
+        }
+
+        //set up Tool Bar
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mToolbar.setTitle("Join A Group");
+
 
         // Fetch group list to display
         CrowdControlApplication.getInstance().getModelManager().fetchAllGroupsInBackground(new BaseModel.FetchCallback() {
@@ -108,7 +125,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     /*
      *  Determines which item in the list view is selected
      *
-     *  @see CustomParseAdapter
+     *  @see GroupModelAdapter
      *  @see GroupNavigationActivity
      */
     @Override
@@ -120,6 +137,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            launchSettingsActivity();
             return true;
         }
 
@@ -138,10 +156,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         switch (view.getId()) {
             case R.id.buttonToTab:
                 onCreateButtonClick((Button) view);
-                break;
-
-            case R.id.buttonSettings:
-                onSettingsButtonClick((Button) view);
                 break;
 
             default:
@@ -202,7 +216,6 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
      * @see           GroupCreateActivity
      */
     private void onCreateButtonClick(Button button) {
-
         launchCreateGroupActivity();
     }
 
@@ -244,10 +257,10 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     private void launchGroupNavigationActivity() {
         Intent myIntent = new Intent(this, GroupNavigationActivity.class);
         this.startActivity(myIntent);
+        finish();
     }
 
     public void onDestroy() {
-        stopService(new Intent(this,MessageService.class));
         super.onDestroy();
     }
 

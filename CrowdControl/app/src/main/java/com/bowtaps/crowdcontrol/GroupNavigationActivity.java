@@ -1,5 +1,7 @@
 package com.bowtaps.crowdcontrol;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -38,13 +40,25 @@ public class GroupNavigationActivity extends AppCompatActivity {
     private MessagingFragment mMessagingFragment;
     private EventFragment     mEventFragment;
 
+    private Intent mServiceIntent;
+
+    //sets up icons for tabs
+    private int[] tabIcons = {
+            R.drawable.streamline_person,
+            R.drawable.streamline_map_pin,
+            R.drawable.streamline_bubble,
+            R.drawable.streamline_notebook
+    };
+
+
     /*
      *  Sets up the (@Link SimpleTabsAdapter) and adds in tabs and their fragments.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tab_test);
+        setContentView(R.layout.activity_tab);
+        setTitle(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupName());
 
         setUpReceiver();
 
@@ -55,17 +69,20 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         mTabsAdapter = new SimpleTabsAdapter(getSupportFragmentManager());
 
+        // Start messaging service
+        startService(new Intent(getApplicationContext(), MessageService.class));
+
         // Create fragment objects
         mGroupInfoFragment = GroupInfoFragment.newInstance("Group");
         mMapFragment       = MapFragment.newInstance("Map");
         mMessagingFragment = MessagingFragment.newInstance("Messaging");
-        mEventFragment     = EventFragment.newInstance("Events");
+        //mEventFragment     = EventFragment.newInstance("Events");
 
         // Add fragments to tab manager
-        mTabsAdapter.addFragment(mGroupInfoFragment, "Group");
-        mTabsAdapter.addFragment(mMapFragment, "Map");
-        mTabsAdapter.addFragment(mMessagingFragment, "Messaging");
-        mTabsAdapter.addFragment(mEventFragment, "Events");
+        mTabsAdapter.addFragment(mGroupInfoFragment, "");
+        mTabsAdapter.addFragment(mMapFragment, "");
+        mTabsAdapter.addFragment(mMessagingFragment, "");
+        //mTabsAdapter.addFragment(mEventFragment, "Events");
 
         //setup viewpager to give swipe effect
         tabsviewPager.setAdapter(mTabsAdapter);
@@ -73,7 +90,11 @@ public class GroupNavigationActivity extends AppCompatActivity {
         mTabs = (TabLayout) findViewById(R.id.tabs);
         mTabs.setupWithViewPager(tabsviewPager);
 
-        // Start service if it's not working
+        mTabs.getTabAt(0).setIcon(tabIcons[0]);
+        mTabs.getTabAt(1).setIcon(tabIcons[1]);
+        mTabs.getTabAt(2).setIcon(tabIcons[2]);
+
+        // Start group service if it's not running
         if (!GroupService.isRunning()) {
             Intent serviceIntent = new Intent(getApplicationContext(), GroupService.class);
             serviceIntent.putExtra(GroupService.INTENT_GROUP_ID_KEY, CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getId());
@@ -81,6 +102,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
             startService(serviceIntent);
         }
 
+        // Bind to group service
         groupServiceBinder = null;
         mServiceConnection = new ServiceConnection() {
             @Override
@@ -97,7 +119,6 @@ public class GroupNavigationActivity extends AppCompatActivity {
                 GroupNavigationActivity.this.groupServiceBinder = null;
             }
         };
-
         bindService(new Intent(getApplicationContext(), GroupService.class), mServiceConnection, BIND_IMPORTANT);
     }
 
@@ -110,12 +131,13 @@ public class GroupNavigationActivity extends AppCompatActivity {
         groupServiceBinder.removeGroupUpdatesListener(mMessagingFragment);
 
         unbindService(mServiceConnection);
+        stopService(new Intent(getApplicationContext(), GroupService.class));
     }
 
     private void setUpReceiver() {
-//        progressDialog = new ProgressDialog(this);
-//        progressDialog.setTitle("Loading");
-//        progressDialog.setMessage("Please wait...");
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Please wait...");
 //        progressDialog.show();
 
         receiver = new BroadcastReceiver() {
@@ -129,7 +151,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
             }
         };
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("com.bowtaps.crowdcontrol"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("com.bowtaps.crowdcontrol.GroupNavigationActivity"));
 
     }
 }

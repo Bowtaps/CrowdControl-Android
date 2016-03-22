@@ -18,7 +18,7 @@ public class ParseBaseModel implements BaseModel {
     /**
      * The class's handle for interacting with its Parse counterpart.
      */
-    private final ParseObject parseObject;
+    private ParseObject parseObject;
 
 
 
@@ -48,13 +48,28 @@ public class ParseBaseModel implements BaseModel {
     }
 
     /**
+     * Replaces the underlying {@link ParseObject} for this object.
+     *
+     * @param parseObject The new {@link ParseObject} to attach to this model.
+     */
+    protected void setUnderlyingParseObject(ParseObject parseObject) {
+
+        // Verify parameters
+        if (parseObject == null) {
+            throw new IllegalArgumentException("parseObject cannot be null");
+        }
+
+        this.parseObject = parseObject;
+    }
+
+    /**
      * Gets this object's unique identifier.
      *
      * @return The object's unique identifier.
      */
     @Override
     public String getId() {
-        return parseObject.getObjectId();
+        return getParseObject().getObjectId();
     }
 
     /**
@@ -64,7 +79,7 @@ public class ParseBaseModel implements BaseModel {
      */
     @Override
     public Date getCreated() {
-        return parseObject.getCreatedAt();
+        return getParseObject().getCreatedAt();
     }
 
     /**
@@ -74,7 +89,7 @@ public class ParseBaseModel implements BaseModel {
      */
     @Override
     public Date getUpdated() {
-        return parseObject.getUpdatedAt();
+        return getParseObject().getUpdatedAt();
     }
 
     /**
@@ -84,7 +99,7 @@ public class ParseBaseModel implements BaseModel {
      */
     @Override
     public Boolean wasModified() {
-        return parseObject.isDirty();
+        return getParseObject().isDirty();
     }
 
     /**
@@ -96,7 +111,7 @@ public class ParseBaseModel implements BaseModel {
      */
     @Override
     public void save() throws ParseException {
-        parseObject.save();
+        getParseObject().save();
     }
 
     /**
@@ -111,7 +126,7 @@ public class ParseBaseModel implements BaseModel {
     @Override
     public void saveInBackground(final SaveCallback callback) {
         final BaseModel model = this;
-        parseObject.saveInBackground(new com.parse.SaveCallback() {
+        getParseObject().saveInBackground(new com.parse.SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (callback != null) {
@@ -130,7 +145,7 @@ public class ParseBaseModel implements BaseModel {
      */
     @Override
     public void load() throws ParseException {
-        parseObject.fetch();
+        getParseObject().fetch();
     }
 
     /**
@@ -145,11 +160,50 @@ public class ParseBaseModel implements BaseModel {
     @Override
     public void loadInBackground(final LoadCallback callback) {
         final BaseModel model = this;
-        parseObject.fetchInBackground(new GetCallback<ParseObject>() {
+        getParseObject().fetchInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
                 if (callback != null) {
                     callback.doneLoadingModel(model, e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Deletes this object from storage. This is a blocking function that will
+     * wait until the operation completes successfully or an {@link Exception}
+     * is thrown. Care should be taken to not call this function on the main
+     * thread.
+     *
+     * @throws ParseException Throws an {@link Exception} should the operation
+     * fail for any reason.
+     */
+    @Override
+    public void delete() throws ParseException {
+        getParseObject().delete();
+    }
+
+    /**
+     * Deletes this object from storage asynchronously. Spawns a separate thread
+     * so that this function can be called from the main thread without blocking
+     * the UI. Upon completion, whether successful or unsuccessful, returns
+     * control to the main thread by calling the
+     * {@link DeleteCallback#doneDeletingModel(BaseModel, Exception)} method on
+     * the provided {@link DeleteCallback} object.
+     *
+     * @param callback The callback object to pass control to once the operation
+     *                 is completed. If no object is provided ({@code null} is)
+     *                 given, then nothing will happen after the operation is
+     *                 complete.
+     */
+    public void deleteInBackground(final DeleteCallback callback) {
+        final BaseModel model = this;
+        getParseObject().deleteInBackground(new com.parse.DeleteCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (callback != null) {
+                    callback.doneDeletingModel(model, e);
                 }
             }
         });
@@ -166,9 +220,9 @@ public class ParseBaseModel implements BaseModel {
     @Override
     public boolean equals(final Object other) {
         if (other instanceof ParseObject) {
-            return (this.parseObject != null && this.parseObject.equals(other));
+            return (getParseObject() != null && getParseObject().equals(other));
         } else if (other instanceof ParseBaseModel) {
-            return equals(((ParseBaseModel) other).parseObject);
+            return equals(((ParseBaseModel) other).getParseObject());
         } else {
             return super.equals(other);
         }

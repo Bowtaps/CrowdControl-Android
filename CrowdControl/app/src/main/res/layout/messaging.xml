@@ -10,9 +10,11 @@
             android:layout_height="wrap_content"
             android:transcriptMode="alwaysScroll"
             android:layout_above="@+id/divider"
+        android:layout_marginTop="95dp"
             android:padding="0dip"
             android:divider="@null"
-            android:dividerHeight="0dp" android:stackFromBottom="true" tools:listitem="@layout/message_left"/>
+            android:dividerHeight="0dp" android:stackFromBottom="true" tools:listitem="@layout/message_left"
+        android:layout_alignParentStart="false" />
     
     <RelativeLayout 
         android:id="@+id/divider"

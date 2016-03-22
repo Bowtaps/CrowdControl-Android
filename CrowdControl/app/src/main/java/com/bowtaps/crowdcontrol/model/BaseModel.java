@@ -60,6 +60,9 @@ public interface BaseModel {
     /**
      * Saves this object to storage. This is a blocking function, so care should
      * be taken to not call this function on the main thread.
+     *
+     * @throws Exception Throws an {@link Exception} should the operation fail
+     * for any reason.
      */
     public void save() throws Exception;
 
@@ -81,7 +84,8 @@ public interface BaseModel {
      * Loads this object from storage. This is a blocking function, so care
      * should be taken to not call this function on the main thread.
      *
-     * @throws Exception Throws the exception
+     * @throws Exception Throws an {@link Exception} should the operation fail
+     * for any reason.
      */
     public void load() throws Exception;
 
@@ -99,6 +103,32 @@ public interface BaseModel {
      *                 loaded.
      */
     public void loadInBackground(final LoadCallback callback);
+
+    /**
+     * Deletes this object from storage. This is a blocking function that will
+     * wait until the operation completes successfully or an {@link Exception}
+     * is thrown. Care should be taken to not call this function on the main
+     * thread.
+     *
+     * @throws Exception Throws an {@link Exception} should the operation fail
+     * for any reason.
+     */
+    public void delete() throws Exception;
+
+    /**
+     * Deletes this object from storage asynchronously. Spawns a separate thread
+     * so that this function can be called from the main thread without blocking
+     * the UI. Upon completion, whether successful or unsuccessful, returns
+     * control to the main thread by calling the
+     * {@link DeleteCallback#doneDeletingModel(BaseModel, Exception)} method on
+     * the provided {@link DeleteCallback} object.
+     *
+     * @param callback The callback object to pass control to once the operation
+     *                 is completed. If no object is provided ({@code null} is)
+     *                 given, then nothing will happen after the operation is
+     *                 complete.
+     */
+    public void deleteInBackground(final DeleteCallback callback);
 
 
 
@@ -163,5 +193,26 @@ public interface BaseModel {
          *           occurred.
          */
         public void doneFetchingModels(List<? extends BaseModel> results, Exception ex);
+    }
+
+    /**
+     * The callback interface that should be used for asnychronous delete
+     * operations.
+     */
+    public interface DeleteCallback {
+
+        /**
+         * This method is called after completion of an asynchronous background
+         * delete on a model. It accepts the deleted model and an exception
+         * object should something go wrong.
+         *
+         * @param object The object that was attempted to be deleted. This
+         *               parameter cannot be {@code null} and will be valid
+         *               whether or not the operation was successful.
+         * @param ex The {@link Exception} that occurred, if any. This value will
+         *           be {@code null} if the operation was successful and will be
+         *           a valid {@link Exception} object if an error occurred.
+         */
+        public void doneDeletingModel(BaseModel object, Exception ex);
     }
 }

@@ -8,6 +8,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -123,6 +125,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      *
      * @return The name of the group.
      */
+    @Override
     public String getGroupName() {
         return getParseObject().getString(groupNameKey);
     }
@@ -132,6 +135,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      *
      * @param name The new name of the group.
      */
+    @Override
     public void setGroupName(String name) {
         getParseObject().put(groupNameKey, name);
     }
@@ -167,6 +171,62 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     }
 
     /**
+     * Clears all members from this group. Does not modify the group leader, but will remove the
+     * leader from the group if they are a member.
+     *
+     * @return {@code true} if the operation was successful, {@code false} if not.
+     */
+    @Override
+    public Boolean clearGroupMembers() {
+
+        ParseRelation relation = getParseObject().getRelation(groupMembersKey);
+
+        for (ParseUserProfileModel profile : members) {
+            relation.remove(profile.getParseObject());
+        }
+        members.clear();
+
+        return true;
+    }
+
+    /**
+     * Adds multiple new members to the group.
+     *
+     * @param profiles The {@link Collection} of users to add as members to this group.
+     *
+     * @return {@code true} if the users were successfully added to the group, {@code false} if not
+     *         or if any member is already a member of the group.
+     */
+    @Override
+    public Boolean addGroupMembers(Collection<? extends UserProfileModel> profiles) {
+
+        // Verify arguments
+        if (profiles == null) {
+            return false;
+        }
+        for (UserProfileModel profile : profiles) {
+            if (!(profile instanceof ParseUserProfileModel)) {
+                return false;
+            }
+
+            // Verify that users aren't already parts of the group
+            if (members.contains(profile)) {
+                return false;
+            }
+        }
+
+        ParseRelation relation = getParseObject().getRelation(groupMembersKey);
+
+        // Add the users to the relation and to the model's cache
+        for (UserProfileModel profile : profiles) {
+            relation.add(((ParseUserProfileModel) profile).getParseObject());
+            members.add((ParseUserProfileModel) profile);
+        }
+
+        return true;
+    }
+
+    /**
      * Adds a new member to the group.
      *
      * @param profile The {@link UserProfileModel} of the user to be added.
@@ -176,28 +236,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      */
     @Override
     public Boolean addGroupMember(UserProfileModel profile) {
-
-        // Verify arguments
-        if (profile == null || !(profile instanceof ParseUserProfileModel)) {
-            return false;
-        }
-
-        // Cast arguments to convenience variables
-        ParseUserProfileModel parseProfile = (ParseUserProfileModel) profile;
-
-        // Verify that the user isn't already part of the group
-        if (members.contains(profile)) {
-            return false;
-        }
-
-        // Add the profile to the ParseObject relation
-        ParseRelation relation = getParseObject().getRelation(groupMembersKey);
-        relation.add(parseProfile.getParseObject());
-
-        // Add the profile to this model's cache
-        members.add(parseProfile);
-
-        return true;
+        return addGroupMembers(Collections.singleton(profile));
     }
 
     /**
@@ -283,14 +322,10 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      */
     @Override
     public void loadInBackground(final LoadCallback callback) {
-
-
-
         final ParseGroupModel thisGroup = this;
 
         // Define and execute an AsyncTask to perform the background fetch
         new AsyncTask<Object, Void, ParseGroupModel>() {
-
             private BaseModel.LoadCallback callback;
             private ParseException exception;
 
@@ -330,7 +365,15 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     }
 
 
-
+    /**
+     * Fetches all groups from the database.
+     *
+     * This is a blocking function that can take several seconds to complete. Care should be taken
+     * to not call this method from the UI thread.
+     *
+     * @return A {@link List} of all {@link ParseGroupModel} objects in the database.
+     * @throws ParseException Throws an exception if any error occurs.
+     */
     public static List<ParseGroupModel> getAll() throws ParseException {
         List<ParseGroupModel> result = new ArrayList<ParseGroupModel>();
 
@@ -346,6 +389,15 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         return result;
     }
 
+    /**
+     * Gets the group containing the provided user as a member. If no groups in the database contain
+     * the provided user as a member, then {@code null} will be returned.
+     *
+     * @param profile The user profile to search for.
+     * @return The group model containing the provided user as a member or {@code null} if the user
+     * is not a member of any groups.
+     * @throws ParseException Throws an exception if any error occurs.
+     */
     public static ParseGroupModel getGroupContainingUser(UserProfileModel profile) throws ParseException {
         ParseGroupModel result = null;
 
@@ -376,14 +428,37 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         return result;
     }
 
+    /**
+     * Determines whether the provided {@link ParseObject} is compatible with this class and can be
+     * successfully "wrapped" by an instance of this class.
+     *
+     * @param object The {@link ParseObject} to evaluate compatibility for.
+     * @return {@code true} if it is possible to initialize a new instance of this class using the
+     * provided {@link ParseObject}.
+     */
     public static Boolean compatibleWithParseObject(ParseObject object) {
         return (object != null &&  object.getClassName().equals(tableName));
     }
 
+    /**
+     * Creates a new instance of this class using the provided {@link ParseObject} as the underlying
+     * handle into the database.
+     *
+     * @param groupObject The {@link ParseObject} to use as the underlying handle into the database.
+     * @return The newly created instance of this class or {@code null} if unable to do so.
+     */
     public static ParseGroupModel createFromParseObject(ParseObject groupObject) {
         return createFromParseObject(groupObject, null);
     }
 
+    /**
+     * Creates a new instance of this class using the provided {@link ParseObject} as the underlying
+     * handle into the database.
+     *
+     * @param groupObject The {@link ParseObject} to use as the underlying handle into the database.
+     * @param memberObjects A list of members to use as the cached member list.
+     * @return The newly created instance of this class or {@code null} if unable to do so.
+     */
     public static ParseGroupModel createFromParseObject(ParseObject groupObject, List<ParseObject> memberObjects) {
 
         // Verify parameters
