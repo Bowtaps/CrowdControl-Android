@@ -228,12 +228,24 @@ public interface ModelManager {
     public LocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location);
 
     /**
-     * Fetches all known locations sent from the given user
-     * @param user
-     * @return
-     * @throws ParseException
+     * Fetches all known locations sent from the given user. Given a {@link UserProfileModel},
+     * fetches all locations from storage that have been sent from that user regardless of whom the
+     * locations were addressed to.
+     *
+     * @param user The user from whom the locations were sent.
+     * @return A list of all locations sent from the requested user.
+     * @throws ParseException Throws an exception if an error occurred for any reason.
      */
     public List<? extends LocationModel> fetchLocationsFromUser(UserProfileModel user) throws ParseException;
 
+    /**
+     * Fetches all known locations sent to the given user. Given a {@link UserProfileModel}, fetches
+     * all locations from storage that have been sent to that user regardless of whom the locations
+     * were sent by.
+     *
+     * @param user The user to whom the locations were sent.
+     * @return A list of all locations sent to the requested user.
+     * @throws ParseException Throws an exception if an error occurred for any reason.
+     */
     public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException;
 }
