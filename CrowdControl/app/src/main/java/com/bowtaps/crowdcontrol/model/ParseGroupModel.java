@@ -1,6 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -58,7 +59,6 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      * {@link #loadInBackground(LoadCallback)} is called.
      */
     private List<ParseUserProfileModel> members;
-
 
     /**
      * Forwarding constructor. Invokes {@link #ParseGroupModel(ParseObject)} with a new
@@ -168,6 +168,38 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     @Override
     public List<ParseUserProfileModel> getGroupMembers() {
         return new ArrayList<>(members);
+    }
+
+    /**
+     * Gets the list of users associated with the current group.
+     *
+     * @return An {@link ArrayList} of {@link UserProfileModel} objects that belong to the group.
+     */
+    public UserProfileModel getGroupMember(String id)
+    {
+        ParseUserProfileModel thisMember = null;
+
+        if (members.isEmpty())
+        {
+            loadInBackground(new BaseModel.LoadCallback() {
+                @Override
+                public void doneLoadingModel(BaseModel object, Exception ex)
+                {
+                    if (ex != null) {
+                        Log.d("ParseGroupModel", "Unable to load members");
+                        return;
+                    }
+                }
+            });
+        }
+        for (ParseUserProfileModel member:members) {
+            if(member.getId() == id)
+            {
+                thisMember = member;
+            }
+        }
+
+        return thisMember;
     }
 
     /**
