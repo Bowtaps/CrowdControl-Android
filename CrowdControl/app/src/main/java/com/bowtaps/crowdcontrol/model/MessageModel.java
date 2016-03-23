@@ -1,7 +1,8 @@
 package com.bowtaps.crowdcontrol.model;
 
 /**
- * Model for representing and storing an instant message in storage.
+ * Model for representing and storing an instant message in storage. This class is intended to be
+ * read-only, which is why it lacks setters for the corresponding getters.
  *
  * @author Daniel Andrus
  * @since 2016-03-23
@@ -16,51 +17,23 @@ public interface MessageModel extends BaseModel {
     String getBody();
 
     /**
-     * Sets the string contents of the message.
+     * Gets the ID of the user model that sent the message.
      *
-     * @param body The strong contents of the message.
+     * @return The ID user model that sent the message.
      */
-    void setBody(String body);
+    String getFrom();
 
     /**
-     * Gets the user model that sent the message.
+     * Gets the ID of the user model that the message has been sent to.
      *
-     * @return The user model that sent the message.
+     * @return The ID user model to whom the message was sent.
      */
-    UserProfileModel getFrom();
+    String getTo();
 
     /**
-     * Sets the user model that sent the message.
+     * Gets the ID of the conversation object that this message is a part of.
      *
-     * @param user The user model that sent the message.
+     * @return The ID conversation object that this message belongs to.
      */
-    void setFrom(UserProfileModel user);
-
-    /**
-     * Gets the user model that the message has been sent to.
-     *
-     * @return The user model to whom the message was sent.
-     */
-    UserProfileModel getTo();
-
-    /**
-     * Sets the user model to whom the message was sent.
-     *
-     * @param user The user model to whom the message was sent.
-     */
-    void setTo(UserProfileModel user);
-
-    /**
-     * Gets the conversation object that this message is a part of.
-     *
-     * @return The conversation object that this message belongs to.
-     */
-    ConversationModel getConversation();
-
-    /**
-     * Sets the conversation object that this message is a part of.
-     *
-     * @param conversation The converation object that this mesage belongs to.
-     */
-    void setConversation(ConversationModel conversation);
+    String getConversation();
 }
