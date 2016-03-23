@@ -13,12 +13,12 @@ public interface MessageSender {
      *
      * @return The sender's unique identifier.
      */
-    public String getId();
+    String getId();
 
     /**
      * Gets the sender's name as displayed to other users.
      *
      * @return The sender's display name.
      */
-    public String getDisplayName();
+    String getDisplayName();
 }

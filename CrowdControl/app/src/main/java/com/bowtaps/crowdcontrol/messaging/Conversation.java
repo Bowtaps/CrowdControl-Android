@@ -21,7 +21,7 @@ public interface Conversation {
      * @return {@link List} of {@link Message}s that belong to this conversation and are currently
      *         loaded in memory.
      */
-    public List<? extends Message> getMessages();
+    List<? extends Message> getMessages();
 
     /**
      * Gets a list of {@link ConversationParticipant}s that belong to this conversation. This list
@@ -30,7 +30,7 @@ public interface Conversation {
      * @return {@link List} of {@link ConversationParticipant}s that belong to this conversation,
      *         including the current user if they are a member of this conversation.
      */
-    public List<? extends ConversationParticipant> getParticipants();
+    List<? extends ConversationParticipant> getParticipants();
 
     /**
      * Sends a new text message from the currently logged in user to the rest of the conversation
@@ -45,7 +45,7 @@ public interface Conversation {
      *
      * @return The {@link TextMessage} object to be sent to the other conversation participants.
      */
-    public TextMessage sendTextMessage(String body);
+    TextMessage sendTextMessage(String body, MessageSender sender);
 
 
     /**
@@ -54,14 +54,14 @@ public interface Conversation {
      *
      * @param listener The {@link MessageReceivedListener} to register.
      */
-    public void setOnMessageReceivedListener(MessageReceivedListener listener);
+    void setOnMessageReceivedListener(MessageReceivedListener listener);
 
     /**
      * Removes any previously set listener. Any incoming messages received will not be able to
      * notify any listeners until a new one is set via
      * {@link #setOnMessageReceivedListener(MessageReceivedListener)}.
      */
-    public void removeOnMessageReceivedListener();
+    void removeOnMessageReceivedListener();
 
     /**
      * Replaces any existing {@link MessageSentListener} with the provided listener as the primary
@@ -69,14 +69,14 @@ public interface Conversation {
      *
      * @param listener The {@link MessageSentListener} to register.
      */
-    public void setOnMessageSentListener(MessageSentListener listener);
+    void setOnMessageSentListener(MessageSentListener listener);
 
     /**
      * Removes any previously set listener. Any successfully sent messages will not be able to
      * notify any listeners until a new one is set via
      * {@link #setOnMessageSentListener(MessageSentListener)}.
      */
-    public void removeOnMessageSentListener();
+    void removeOnMessageSentListener();
 
     /**
      * Replaces any existing {@link MessageSendFailedListener} with the provided listener as the
@@ -84,51 +84,51 @@ public interface Conversation {
      *
      * @param listener The {@link MessageSendFailedListener} to register.
      */
-    public void setOnMessageSendFailedListener(MessageSendFailedListener listener);
+    void setOnMessageSendFailedListener(MessageSendFailedListener listener);
 
     /**
-     * Removes any previoiusly set listener. Any messages that failed to send will not be able to
+     * Removes any previously set listener. Any messages that failed to send will not be able to
      * notify any listeners until a new one is set via
      * {@link #setOnMessageSendFailedListener(MessageSendFailedListener)}.
      */
-    public void removeOnMessageSendFailedListener();
+    void removeOnMessageSendFailedListener();
 
     /**
      * The interface for objects wishing to handle incoming messages.
      */
-    public interface MessageReceivedListener {
+    interface MessageReceivedListener {
 
         /**
          * Callback that is triggered when an incoming message is received.
          *
          * @param message The message that was received.
          */
-        public void onMessageReceived(final Message message);
+        void onMessageReceived(final Message message);
     }
 
     /**
      * The interface for objects wishing to handle successful message send events.
      */
-    public interface MessageSentListener {
+    interface MessageSentListener {
 
         /**
          * Callback that is triggered when an outgoing message is successfully sent.
          *
          * @param message The message that was sent.
          */
-        public void onMessageSent(final Message message);
+        void onMessageSent(final Message message, final MessageReceiver receiver);
     }
 
     /**
      * The interface for objects wishing to handle failed message send events.
      */
-    public interface MessageSendFailedListener {
+    interface MessageSendFailedListener {
 
         /**
          * Callback that is triggered when an outgoing message fails to send.
          *
          * @param message The message that failed send.
          */
-        public void onMessageSendFailed(final Message message);
+        void onMessageSendFailed(final Message message, final MessageReceiver receiver);
     }
 }

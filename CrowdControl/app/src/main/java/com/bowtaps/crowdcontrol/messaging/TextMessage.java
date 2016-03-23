@@ -14,5 +14,5 @@ public interface TextMessage extends Message {
      * @return The message content.
      */
     @Override
-    public String getContent();
+    String getContent();
 }

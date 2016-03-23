@@ -14,12 +14,12 @@ public interface MessageReceiver {
      *
      * @return The receiver's unique identifier.
      */
-    public String getId();
+    String getId();
 
     /**
      * Gets the receiver's name as displayed to other users.
      *
      * @return The receiver's display name.
      */
-    public String getDisplayName();
+    String getDisplayName();
 }

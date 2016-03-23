@@ -15,14 +15,14 @@ public interface Message {
      *
      * @return The {@link MessageSender} that sent the message.
      */
-    public MessageSender getSender();
+    MessageSender getSender();
 
     /**
      * Gets the {@link Conversation} to which this message belongs.
      *
      * @return The {@link Conversation} containing this message.
      */
-    public Conversation getConversation();
+    Conversation getConversation();
 
     /**
      * Gets the main content of the message.
