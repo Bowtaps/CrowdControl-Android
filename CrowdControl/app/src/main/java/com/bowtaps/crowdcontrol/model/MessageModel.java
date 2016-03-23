@@ -17,23 +17,23 @@ public interface MessageModel extends BaseModel {
     String getBody();
 
     /**
-     * Gets the ID of the user model that sent the message.
+     * Gets the user model that sent the message.
      *
-     * @return The ID user model that sent the message.
+     * @return The user model that sent the message.
      */
-    String getFrom();
+    UserProfileModel getFrom();
 
     /**
-     * Gets the ID of the user model that the message has been sent to.
+     * Gets the user model that the message has been sent to.
      *
-     * @return The ID user model to whom the message was sent.
+     * @return The user model to whom the message was sent.
      */
-    String getTo();
+    UserProfileModel getTo();
 
     /**
-     * Gets the ID of the conversation object that this message is a part of.
+     * Gets the conversation object that this message is a part of.
      *
-     * @return The ID conversation object that this message belongs to.
+     * @return The conversation object that this message belongs to.
      */
-    String getConversation();
+    ConversationModel getConversation();
 }

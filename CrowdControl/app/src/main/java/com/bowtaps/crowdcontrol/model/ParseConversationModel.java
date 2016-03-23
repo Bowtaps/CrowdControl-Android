@@ -2,6 +2,7 @@ package com.bowtaps.crowdcontrol.model;
 
 import com.parse.ParseObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,12 +57,42 @@ public class ParseConversationModel extends ParseBaseModel implements Conversati
     }
 
     @Override
-    public String getGroup() {
-        return (String) getParseObject().get(groupKey);
+    public GroupModel getGroup() {
+        ParseObject parseObject = getParseObject().getParseObject(groupKey);
+        return ParseGroupModel.createFromParseObject(parseObject);
     }
 
     @Override
-    public List<String> getParticipants() {
-        return Arrays.asList((String[]) getParseObject().get(participantsKey));
+    public List<? extends ParseUserProfileModel> getParticipants() {
+        List<ParseObject> parseParticipants = (List<ParseObject>) getParseObject().get(participantsKey);
+        List<ParseUserProfileModel> participants = new ArrayList<>();
+        for (ParseObject parseParticipant : parseParticipants) {
+            participants.add(ParseUserProfileModel.createFromParseObject(parseParticipant));
+        }
+        return participants;
+    }
+
+
+    /**
+     * Creates a new instance using the provided {@link ParseObject} as the underlying handle into
+     * storage.
+     *
+     * @param parseObject The underlying object to use as a handle into storage.
+     * @return The newly created {@link ConversationModel} or null if an error occurred.
+     */
+    public static ParseConversationModel createFromParseObject(ParseObject parseObject) {
+
+        // Verify parameters
+        if (parseObject == null) {
+            return null;
+        }
+        if (!parseObject.getClassName().equals(tableName)) {
+            return null;
+        }
+
+        // Instantiate new object
+        ParseConversationModel model = new ParseConversationModel(parseObject);
+
+        return model;
     }
 }

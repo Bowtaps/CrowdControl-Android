@@ -54,17 +54,20 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
     }
 
     @Override
-    public String getFrom() {
-        return (String) getParseObject().get(fromKey);
+    public ParseUserProfileModel getFrom() {
+        ParseObject parseObject = getParseObject().getParseObject(fromKey);
+        return ParseUserProfileModel.createFromParseObject(parseObject);
     }
 
     @Override
-    public String getTo() {
-        return (String) getParseObject().get(toKey);
+    public ParseUserProfileModel getTo() {
+        ParseObject parseObject = getParseObject().getParseObject(toKey);
+        return ParseUserProfileModel.createFromParseObject(parseObject);
     }
 
     @Override
-    public String getConversation() {
-        return (String) getParseObject().get(conversationKey);
+    public ParseConversationModel getConversation() {
+        ParseObject parseObject = getParseObject().getParseObject(conversationKey);
+        return ParseConversationModel.createFromParseObject(parseObject);
     }
 }

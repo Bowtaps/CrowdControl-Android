@@ -25,16 +25,16 @@ public interface ConversationModel extends BaseModel {
     void setTitle(String title);
 
     /**
-     * Gets the ID of the group to which this conversation belongs.
+     * Gets the group to which this conversation belongs.
      *
-     * @return The ID of the group to which conversation belongs.
+     * @return The the group to which conversation belongs.
      */
-    String getGroup();
+    GroupModel getGroup();
 
     /**
-     * Gets a list of IDs of all conversation participants.
+     * Gets a list of all conversation participants.
      *
-     * @return A list of IDs of all conversation participants.
+     * @return A list of all conversation participants.
      */
-    List<String> getParticipants();
+    List<? extends UserProfileModel> getParticipants();
 }
