@@ -1,15 +1,9 @@
 package com.bowtaps.crowdcontrol.model;
 
-import com.parse.ParseException;
 import com.parse.ParseObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Parse implementation of the {@link ConversationModel} model. Provides functionality for
