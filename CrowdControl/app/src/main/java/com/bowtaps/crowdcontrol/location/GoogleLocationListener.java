@@ -31,6 +31,7 @@ public class GoogleLocationListener implements LocationListener {
         if(Build.FINGERPRINT.contains("generic")) {
             this.latitude = 44.07082231;      //Joe's house
             this.longitude = -103.25872087;
+            Log.d("Emulation", "It's running on an emulator");
         }
 
         else{
