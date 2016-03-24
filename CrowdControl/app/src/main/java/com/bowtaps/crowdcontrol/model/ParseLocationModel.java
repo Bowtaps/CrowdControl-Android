@@ -198,32 +198,15 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
         }
         //for each member of the group create the location model
         //create a location object from me to each group member
-        for (UserProfileModel user: groupMembers) {
-            if (user.getDisplayName().equals(me.getDisplayName())) {
-                ParseObject obj = ParseObject.create(tableName);
-                Double lat = currentLocation.latitude;
-                Double lng = currentLocation.longitude;
-                Log.d("Location: ", "Lat: " + lat + "\nLong: " + lng);
-                obj.put(longitudeKey, lng.toString());
-                obj.put(latitudeKey, lat.toString());
-                LocationModel loc = new ParseLocationModel(obj);
-                loc.setFrom(me);
-                loc.setTo(user);
-                try {
-                    loc.save();
-                } catch (Exception e) {
-                    Log.e("Saving Exception: ", "Error: " + e);
-                }
-            } else {
-                Log.i("ME: ", "It catches me in the group");
-            }
-        }
+        sendLocationToList((List<UserProfileModel>)groupMembers);
     }
     public static void sendLocationToList(List<UserProfileModel> members){
+        Log.d("Testing SendLocation", members.toString());
         UserProfileModel me = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
         LatLng currentLocation = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
+
         for(UserProfileModel profile: members){
-            if(profile.getDisplayName().equals(me.getDisplayName())){
+            if(!profile.getDisplayName().equals(me.getDisplayName())){
                 ParseObject obj = ParseObject.create(tableName);
                 Double lat = currentLocation.latitude;
                 Double lng = currentLocation.longitude;

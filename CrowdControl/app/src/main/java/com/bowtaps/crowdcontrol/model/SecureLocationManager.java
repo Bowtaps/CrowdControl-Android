@@ -99,4 +99,6 @@ public interface SecureLocationManager {
      * @return The cached list of {@link LocationModel}s belonging to the requested users.
      */
     public List<? extends LocationModel> getUserLocations(Collection<? extends UserProfileModel> users);
+
+    public void broadcastLocation();
 }

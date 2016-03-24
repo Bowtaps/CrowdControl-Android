@@ -144,6 +144,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
     }
 
     private void myMethodCall2(FloatingActionButton view) {
+        if(mMap == null){
+            setUpMapIfNeeded();
+        }
         refreshMarkers();
 
     }
@@ -196,7 +199,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
         LatLng myLoc = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
         try {
             List<? extends LocationModel> locations = CrowdControlApplication.getInstance().getModelManager().fetchLocationsToUser(me);
+            CrowdControlApplication.getInstance().getLocationManager().broadcastLocation();
             // Remove pins from map
+            Log.d("Group Member Locations", locations.toString());
             if(mMap != null){
                 mMap.clear();
             }

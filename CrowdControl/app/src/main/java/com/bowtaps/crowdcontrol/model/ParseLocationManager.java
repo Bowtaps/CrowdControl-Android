@@ -62,7 +62,7 @@ public class ParseLocationManager implements SecureLocationManager {
             locationManager = (LocationManager) CrowdControlApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
             try{
                 if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 1000, this.listener);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000, 1000, this.listener);
                     List<String> providers = locationManager.getProviders(true);
                     Location bestLocation = null;
                     for (String provider : providers) {
@@ -208,11 +208,13 @@ public class ParseLocationManager implements SecureLocationManager {
         return locations;
     }
 
-    private void broadcastLocation(){
+    public void broadcastLocation(){
         //if the transmitting flag is set to true, send the data
         //if the transmitting flag is set to false, leave function
-        if(this.transmitting){
-            ParseLocationModel.broadcastLocation();
-        }
+//        if(this.transmitting){
+//            ParseLocationModel.broadcastLocation();
+//        }
+        //List<UserProfileModel> groupMembers = (List<UserProfileModel>) CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers();
+        ParseLocationModel.broadcastLocation();
     }
 }
