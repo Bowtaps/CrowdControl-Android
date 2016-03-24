@@ -198,10 +198,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
         UserProfileModel me = modelManager.getCurrentUser().getProfile();
         LatLng myLoc = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
         try {
-            List<? extends LocationModel> locations = CrowdControlApplication.getInstance().getModelManager().fetchLocationsToUser(me);
-            CrowdControlApplication.getInstance().getLocationManager().broadcastLocation();
+            //List<? extends LocationModel> locations = CrowdControlApplication.getInstance().getModelManager().fetchLocationsToUser(me);
+            List<? extends LocationModel> locations = CrowdControlApplication.getInstance().getLocationManager().getLocations();
+            //CrowdControlApplication.getInstance().getLocationManager().broadcastLocation();
             // Remove pins from map
-            Log.d("Group Member Locations", locations.toString());
+            //Log.d("Group Member Locations", locations.toString());
             if(mMap != null){
                 mMap.clear();
             }
@@ -212,19 +213,20 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
                 // Build location marker
                 Double longitude = location.getLongitude();
                 Double latitude = location.getLatitude();
-                Log.d("MapFragment", "user location: lat = " + latitude + ", long = " + longitude);
+                Log.d("MapFragment", "user: " + location.getFrom() + "lat = " + latitude + ", long = " + longitude);
 
                 // Add marker to map
                 if (mMap == null) mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_frame)).getMap();
                 mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(location.getFrom().getDisplayName()));
             }
-        }catch (com.parse.ParseException e) {
+        }catch (Exception e) {
             Log.d("Exception", e.toString());
         }
     }
 
     @Override
     public void onReceivedLocationUpdate(List<LocationModel> locations) {
+        CrowdControlApplication.getInstance().getLocationManager().updateLocations(locations);
         refreshMarkers();
     }
 }
