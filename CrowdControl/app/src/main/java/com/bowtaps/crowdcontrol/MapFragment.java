@@ -205,7 +205,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
             if(mMap != null){
                 mMap.clear();
             }
-            mMap.addMarker(new MarkerOptions().position(myLoc).title("ME!!!"));
+            mMap.addMarker(new MarkerOptions().position(myLoc).title(me.getDisplayName()));
             // Put markers on map
             for (LocationModel location : locations){
 
