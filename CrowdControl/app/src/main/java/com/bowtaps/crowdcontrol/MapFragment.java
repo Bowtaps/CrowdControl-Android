@@ -137,10 +137,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
         Log.d("myMtethodCall1", "Homing button pressed");
         SecureLocationManager secureLocationManager = CrowdControlApplication.getInstance().getLocationManager();
         LatLng myLoc = secureLocationManager.getCurrentLocation();
-        while(myLoc.longitude == 0 && myLoc.latitude == 0){
-            myLoc = secureLocationManager.getCurrentLocation();
-        }
-        Log.d("myMtethodCall1", myLoc.toString());
         if(mMap == null){
             setUpMapIfNeeded();
         }
