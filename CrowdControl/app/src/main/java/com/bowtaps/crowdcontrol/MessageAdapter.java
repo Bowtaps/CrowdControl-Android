@@ -1,6 +1,7 @@
 package com.bowtaps.crowdcontrol;
 
 import android.app.Activity;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,7 +87,16 @@ public class MessageAdapter extends BaseAdapter {
         Message message = messages.get(i).first;
 
         TextView txtMessage = (TextView) convertView.findViewById(R.id.txtMessage);
+        TextView sender     = (TextView) convertView.findViewById(R.id.txtSender);
+        TextView timeStamp  = (TextView) convertView.findViewById(R.id.txtDate);
         txtMessage.setText(message.getTextBody());
+        try {
+            sender.setText(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMember(message.getSenderId()).getDisplayName());
+        } catch (NullPointerException e)
+        {
+            Log.d("MessageAdapter.java", "Sender is null");
+        }
+        timeStamp.setText(message.getTimestamp().toString());
 
         return convertView;
     }
