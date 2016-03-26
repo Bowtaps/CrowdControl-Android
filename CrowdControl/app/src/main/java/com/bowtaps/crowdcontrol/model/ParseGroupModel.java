@@ -179,21 +179,21 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     {
         ParseUserProfileModel thisMember = null;
 
-        if (members.isEmpty())
-        {
-            loadInBackground(new BaseModel.LoadCallback() {
-                @Override
-                public void doneLoadingModel(BaseModel object, Exception ex)
-                {
-                    if (ex != null) {
-                        Log.d("ParseGroupModel", "Unable to load members");
-                        return;
-                    }
-                }
-            });
-        }
+//        if (members.isEmpty())
+//        {
+//            loadInBackground(new BaseModel.LoadCallback() {
+//                @Override
+//                public void doneLoadingModel(BaseModel object, Exception ex)
+//                {
+//                    if (ex != null) {
+//                        Log.d("ParseGroupModel", "Unable to load members");
+//                        return;
+//                    }
+//                }
+//            });
+//        }
         for (ParseUserProfileModel member:members) {
-            if(member.getId() == id)
+            if(member.getId().equals(id))
             {
                 thisMember = member;
             }
