@@ -44,7 +44,6 @@ public class GoogleLocationListener implements LocationListener {
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         this.status = status;
-        Log.d("Location Status", "Status Changed to: " + status);
     }
 
     @Override
@@ -58,11 +57,9 @@ public class GoogleLocationListener implements LocationListener {
     }
 
     public Double getLongitude(){
-        Log.d("getLongitude", this.longitude.toString());
         return this.longitude;
     }
     public Double getLatitude(){
-        Log.d("getLatitude", this.latitude.toString());
         return this.latitude;
     }
     public void setLocation(LatLng newLoc){

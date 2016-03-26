@@ -11,7 +11,9 @@ import android.util.Log;
 import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.LocationModel;
+import com.bowtaps.crowdcontrol.model.SecureLocationManager;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,6 +91,8 @@ public class GroupService extends Service {
      */
     private String userPId;
 
+    private LatLng currentLocation;
+
 
     /**
      * Default constructor for this object. Initializes properties.
@@ -117,7 +121,7 @@ public class GroupService extends Service {
         // Extract intent arguments
         final String groupId = intent.getStringExtra(INTENT_GROUP_ID_KEY);
         final String userPId = intent.getStringExtra(INTENT_USER_ID_KEY);
-
+        currentLocation = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
         // Verify parameters
         if (groupId == null || userPId == null) {
             stopSelf(startId);
@@ -205,6 +209,8 @@ public class GroupService extends Service {
         GroupModel group = null;
         List<UserProfileModel> users = new LinkedList<>();
         List<LocationModel> locations = new LinkedList<>();
+        SecureLocationManager locationManager = CrowdControlApplication.getInstance().getLocationManager();
+        LatLng previousLocation = currentLocation;
 
         // Separate results into buckets based on type and keep track of most recent update time
         for (BaseModel model : results) {
@@ -219,6 +225,10 @@ public class GroupService extends Service {
             if (model.getUpdated().after(since)) {
                 since = model.getUpdated();
             }
+        }
+        currentLocation = locationManager.getCurrentLocation();
+        if(!currentLocation.equals(previousLocation)){
+            locationManager.broadcastLocation();
         }
 
         // Forward calls to listeners

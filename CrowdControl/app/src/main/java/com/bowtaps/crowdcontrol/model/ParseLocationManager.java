@@ -160,7 +160,7 @@ public class ParseLocationManager implements SecureLocationManager {
 
     @Override
     public void updateLocations(Collection<? extends LocationModel> locations) {
-
+        Log.d("updateLocations", "New Locations");
         // Add each location in collection to cache
         if (locations != null) {
             for (LocationModel location : locations) {
