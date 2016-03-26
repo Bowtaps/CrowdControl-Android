@@ -1,6 +1,8 @@
 package com.bowtaps.crowdcontrol.model;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.util.Log;
 import android.location.LocationManager;
@@ -45,24 +47,20 @@ public class ParseLocationManager implements SecureLocationManager {
     /**
      * TODO: doc me, Doc!
      */
-    public ParseLocationManager(){
+    public ParseLocationManager() {
         transmissionInterval = 10;
         memberLocations = new HashMap<>();
-        //listener = new GoogleLocationListener();
-        //locationManager = (LocationManager) CrowdControlApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
-
     }
 
-    public void initializeLocationRequest()
-    {
-        if(listener == null){
+    public void initializeLocationRequest() {
+        if (listener == null) {
             listener = new GoogleLocationListener();
         }
-        if(locationManager == null) {
+        if (locationManager == null) {
             locationManager = (LocationManager) CrowdControlApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
-            try{
+            try {
                 if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000, 1000, this.listener);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, transmissionInterval * 1000, 1000, this.listener);
                     List<String> providers = locationManager.getProviders(true);
                     Location bestLocation = null;
                     for (String provider : providers) {
@@ -75,15 +73,15 @@ public class ParseLocationManager implements SecureLocationManager {
                             bestLocation = loc;
                         }
                     }
-                    if(bestLocation == null){
+                    if (bestLocation == null) {
                         Log.d("Location Manager", "No location");
-                    }else {
+                    } else {
                         LatLng firstLoc = new LatLng(bestLocation.getLatitude(), bestLocation.getLongitude());
                         listener.setLocation(firstLoc);
                     }
                 }
 
-            }catch(SecurityException e1){
+            } catch (SecurityException e1) {
                 //do something
                 Log.e("Security Exception", e1.toString());
             }
@@ -114,10 +112,16 @@ public class ParseLocationManager implements SecureLocationManager {
      */
     @Override
     public void setInterval(int interval) {
-        if(interval < 0){
+        if (interval < 0) {
             transmissionInterval = 0;
-        }else {
+        } else {
             transmissionInterval = interval;
+        }
+        try {
+            locationManager.removeUpdates(listener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, transmissionInterval * 1000, 1000, this.listener);
+        }catch (SecurityException e){
+            Log.e("Location Manager", e.toString());
         }
     }
 
@@ -160,10 +164,11 @@ public class ParseLocationManager implements SecureLocationManager {
 
     @Override
     public void updateLocations(Collection<? extends LocationModel> locations) {
-        Log.d("updateLocations", "New Locations");
         // Add each location in collection to cache
         if (locations != null) {
             for (LocationModel location : locations) {
+                Log.d("updateLocations", location.toString());
+
                 if (location.getFrom() != null) {
                     memberLocations.put(location.getFrom().getId(), location);
                 }

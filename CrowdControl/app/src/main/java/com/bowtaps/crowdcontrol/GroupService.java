@@ -229,6 +229,9 @@ public class GroupService extends Service {
         currentLocation = locationManager.getCurrentLocation();
         if(!currentLocation.equals(previousLocation)){
             locationManager.broadcastLocation();
+        }else{
+            Log.d("Location Service", currentLocation.toString());
+            Log.d("Location Service", previousLocation.toString());
         }
 
         // Forward calls to listeners
@@ -246,13 +249,13 @@ public class GroupService extends Service {
 
         // Trigger events of location listeners
         if (!locations.isEmpty()) {
-
+            Log.d("Service", "New Locations Received from the service");
             // First, send updated locations to location manager
             CrowdControlApplication.getInstance().getLocationManager().updateLocations(locations);
 
             // Notify listeners of changes
             for (LocationUpdatesListener listener : locationUpdatesListeners) {
-
+                Log.d("Service", ((Integer) locationUpdatesListeners.size()).toString());
                 // Invoke callback method call
                 try {
                     listener.onReceivedLocationUpdate(new ArrayList<>(locations));
