@@ -207,11 +207,11 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
      * @param leaveMessage
      */
     public void leaveDialog(Activity activity, String title, CharSequence message, String leaveMessage){
-        AlertDialog.Builder buildThis = new AlertDialog.Builder(activity);
+        AlertDialog.Builder buildDialog = new AlertDialog.Builder(activity);
 
-        buildThis.setTitle(title);
-        buildThis.setMessage(message);
-        buildThis.setPositiveButton(leaveMessage, new DialogInterface.OnClickListener() {
+        buildDialog.setTitle(title);
+        buildDialog.setMessage(message);
+        buildDialog.setPositiveButton(leaveMessage, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 mGroup.removeGroupMember(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
 
@@ -231,8 +231,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 });
             }
         });
-        buildThis.setNegativeButton("No go back", null);
-        buildThis.show();
+        buildDialog.setNegativeButton("No go back", null);
+        buildDialog.show();
     }
 
     /**
