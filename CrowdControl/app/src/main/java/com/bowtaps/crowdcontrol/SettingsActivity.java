@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.ParseGroupModel;
 import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.parse.ParseUser;
@@ -86,6 +87,25 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
     private void onLogoutButtonClick() {
 
         try {
+            if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup() != null)
+            {
+                CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().removeGroupMember(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
+
+                // Attempt to save change to group in background
+                CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().saveInBackground(new BaseModel.SaveCallback() {
+                    @Override
+                    public void doneSavingModel(BaseModel object, Exception ex) {
+
+                        // Verify operation was a success
+                        if (ex != null) {
+                            Log.d(TAG, "Unable to save group");
+                            return;
+                        }
+
+                        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
+                    }
+                });
+            }
             if (CrowdControlApplication.getInstance().getModelManager().logOutCurrentUser()) {
                 launchLogoutActivity();
             } else {

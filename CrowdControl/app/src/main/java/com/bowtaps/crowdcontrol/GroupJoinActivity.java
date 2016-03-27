@@ -33,6 +33,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
     Button mButtonToTabs;
 
+    //sets class based toolbar
     Toolbar mToolbar;
 
 
@@ -113,7 +114,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     }
 
     /*
-     *  Creates the menu
+     *  Creates the option menu for the tool bar
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -123,7 +124,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     }
 
     /*
-     *  Determines which item in the list view is selected
+     *  This handles the clicks on the drop down menu in the tool bar
      *
      *  @see GroupModelAdapter
      *  @see GroupNavigationActivity

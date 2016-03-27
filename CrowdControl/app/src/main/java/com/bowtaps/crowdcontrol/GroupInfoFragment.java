@@ -183,7 +183,10 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         }
         else {
             CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
-            launchGroupJoinActivity();
+            //race conditions can cause this to happen during a log out sequence, check to make sure not logged out
+            if (CrowdControlApplication.getInstance().getModelManager().getCurrentUser() != null) {
+                launchGroupJoinActivity();
+            }
         }
     }
 
