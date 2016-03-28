@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.sinch.android.rtc.messaging.Message;
-import com.sinch.android.rtc.messaging.WritableMessage;
+import com.bowtaps.crowdcontrol.messaging.TextMessage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,8 +20,8 @@ public class MessageAdapter extends BaseAdapter {
     public static final int DIRECTION_INCOMING = 0;
     public static final int DIRECTION_OUTGOING = 1;
 
-    private List<Pair<Message, Integer>> messages;
-    private Set<String> messageIds;
+    private List<Pair<TextMessage, Integer>> messages;
+    private Set<TextMessage> messageIds;
     private LayoutInflater layoutInflater;
 
     public MessageAdapter(Activity activity) {
@@ -31,15 +30,15 @@ public class MessageAdapter extends BaseAdapter {
         messageIds = new HashSet<>();
     }
 
-    public void addMessage(Message message, int direction) {
+    public void addMessage(TextMessage message, int direction) {
 
         // Short circuit if the message already exists in the adapter
-        if (messageIds.contains(message.getMessageId())) {
+        if (messageIds.contains(message)) {
             return;
         }
 
         messages.add(new Pair(message, direction));
-        messageIds.add(message.getMessageId());
+        messageIds.add(message);
         notifyDataSetChanged();
     }
 
@@ -83,10 +82,10 @@ public class MessageAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(res, viewGroup, false);
         }
 
-        Message message = messages.get(i).first;
+        TextMessage message = messages.get(i).first;
 
         TextView txtMessage = (TextView) convertView.findViewById(R.id.txtMessage);
-        txtMessage.setText(message.getTextBody());
+        txtMessage.setText(message.getContent());
 
         return convertView;
     }

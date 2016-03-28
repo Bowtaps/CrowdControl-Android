@@ -460,6 +460,7 @@ public class ParseModelManager implements ModelManager {
 
         // Create and save a new conversation model
         ParseConversationModel conversation = ParseConversationModel.create(groupModel);
+        conversation.save();
         conversation = (ParseConversationModel) updateCache(conversation);
         groupModel.addCachedConversation(conversation);
 

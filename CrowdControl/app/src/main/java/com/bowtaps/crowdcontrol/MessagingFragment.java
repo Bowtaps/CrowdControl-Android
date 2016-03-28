@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bowtaps.crowdcontrol.messaging.SinchTextMessage;
 import com.bowtaps.crowdcontrol.model.ConversationModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.MessageModel;
@@ -253,7 +254,14 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
          */
         @Override
         public void onIncomingMessage(MessageClient client, final Message message) {
-            mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_INCOMING);
+            UserProfileModel sender = null;
+            for (UserProfileModel participant : mRecipientConversation.getParticipants()) {
+                if (participant .getId().equals(message.getSenderId())) {
+                    sender = participant;
+                    break;
+                }
+            }
+            mMessageAdapter.addMessage(new SinchTextMessage(message, sender), MessageAdapter.DIRECTION_INCOMING);
             Log.d("MessagingFragment", "Message received: " + mMessageBody);
         }
 
@@ -267,7 +275,7 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
          */
         @Override
         public void onMessageSent(MessageClient client, Message message, String recipientId) {
-            mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_OUTGOING);
+            // TODO
         }
 
         /**

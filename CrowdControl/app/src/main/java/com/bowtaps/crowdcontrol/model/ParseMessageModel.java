@@ -130,8 +130,8 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
 
         // Construct and execute parse query
         ParseQuery parseQuery;
-        ParseQuery parseQueryFrom = new ParseQuery(tableName);
-        ParseQuery parseQueryTo   = new ParseQuery(tableName);
+        ParseQuery<ParseObject> parseQueryFrom = new ParseQuery<>(tableName);
+        ParseQuery<ParseObject> parseQueryTo   = new ParseQuery<>(tableName);
 
         parseQueryFrom.whereEqualTo(conversationKey, conversation.getParseObject());
         parseQueryTo.whereEqualTo(conversationKey, conversation.getParseObject());
