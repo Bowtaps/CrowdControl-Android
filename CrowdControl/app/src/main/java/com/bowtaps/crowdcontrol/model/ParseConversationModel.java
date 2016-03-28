@@ -81,7 +81,7 @@ public class ParseConversationModel extends ParseBaseModel implements Conversati
         List<ParseObject> parseParticipants = (List<ParseObject>) getParseObject().get(participantsKey);
         List<ParseUserProfileModel> participants = new ArrayList<>();
         for (ParseObject parseParticipant : parseParticipants) {
-            participants.add(ParseUserProfileModel.createFromParseObject(parseParticipant));
+            participants.add((ParseUserProfileModel) ParseModelManager.getInstance().updateCache(ParseUserProfileModel.createFromParseObject(parseParticipant)));
         }
         return participants;
     }
@@ -210,6 +210,18 @@ public class ParseConversationModel extends ParseBaseModel implements Conversati
      */
     public static Boolean compatibleWithParseObject(ParseObject parseObject) {
         return (parseObject != null && parseObject.getClassName().equals(tableName));
+    }
+
+    /**
+     * Creates a new conversation model that can be saved to storage.
+     *
+     * @param group The group that this new conversation belongs to.
+     * @return The newly created conversation.
+     */
+    public static ParseConversationModel create(ParseGroupModel group) {
+        ParseConversationModel conversation = new ParseConversationModel(new ParseObject(tableName));
+        conversation.getParseObject().put(groupKey, group.getParseObject());
+        return conversation;
     }
 
     /**

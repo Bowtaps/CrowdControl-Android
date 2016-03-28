@@ -221,9 +221,13 @@ public interface ModelManager {
 
     public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws Exception;
 
+    public ConversationModel createConversation(GroupModel group) throws Exception;
+
     public List<? extends ConversationModel> fetchConversations() throws Exception;
 
     public List<? extends ConversationModel> fetchConversationsForGroupAndUser(GroupModel group, UserProfileModel user) throws Exception;
+
+    public List<? extends MessageModel> createMessage(ConversationModel conversation, String message);
 
     public List<? extends MessageModel> fetchMessages(ConversationModel conversation) throws Exception;
 

@@ -157,6 +157,17 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
         return results;
     }
 
+    public static ParseMessageModel create(ParseConversationModel conversation, ParseUserProfileModel fromUser, ParseUserProfileModel toUser, String message) {
+        ParseMessageModel messageModel = new ParseMessageModel(new ParseObject(tableName));
+
+        messageModel.getParseObject().put(conversationKey, conversation.getParseObject());
+        messageModel.getParseObject().put(fromKey, fromUser.getParseObject());
+        messageModel.getParseObject().put(toKey, toUser.getParseObject());
+        messageModel.getParseObject().put(bodyKey, message);
+
+        return messageModel;
+    }
+
     /**
      * Determines whether the provided {@link ParseObject} is compatible with this class and can be
      * successfully "wrapped" by an instance of this class.

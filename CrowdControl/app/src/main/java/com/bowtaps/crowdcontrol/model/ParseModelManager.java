@@ -43,6 +43,8 @@ public class ParseModelManager implements ModelManager {
      */
     private Map<String, ParseBaseModel> cachedModels;
 
+    private static ParseModelManager instance;
+
 
     /**
      * The default constructor for this class. Requires a context to initialize the Parse API under,
@@ -60,6 +62,12 @@ public class ParseModelManager implements ModelManager {
 
         Parse.enableLocalDatastore(context);
         Parse.initialize(context, applicationId, clientKey);
+
+        instance = this;
+    }
+
+    protected static ParseModelManager getInstance() {
+        return instance;
     }
 
     @Override
@@ -435,11 +443,13 @@ public class ParseModelManager implements ModelManager {
 
     @Override
     public ParseGroupModel createGroup(UserProfileModel leader, String name, String description) throws Exception {
+
         // Validate parameters
         if (leader != null && !(leader instanceof ParseUserProfileModel)) {
             throw new IllegalArgumentException("leader parameter must be an instance of ParseUserProfileModel");
         }
 
+        // Create and save group
         ParseGroupModel groupModel = new ParseGroupModel();
         groupModel.setGroupLeader(leader);
         groupModel.addGroupMember(leader);
@@ -447,6 +457,12 @@ public class ParseModelManager implements ModelManager {
         groupModel.setGroupDescription(description);
         groupModel.save();
         groupModel = (ParseGroupModel) updateCache(groupModel);
+
+        // Create and save a new conversation model
+        ParseConversationModel conversation = ParseConversationModel.create(groupModel);
+        conversation = (ParseConversationModel) updateCache(conversation);
+        groupModel.addCachedConversation(conversation);
+
         return groupModel;
     }
 
@@ -534,6 +550,7 @@ public class ParseModelManager implements ModelManager {
         List<Object> parseResults = ParseCloud.callFunction("fetchGroupUpdates", params);
 
         List<ParseUserProfileModel> groupMembers = new ArrayList<>();
+        List<ParseConversationModel> groupConversations = new ArrayList<>();
         ParseGroupModel groupModel = null;
 
         // Process results
@@ -555,6 +572,8 @@ public class ParseModelManager implements ModelManager {
                 groupModel = (ParseGroupModel) model;
             } else if (model instanceof ParseUserProfileModel) {
                 groupMembers.add((ParseUserProfileModel) model);
+            } else if (model instanceof ParseConversationModel) {
+                groupConversations.add((ParseConversationModel) model);
             }
         }
 
@@ -562,6 +581,9 @@ public class ParseModelManager implements ModelManager {
         if (groupModel != null) {
             groupModel.clearGroupMembers();
             groupModel.addGroupMembers(groupMembers);
+            for (ParseConversationModel conversationModel : groupConversations) {
+                groupModel.addCachedConversation(conversationModel);
+            }
             results.add(groupModel);
         }
 
@@ -629,6 +651,27 @@ public class ParseModelManager implements ModelManager {
         return locationModels;
     }
 
+
+    @Override
+    public ParseConversationModel createConversation(GroupModel group) throws ParseException {
+
+        // Verify parameters
+        if (group == null) {
+            throw new IllegalArgumentException("Argument 1 cannot be null");
+        }
+        if (!(group instanceof ParseGroupModel)) {
+            throw new IllegalArgumentException("Argument 1 must be an instance of ParseGroupModel");
+        }
+
+        // Create and save the conversation
+        ParseConversationModel conversation = ParseConversationModel.create((ParseGroupModel) group);
+        conversation.saveInBackground(null);
+        conversation = (ParseConversationModel) updateCache(conversation);
+
+        return conversation;
+    }
+
+    @Override
     public List<? extends ParseConversationModel> fetchConversations() throws ParseException {
 
         // Verify that current user and current group are not null
@@ -664,6 +707,36 @@ public class ParseModelManager implements ModelManager {
         }
 
         return results;
+    }
+
+    @Override
+    public List<? extends ParseMessageModel> createMessage(ConversationModel conversation, String message) {
+        List<ParseMessageModel> messages = new ArrayList<>();
+        ParseUserProfileModel user = getCurrentUser().getProfile();
+
+        if (conversation == null) {
+            throw new IllegalArgumentException("Parameter 1 cannot be null");
+        }
+        if (!(conversation instanceof ParseConversationModel)) {
+            throw new IllegalArgumentException("Parameter 1 must be of instance ParseConversationModel");
+        }
+        if (user == null) {
+            throw new IllegalArgumentException("Parameter 2 cannot be null");
+        }
+        if (message == null) {
+            throw new IllegalArgumentException("Parameter 3 cannot be null");
+        }
+
+        for (ParseUserProfileModel toUser : ((ParseConversationModel) conversation).getParticipants()) {
+            if (!user.equals(toUser)) {
+                ParseMessageModel messageModel = ParseMessageModel.create((ParseConversationModel) conversation, user, toUser, message);
+                messageModel = (ParseMessageModel) updateCache(messageModel);
+                messageModel.saveInBackground(null);
+                messages.add(messageModel);
+            }
+        }
+
+        return messages;
     }
 
     @Override
@@ -733,7 +806,7 @@ public class ParseModelManager implements ModelManager {
      *
      * @return Returns the model stored in cache.
      */
-    private ParseBaseModel updateCache(ParseBaseModel model) {
+    protected ParseBaseModel updateCache(ParseBaseModel model) {
         if (model == null) return null;
 
         ParseBaseModel cachedModel;

@@ -59,6 +59,8 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      */
     private List<ParseUserProfileModel> members;
 
+    private List<ParseConversationModel> conversations;
+
 
     /**
      * Forwarding constructor. Invokes {@link #ParseGroupModel(ParseObject)} with a new
@@ -79,6 +81,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
 
         leader = null;
         members = new ArrayList<>();
+        conversations = new ArrayList<>();
     }
 
     /**
@@ -271,6 +274,17 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         members.remove(parseProfile);
 
         return true;
+    }
+
+    protected void addCachedConversation(ParseConversationModel conversation) {
+        if (!conversations.contains(conversation)) {
+            conversations.add(conversation);
+        }
+    }
+
+    @Override
+    public List<? extends ParseConversationModel> getCachedConversations() {
+        return Collections.unmodifiableList(conversations);
     }
 
     /**
