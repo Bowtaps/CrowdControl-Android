@@ -304,8 +304,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         popup.getMenuInflater().inflate(R.menu.menu_group_member_list_leader_options, popup.getMenu());
 
         //sets menu display titles
-        popup.getMenu().getItem(0).setTitle("Kick " + currentProfile.getDisplayName());
-        popup.getMenu().getItem(1).setTitle("Promote " + currentProfile.getDisplayName());
+        popup.getMenu().getItem(1).setTitle("Kick " + currentProfile.getDisplayName());
+        popup.getMenu().getItem(0).setTitle("Promote " + currentProfile.getDisplayName());
 
         //listen for if a menu item is clicked
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -333,8 +333,6 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                                 Log.d(TAG, "Unable to save group");
                                 return;
                             }
-
-                            CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
                         }
                     });
                     mUserModelAdapter.remove(currentProfile);
@@ -344,6 +342,18 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 //promote leader
                 if (id == R.id.action_promote) {
                     mGroup.setGroupLeader(currentProfile);
+                    // Attempt to save change to group in background
+                    mGroup.saveInBackground(new BaseModel.SaveCallback() {
+                        @Override
+                        public void doneSavingModel(BaseModel object, Exception ex) {
+
+                            // Verify operation was a success
+                            if (ex != null) {
+                                Log.d(TAG, "Unable to save group");
+                                return;
+                            }
+                        }
+                    });
                     return true;
                 }
 
