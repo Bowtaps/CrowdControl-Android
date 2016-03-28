@@ -310,7 +310,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         //listen for if a menu item is clicked
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item){
+            public boolean onMenuItemClick(MenuItem item) {
                 // Handle action bar item clicks here. The action bar will
                 // automatically handle clicks on the Home/Up button, so long
                 // as you specify a parent activity in AndroidManifest.xml.
@@ -319,8 +319,12 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 //gets the profile being clicked on
                 UserProfileModel currentProfile = mUserModelAdapter.getItem(position);
 
+                if (currentProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser())) {
+                    //do nothing, stop clicking thyself
+                    //todo this should also catch not being the leader.... waiting for leader issues to be fixed
+                }
                 //kick leader
-                if (id == R.id.action_kick) {
+                else if (id == R.id.action_kick) {
                     mGroup.removeGroupMember(currentProfile);
 
                     // Attempt to save change to group in background
@@ -340,7 +344,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 }
 
                 //promote leader
-                if (id == R.id.action_promote) {
+                else if (id == R.id.action_promote) {
                     mGroup.setGroupLeader(currentProfile);
                     // Attempt to save change to group in background
                     mGroup.saveInBackground(new BaseModel.SaveCallback() {
@@ -360,7 +364,11 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 return false;
             }
         });
-        popup.show();
+        if(!(currentProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser()))) {
+            //do nothing, stop clicking thyself
+            //todo this should also catch not being the leader.... waiting for leader issues to be fixed
+            popup.show();
+        }
     }
 
 }
