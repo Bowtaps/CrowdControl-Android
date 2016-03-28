@@ -337,7 +337,7 @@ public class ParseModelManager implements ModelManager {
     }
 
     @Override
-    public GroupModel getCurrentGroup() {
+    public ParseGroupModel getCurrentGroup() {
         return currentGroup;
     }
 
@@ -567,6 +567,7 @@ public class ParseModelManager implements ModelManager {
 
         return results;
     }
+
     /**
      * Creates and returns an instance of a ParseLocationModel with the fields provided by the
      * parameters.
@@ -628,6 +629,102 @@ public class ParseModelManager implements ModelManager {
         return locationModels;
     }
 
+    public List<? extends ParseConversationModel> fetchConversations() throws ParseException {
+
+        // Verify that current user and current group are not null
+        if (getCurrentGroup() == null || getCurrentUser() == null) {
+            return new ArrayList<>();
+        }
+
+        return fetchConversationsForGroupAndUser(getCurrentGroup(), getCurrentUser().getProfile());
+    }
+
+    @Override
+    public List<? extends ParseConversationModel> fetchConversationsForGroupAndUser(GroupModel group, UserProfileModel user) throws ParseException {
+
+        // Verify parameters
+        if (group == null) {
+            throw new IllegalArgumentException("Parameter 1 cannot be null");
+        }
+        if (!(group instanceof ParseGroupModel)) {
+            throw new IllegalArgumentException("Parameter 1 must be an instance of ParseGroupModel");
+        }
+        if (user == null) {
+            throw new IllegalArgumentException("Parameter 2 cannot be null");
+        }
+        if (!(user instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("Parameter 2 must be an instance of ParseUserProfileModel");
+        }
+
+        List<ParseConversationModel> results = ParseConversationModel.fetchConversationsForGroupAndUser((ParseGroupModel) group, (ParseUserProfileModel) user);
+
+        // Update cache
+        for (int i = 0; i < results.size(); i++) {
+            results.set(i, (ParseConversationModel) updateCache(results.get(i)));
+        }
+
+        return results;
+    }
+
+    @Override
+    public List<? extends ParseMessageModel> fetchMessages(ConversationModel conversation) throws ParseException {
+
+        // Verify that current user is not null
+        if (getCurrentGroup() == null) {
+            return new ArrayList<>();
+        }
+
+        // Verify parameters
+        if (conversation == null) {
+            throw new IllegalArgumentException("Parameter 1 cannot be null");
+        }
+        if (!(conversation instanceof ParseConversationModel)) {
+            throw new IllegalArgumentException("Parameter 1 must be instance of ParseConversationModel");
+        }
+
+        Integer limit = 20;
+        UserProfileModel user = getCurrentUser().getProfile();
+        Date before = ((ParseConversationModel) conversation).getOldestMessageTimestamp();
+
+        // Fetch messages from storage
+        return fetchMessages(conversation, user, before, limit);
+    }
+
+    @Override
+    public List<? extends ParseMessageModel> fetchMessages(ConversationModel conversation, UserProfileModel user, Date before, Integer limit) throws ParseException {
+
+        // Verify parameters
+        if (conversation == null) {
+            throw new IllegalArgumentException("Parameter 1 cannot be null");
+        }
+        if (!(conversation instanceof ParseConversationModel)) {
+            throw new IllegalArgumentException("Parameter 1 must be of instance ParseConversationModel");
+        }
+        if (user == null) {
+            throw new IllegalArgumentException("Parameter 2 cannot be null");
+        }
+        if (!(user instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("Parameter 2 must be of instance ParseUserProfileModel");
+        }
+        if (limit == null || limit <= 0) {
+            limit = 20;
+        }
+
+        List<ParseMessageModel> results = ParseMessageModel.fetchMessagesForConversationAndUser((ParseConversationModel) conversation, (ParseUserProfileModel) user, before, limit);
+
+        // Update cache with the results
+        for (int i = 0; i < results.size(); i++) {
+            results.set(i, (ParseMessageModel) updateCache(results.get(i)));
+        }
+
+        // Add fetched messages to conversation's internal list of cached messages
+        ((ParseConversationModel) conversation).addToCachedMessages(results);
+
+        return results;
+    }
+
+
+
     /**
      * Returns the model stored in cache matching the given model's object ID. If no such object is
      * stored in cache, then the provided model will be placed in cache and will be returned.
@@ -685,6 +782,16 @@ public class ParseModelManager implements ModelManager {
             // Try building a user profile model
             if (model == null) {
                 model = ParseUserProfileModel.createFromParseObject(parseObject);
+            }
+
+            // Try building a messaging model
+            if (model == null) {
+                model = ParseMessageModel.createFromParseObject(parseObject);
+            }
+
+            // Try building a conversation model
+            if (model == null) {
+                model = ParseConversationModel.createFromParseObject(parseObject);
             }
 
             // Put object in cache if a matching model was found

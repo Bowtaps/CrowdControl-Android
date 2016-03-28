@@ -37,4 +37,6 @@ public interface ConversationModel extends BaseModel {
      * @return A list of all conversation participants.
      */
     List<? extends UserProfileModel> getParticipants();
+
+    List<? extends MessageModel> getCachedMessages();
 }

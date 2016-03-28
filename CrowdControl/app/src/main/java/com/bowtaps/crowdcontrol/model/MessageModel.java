@@ -7,7 +7,7 @@ package com.bowtaps.crowdcontrol.model;
  * @author Daniel Andrus
  * @since 2016-03-23
  */
-public interface MessageModel extends BaseModel {
+public interface MessageModel extends BaseModel, Comparable {
 
     /**
      * Gets the string contents of the message.

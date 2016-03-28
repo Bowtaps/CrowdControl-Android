@@ -217,7 +217,15 @@ public interface ModelManager {
 
     public LocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location);
 
-    public List<? extends LocationModel> fetchLocationsFromUser(UserProfileModel user) throws ParseException;
+    public List<? extends LocationModel> fetchLocationsFromUser(UserProfileModel user) throws Exception;
 
-    public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException;
+    public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws Exception;
+
+    public List<? extends ConversationModel> fetchConversations() throws Exception;
+
+    public List<? extends ConversationModel> fetchConversationsForGroupAndUser(GroupModel group, UserProfileModel user) throws Exception;
+
+    public List<? extends MessageModel> fetchMessages(ConversationModel conversation) throws Exception;
+
+    public List<? extends MessageModel> fetchMessages(ConversationModel conversation, UserProfileModel user, Date before, Integer limit) throws Exception;
 }

@@ -375,7 +375,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      * @throws ParseException Throws an exception if any error occurs.
      */
     public static List<ParseGroupModel> getAll() throws ParseException {
-        List<ParseGroupModel> result = new ArrayList<ParseGroupModel>();
+        List<ParseGroupModel> result = new ArrayList<>();
 
         // Construct and execute query
         ParseQuery parseQuery = new ParseQuery(tableName);
