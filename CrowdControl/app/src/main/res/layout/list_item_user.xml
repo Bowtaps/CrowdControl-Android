@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -8,7 +8,17 @@
     <TextView
         android:id="@+id/list_member_user_name"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_gravity="left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/button_popup"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="right"
+        android:background="?attr/selectableItemBackground"
+        android:src="@drawable/ic_overflow_black"
+        android:contentDescription="Open Popup Menu"/>
 
 </LinearLayout>

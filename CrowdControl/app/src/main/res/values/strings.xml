@@ -39,4 +39,6 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="search_distance">Search Distance</string>
     <string name="logout_full">Log Out</string>
+    <string name="menu_option_kick">action_kick</string>
+    <string name="menu_option_promote">action_promote</string>
 </resources>
