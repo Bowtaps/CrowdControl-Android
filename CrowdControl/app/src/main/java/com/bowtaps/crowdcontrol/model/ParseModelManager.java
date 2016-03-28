@@ -459,7 +459,8 @@ public class ParseModelManager implements ModelManager {
         groupModel = (ParseGroupModel) updateCache(groupModel);
 
         // Create and save a new conversation model
-        ParseConversationModel conversation = ParseConversationModel.create(groupModel);
+        ParseConversationModel conversation = createConversation(groupModel);
+        conversation.addParticipant(leader);
         conversation.save();
         conversation = (ParseConversationModel) updateCache(conversation);
         groupModel.addCachedConversation(conversation);
@@ -731,7 +732,6 @@ public class ParseModelManager implements ModelManager {
         for (ParseUserProfileModel toUser : ((ParseConversationModel) conversation).getParticipants()) {
             if (!user.equals(toUser)) {
                 ParseMessageModel messageModel = ParseMessageModel.create((ParseConversationModel) conversation, user, toUser, message);
-                messageModel = (ParseMessageModel) updateCache(messageModel);
                 messageModel.saveInBackground(null);
                 messages.add(messageModel);
             }

@@ -87,6 +87,30 @@ public class ParseConversationModel extends ParseBaseModel implements Conversati
     }
 
     @Override
+    public void addParticipant(UserProfileModel user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Parameter 1 cannot be null");
+        }
+        if (!(user instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("Parameter 1 must be of type ParseUserProfileModel");
+        }
+
+        List<ParseObject> parseParticipants = (List<ParseObject>) getParseObject().get(participantsKey);
+        boolean contained = false;
+        for (ParseObject parseParticipant : parseParticipants) {
+            if (user.equals(parseParticipant)) {
+                contained = true;
+                break;
+            }
+        }
+
+        if (!contained) {
+            parseParticipants.add(((ParseUserProfileModel) user).getParseObject());
+            getParseObject().put(participantsKey, parseParticipants);
+        }
+    }
+
+    @Override
     public List<? extends ParseMessageModel> getCachedMessages() {
         return Collections.unmodifiableList(messages);
     }
@@ -134,7 +158,7 @@ public class ParseConversationModel extends ParseBaseModel implements Conversati
             if (iteratorModel == null || message.compareTo(this.messages.getLast()) < 0) {
 
                 // Message belongs at end; insert there.
-                if (!message.equals(this.messages.getLast())) {
+                if (iteratorModel == null || !message.equals(this.messages.getLast())) {
                     this.messages.add(message);
                 }
             } else if (message.compareTo(iteratorModel) >= 0) {
@@ -221,6 +245,7 @@ public class ParseConversationModel extends ParseBaseModel implements Conversati
     public static ParseConversationModel create(ParseGroupModel group) {
         ParseConversationModel conversation = new ParseConversationModel(new ParseObject(tableName));
         conversation.getParseObject().put(groupKey, group.getParseObject());
+        conversation.getParseObject().put(participantsKey, new ArrayList<ParseObject>());
         return conversation;
     }
 

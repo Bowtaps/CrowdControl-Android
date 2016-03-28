@@ -220,7 +220,7 @@ public class ParseBaseModel implements BaseModel {
     @Override
     public boolean equals(final Object other) {
         if (other instanceof ParseObject) {
-            return (getParseObject() != null && getParseObject().equals(other));
+            return (getParseObject() != null && getParseObject().getObjectId().equals(((ParseObject) other).getObjectId()));
         } else if (other instanceof ParseBaseModel) {
             return equals(((ParseBaseModel) other).getParseObject());
         } else {

@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bowtaps.crowdcontrol.messaging.ModelTextMessage;
 import com.bowtaps.crowdcontrol.messaging.SinchTextMessage;
 import com.bowtaps.crowdcontrol.model.ConversationModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
@@ -28,6 +29,7 @@ import com.sinch.android.rtc.messaging.MessageFailureInfo;
 import com.sinch.android.rtc.messaging.WritableMessage;
 
 import java.util.List;
+import java.util.ListIterator;
 
 
 /**
@@ -79,6 +81,7 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
         getActivity().bindService(new Intent(getActivity(), MessageService.class), mServiceConnection, getActivity().BIND_AUTO_CREATE);
 
         mRecipientGroup = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
+        mCurrentUserId = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().getId();
         if (mRecipientGroup.getCachedConversations().isEmpty()) {
             try {
                 CrowdControlApplication.getInstance().getModelManager().fetchConversations();
@@ -88,14 +91,11 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
             }
         }
         if (mRecipientGroup.getCachedConversations().isEmpty()) {
-            try {
-                mRecipientConversation = CrowdControlApplication.getInstance().getModelManager().createConversation(mRecipientGroup);
-            } catch (Exception e) {
-                Log.d("MessagingFragment", e.getMessage());
-                mRecipientConversation = null;
-            }
+            mRecipientConversation = null;
         } else {
             mRecipientConversation = mRecipientGroup.getCachedConversations().get(0);
+            mRecipientConversation.addParticipant(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
+            mRecipientConversation.saveInBackground(null);
         }
 
         mMessageAdapter = new MessageAdapter(getActivity());
@@ -140,9 +140,15 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
             Log.d("MessagingFragment", e.getMessage());
         }
 
-        for (MessageModel message : mRecipientConversation.getCachedMessages()) {
-            // TODO add to adapter
-            message.getFrom().getId().equals(mCurrentUserId);
+        if (mRecipientConversation != null) {
+            MessageModel message;
+            List<? extends MessageModel> cachedMessages = mRecipientConversation.getCachedMessages();
+            ListIterator<? extends MessageModel> it = cachedMessages.listIterator(cachedMessages.size());
+
+            while (it.hasPrevious()) {
+                message = it.previous();
+                mMessageAdapter.addMessage(new ModelTextMessage(message), message.getFrom().getId().equals(mCurrentUserId) ? MessageAdapter.DIRECTION_OUTGOING : MessageAdapter.DIRECTION_INCOMING);
+            }
         }
     }
 
@@ -152,7 +158,7 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
      * @see com.bowtaps.crowdcontrol.MessageService.MessageServiceInterface
      */
     private void sendMessage() {
-        if (mRecipientConversation != null) {
+        if (mRecipientConversation == null) {
             Log.d("MessagingFragment", "Unable to send message; no known conversation");
             return;
         }
@@ -167,7 +173,11 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
         recipients.remove(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
         mMessageService.sendMessage(recipients, mMessageBody);
 
-        CrowdControlApplication.getInstance().getModelManager().createMessage(mRecipientConversation, mMessageBody);
+        List<? extends MessageModel> models = CrowdControlApplication.getInstance().getModelManager().createMessage(mRecipientConversation, mMessageBody);
+        if (!models.isEmpty()) {
+            MessageModel model = models.get(0);
+            mMessageAdapter.addMessage(new ModelTextMessage(model), MessageAdapter.DIRECTION_OUTGOING);
+        }
         mMessageBodyField.setText("");
     }
 
@@ -187,8 +197,11 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
     public void onReceivedGroupUpdate(GroupModel group) {
         mRecipientGroup = group;
 
-        if (!group.getCachedConversations().isEmpty()) {
+        if (mRecipientConversation == null && !group.getCachedConversations().isEmpty()) {
             mRecipientConversation = group.getCachedConversations().get(0);
+            mRecipientConversation.addParticipant(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
+            mRecipientConversation.saveInBackground(null);
+            populateMessageHistory();
         }
     }
 

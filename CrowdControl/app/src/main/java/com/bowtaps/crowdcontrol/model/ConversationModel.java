@@ -38,5 +38,7 @@ public interface ConversationModel extends BaseModel {
      */
     List<? extends UserProfileModel> getParticipants();
 
+    void addParticipant(UserProfileModel user);
+
     List<? extends MessageModel> getCachedMessages();
 }
