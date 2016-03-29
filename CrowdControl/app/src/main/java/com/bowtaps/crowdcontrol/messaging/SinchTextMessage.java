@@ -16,6 +16,11 @@ public class SinchTextMessage implements TextMessage {
     }
 
     @Override
+    public String getMessageId() {
+        return message.getMessageId();
+    }
+
+    @Override
     public ModelConversationParticipant getSender() {
         return new ModelConversationParticipant(sender);
     }

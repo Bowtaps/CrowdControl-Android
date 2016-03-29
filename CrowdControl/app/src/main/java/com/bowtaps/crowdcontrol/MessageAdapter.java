@@ -21,7 +21,7 @@ public class MessageAdapter extends BaseAdapter {
     public static final int DIRECTION_OUTGOING = 1;
 
     private List<Pair<TextMessage, Integer>> messages;
-    private Set<TextMessage> messageIds;
+    private Set<String> messageIds;
     private LayoutInflater layoutInflater;
 
     public MessageAdapter(Activity activity) {
@@ -33,12 +33,12 @@ public class MessageAdapter extends BaseAdapter {
     public void addMessage(TextMessage message, int direction) {
 
         // Short circuit if the message already exists in the adapter
-        if (messageIds.contains(message)) {
+        if (messageIds.contains(message.getMessageId())) {
             return;
         }
 
         messages.add(new Pair(message, direction));
-        messageIds.add(message);
+        messageIds.add(message.getMessageId());
         notifyDataSetChanged();
     }
 

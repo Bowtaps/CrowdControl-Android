@@ -11,6 +11,13 @@ package com.bowtaps.crowdcontrol.messaging;
 public interface Message {
 
     /**
+     * Gets the message ID.
+     *
+     * @return String containing the message ID.
+     */
+    String getMessageId();
+
+    /**
      * Gets the {@link MessageSender} that is responsible for sending the message.
      *
      * @return The {@link MessageSender} that sent the message.

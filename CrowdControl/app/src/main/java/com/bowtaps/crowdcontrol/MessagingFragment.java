@@ -171,9 +171,9 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
 
         List<? extends UserProfileModel> recipients = mRecipientConversation.getParticipants();
         recipients.remove(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
-        mMessageService.sendMessage(recipients, mMessageBody);
+        String messageId = mMessageService.sendMessage(recipients, mMessageBody);
 
-        List<? extends MessageModel> models = CrowdControlApplication.getInstance().getModelManager().createMessage(mRecipientConversation, mMessageBody);
+        List<? extends MessageModel> models = CrowdControlApplication.getInstance().getModelManager().createMessage(messageId, mRecipientConversation, mMessageBody);
         if (!models.isEmpty()) {
             MessageModel model = models.get(0);
             mMessageAdapter.addMessage(new ModelTextMessage(model), MessageAdapter.DIRECTION_OUTGOING);

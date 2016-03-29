@@ -14,6 +14,11 @@ public class ModelTextMessage implements TextMessage {
     }
 
     @Override
+    public String getMessageId() {
+        return message.getMessageId();
+    }
+
+    @Override
     public ModelConversationParticipant getSender() {
         return new ModelConversationParticipant(message.getFrom());
     }

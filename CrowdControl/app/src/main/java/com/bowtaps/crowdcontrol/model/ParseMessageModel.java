@@ -24,6 +24,11 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
     private static final String tableName = "Message";
 
     /**
+     * The column name for the message ID.
+     */
+    private static final String messageIdKey = "MessageId";
+
+    /**
      * Field name corresponding to {@link #getBody()}.
      */
     private static final String bodyKey = "Body";
@@ -59,6 +64,11 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
         super(parseObject);
     }
 
+
+    @Override
+    public String getMessageId() {
+        return (String) getParseObject().get(messageIdKey);
+    }
 
     @Override
     public String getBody() {
@@ -157,9 +167,10 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
         return results;
     }
 
-    public static ParseMessageModel create(ParseConversationModel conversation, ParseUserProfileModel fromUser, ParseUserProfileModel toUser, String message) {
+    public static ParseMessageModel create(String messageId, ParseConversationModel conversation, ParseUserProfileModel fromUser, ParseUserProfileModel toUser, String message) {
         ParseMessageModel messageModel = new ParseMessageModel(new ParseObject(tableName));
 
+        messageModel.getParseObject().put(messageIdKey, messageId);
         messageModel.getParseObject().put(conversationKey, conversation.getParseObject());
         messageModel.getParseObject().put(fromKey, fromUser.getParseObject());
         messageModel.getParseObject().put(toKey, toUser.getParseObject());

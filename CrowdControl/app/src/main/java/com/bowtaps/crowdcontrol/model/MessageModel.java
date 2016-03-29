@@ -10,6 +10,14 @@ package com.bowtaps.crowdcontrol.model;
 public interface MessageModel extends BaseModel, Comparable {
 
     /**
+     * Gets the message ID. This ID can be shared between models if they originated from the same
+     * message.
+     *
+     * @return The string message ID.
+     */
+    String getMessageId();
+
+    /**
      * Gets the string contents of the message.
      *
      * @return The string contents of the message.

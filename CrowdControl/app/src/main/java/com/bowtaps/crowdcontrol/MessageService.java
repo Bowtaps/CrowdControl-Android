@@ -97,21 +97,23 @@ public class MessageService extends Service implements SinchClientListener {
     public void onRegistrationCredentialsRequired(SinchClient client, ClientRegistration clientRegistration) {
     }
 
-    public void sendMessage(List<? extends UserProfileModel> recipients, String textBody) {
+    public String sendMessage(List<? extends UserProfileModel> recipients, String textBody) {
         if (messageClient != null) {
             String userId;
             userId = currentUserId;
             if (!recipients.isEmpty()) {
                 userId = recipients.get(0).getId();
             }
-            Log.d("Messaging Service", "Number Of reciepiences: " + recipients.size());
+            Log.d("Messaging Service", "Number Of recipients: " + recipients.size());
             WritableMessage message = new WritableMessage(userId, textBody);
             for (int i = 1; i < recipients.size(); i++) {
                 userId = recipients.get(i).getId();
                 message.addRecipient(userId);
             }
             messageClient.send(message);
+            return message.getMessageId();
         }
+        return null;
     }
 
     public void addMessageClientListener(MessageClientListener listener) {
@@ -133,8 +135,8 @@ public class MessageService extends Service implements SinchClientListener {
     }
 
     public class MessageServiceInterface extends Binder {
-        public void sendMessage(List<? extends UserProfileModel> recipients, String textBody) {
-            MessageService.this.sendMessage(recipients, textBody);
+        public String sendMessage(List<? extends UserProfileModel> recipients, String textBody) {
+            return MessageService.this.sendMessage(recipients, textBody);
         }
 
         public void addMessageClientListener(MessageClientListener listener) {

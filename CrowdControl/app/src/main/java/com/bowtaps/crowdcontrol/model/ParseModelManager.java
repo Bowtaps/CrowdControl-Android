@@ -712,18 +712,18 @@ public class ParseModelManager implements ModelManager {
     }
 
     @Override
-    public List<? extends ParseMessageModel> createMessage(ConversationModel conversation, String message) {
+    public List<? extends ParseMessageModel> createMessage(String messageId, ConversationModel conversation, String message) {
         List<ParseMessageModel> messages = new ArrayList<>();
         ParseUserProfileModel user = getCurrentUser().getProfile();
 
-        if (conversation == null) {
+        if (messageId == null) {
             throw new IllegalArgumentException("Parameter 1 cannot be null");
         }
-        if (!(conversation instanceof ParseConversationModel)) {
-            throw new IllegalArgumentException("Parameter 1 must be of instance ParseConversationModel");
-        }
-        if (user == null) {
+        if (conversation == null) {
             throw new IllegalArgumentException("Parameter 2 cannot be null");
+        }
+        if (!(conversation instanceof ParseConversationModel)) {
+            throw new IllegalArgumentException("Parameter 2 must be of instance ParseConversationModel");
         }
         if (message == null) {
             throw new IllegalArgumentException("Parameter 3 cannot be null");
@@ -731,7 +731,7 @@ public class ParseModelManager implements ModelManager {
 
         for (ParseUserProfileModel toUser : ((ParseConversationModel) conversation).getParticipants()) {
             if (!user.equals(toUser)) {
-                ParseMessageModel messageModel = ParseMessageModel.create((ParseConversationModel) conversation, user, toUser, message);
+                ParseMessageModel messageModel = ParseMessageModel.create(messageId, (ParseConversationModel) conversation, user, toUser, message);
                 messageModel.saveInBackground(null);
                 messages.add(messageModel);
             }
