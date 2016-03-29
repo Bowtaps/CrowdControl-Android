@@ -22,7 +22,7 @@ public class ModelTextMessage implements TextMessage {
 
     @Override
     public Date getMessageTimestamp() {
-        return getMessageTimestamp();
+        return message.getMessageTime();
     }
 
     @Override
