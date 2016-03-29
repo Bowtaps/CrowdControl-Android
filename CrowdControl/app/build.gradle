@@ -65,7 +65,8 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
 
     // Testing inclusions
-    androidTestCompile 'com.android.support:support-annotations:23.0.1'
+
+    androidTestCompile 'com.android.support:support-annotations:23.2.0'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
     // Optional -- Hamcrest library
@@ -89,6 +90,7 @@ dependencies {
 
 
     //facebook dependency
+
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.parse:parsefacebookutils-v4-android:1.10.3@aar'
 }
