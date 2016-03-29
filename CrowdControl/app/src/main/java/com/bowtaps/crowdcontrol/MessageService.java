@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.bowtaps.crowdcontrol.messaging.SinchTextMessage;
+import com.bowtaps.crowdcontrol.messaging.TextMessage;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.sinch.android.rtc.ClientRegistration;
 import com.sinch.android.rtc.Sinch;
@@ -27,17 +29,17 @@ public class MessageService extends Service implements SinchClientListener {
     private final MessageServiceInterface serviceInterface = new MessageServiceInterface();
     private SinchClient sinchClient = null;
     private MessageClient messageClient = null;
-    private String currentUserId;
+    private UserProfileModel currentUser;
     private LocalBroadcastManager broadcaster;
     private Intent broadcastIntent = new Intent("com.bowtaps.crowdcontrol.GroupNavigationActivity");
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        currentUserId = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().getId();
+        currentUser = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
 
-        if (currentUserId != null && !isSinchClientStarted()) {
-            startSinchClient(currentUserId);
+        if (currentUser != null && !isSinchClientStarted()) {
+            startSinchClient(currentUser.getId());
         }
 
         broadcaster = LocalBroadcastManager.getInstance(this);
@@ -97,21 +99,23 @@ public class MessageService extends Service implements SinchClientListener {
     public void onRegistrationCredentialsRequired(SinchClient client, ClientRegistration clientRegistration) {
     }
 
-    public void sendMessage(List<? extends UserProfileModel> recipients, String textBody) {
+    public String sendMessage(List<? extends UserProfileModel> recipients, String textBody) {
         if (messageClient != null) {
             String userId;
-            userId = currentUserId;
+            userId = currentUser.getId();
             if (!recipients.isEmpty()) {
                 userId = recipients.get(0).getId();
             }
-            Log.d("Messaging Service", "Number Of reciepiences: " + recipients.size());
+            Log.d("Messaging Service", "Number Of recipients: " + recipients.size());
             WritableMessage message = new WritableMessage(userId, textBody);
             for (int i = 1; i < recipients.size(); i++) {
                 userId = recipients.get(i).getId();
                 message.addRecipient(userId);
             }
             messageClient.send(message);
+            return message.getMessageId();
         }
+        return null;
     }
 
     public void addMessageClientListener(MessageClientListener listener) {
@@ -133,8 +137,8 @@ public class MessageService extends Service implements SinchClientListener {
     }
 
     public class MessageServiceInterface extends Binder {
-        public void sendMessage(List<? extends UserProfileModel> recipients, String textBody) {
-            MessageService.this.sendMessage(recipients, textBody);
+        public String sendMessage(List<? extends UserProfileModel> recipients, String textBody) {
+            return MessageService.this.sendMessage(recipients, textBody);
         }
 
         public void addMessageClientListener(MessageClientListener listener) {

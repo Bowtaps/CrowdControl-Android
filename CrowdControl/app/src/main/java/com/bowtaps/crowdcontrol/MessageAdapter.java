@@ -9,8 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.sinch.android.rtc.messaging.Message;
-import com.sinch.android.rtc.messaging.WritableMessage;
+import com.bowtaps.crowdcontrol.messaging.TextMessage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,7 +21,7 @@ public class MessageAdapter extends BaseAdapter {
     public static final int DIRECTION_INCOMING = 0;
     public static final int DIRECTION_OUTGOING = 1;
 
-    private List<Pair<Message, Integer>> messages;
+    private List<Pair<TextMessage, Integer>> messages;
     private Set<String> messageIds;
     private LayoutInflater layoutInflater;
 
@@ -32,7 +31,7 @@ public class MessageAdapter extends BaseAdapter {
         messageIds = new HashSet<>();
     }
 
-    public void addMessage(Message message, int direction) {
+    public void addMessage(TextMessage message, int direction) {
 
         // Short circuit if the message already exists in the adapter
         if (messageIds.contains(message.getMessageId())) {
@@ -84,19 +83,19 @@ public class MessageAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(res, viewGroup, false);
         }
 
-        Message message = messages.get(i).first;
+        TextMessage message = messages.get(i).first;
 
         TextView txtMessage = (TextView) convertView.findViewById(R.id.txtMessage);
         TextView sender     = (TextView) convertView.findViewById(R.id.txtSender);
         TextView timeStamp  = (TextView) convertView.findViewById(R.id.txtDate);
-        txtMessage.setText(message.getTextBody());
+        txtMessage.setText(message.getContent());
         try {
-            sender.setText(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMember(message.getSenderId()).getDisplayName());
-        } catch (NullPointerException e)
-        {
+            sender.setText(message.getSender().getDisplayName());
+        } catch (NullPointerException e)         {
             Log.d("MessageAdapter.java", "Sender is null");
         }
-        timeStamp.setText(message.getTimestamp().toString());
+        timeStamp.setText(message.getMessageTimestamp().toString());
+        txtMessage.setText(message.getContent());
 
         return convertView;
     }

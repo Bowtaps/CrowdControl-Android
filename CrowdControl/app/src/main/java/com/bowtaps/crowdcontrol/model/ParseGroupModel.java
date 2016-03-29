@@ -61,6 +61,12 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     private List<ParseUserProfileModel> members;
 
     /**
+     * Cached list of conversations.
+     */
+    private List<ParseConversationModel> conversations;
+
+
+    /**
      * Forwarding constructor. Invokes {@link #ParseGroupModel(ParseObject)} with a new
      * {@link ParseObject}, which will cause this model to create a new row in the database if it
      * is saved.
@@ -79,6 +85,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
 
         leader = null;
         members = new ArrayList<>();
+        conversations = new ArrayList<>();
     }
 
     /**
@@ -305,6 +312,17 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         return true;
     }
 
+    protected void addCachedConversation(ParseConversationModel conversation) {
+        if (!conversations.contains(conversation)) {
+            conversations.add(conversation);
+        }
+    }
+
+    @Override
+    public List<? extends ParseConversationModel> getCachedConversations() {
+        return Collections.unmodifiableList(conversations);
+    }
+
     /**
      * Loads this object from Parse storage synchronously. In addition to the normal functionality
      * inherited from {@link ParseBaseModel}, this method also fetches and caches the users who
@@ -407,7 +425,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      * @throws ParseException Throws an exception if any error occurs.
      */
     public static List<ParseGroupModel> getAll() throws ParseException {
-        List<ParseGroupModel> result = new ArrayList<ParseGroupModel>();
+        List<ParseGroupModel> result = new ArrayList<>();
 
         // Construct and execute query
         ParseQuery parseQuery = new ParseQuery(tableName);

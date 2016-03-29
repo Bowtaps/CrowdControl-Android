@@ -14,7 +14,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bowtaps.crowdcontrol.messaging.ModelTextMessage;
+import com.bowtaps.crowdcontrol.messaging.SinchTextMessage;
+import com.bowtaps.crowdcontrol.model.ConversationModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
+import com.bowtaps.crowdcontrol.model.MessageModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.sinch.android.rtc.PushPair;
 import com.sinch.android.rtc.messaging.Message;
@@ -24,7 +28,9 @@ import com.sinch.android.rtc.messaging.MessageDeliveryInfo;
 import com.sinch.android.rtc.messaging.MessageFailureInfo;
 import com.sinch.android.rtc.messaging.WritableMessage;
 
+import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 
 
 /**
@@ -45,6 +51,7 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
     private ServiceConnection mServiceConnection = new MyServiceConnection();
     private MessageClientListener mMessageClientListener = new MyMessageClientListener();
     private GroupModel mRecipientGroup;
+    private ConversationModel mRecipientConversation;
 
     /**
      * Creates the Fragment
@@ -75,6 +82,22 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
         getActivity().bindService(new Intent(getActivity(), MessageService.class), mServiceConnection, getActivity().BIND_AUTO_CREATE);
 
         mRecipientGroup = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup();
+        mCurrentUserId = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().getId();
+        if (mRecipientGroup.getCachedConversations().isEmpty()) {
+            try {
+                CrowdControlApplication.getInstance().getModelManager().fetchConversations();
+            } catch (Exception e) {
+                Log.d("MessagingFragment", e.getMessage());
+                mRecipientConversation = null;
+            }
+        }
+        if (mRecipientGroup.getCachedConversations().isEmpty()) {
+            mRecipientConversation = null;
+        } else {
+            mRecipientConversation = mRecipientGroup.getCachedConversations().get(0);
+            mRecipientConversation.addParticipant(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
+            mRecipientConversation.saveInBackground(null);
+        }
 
         mMessageAdapter = new MessageAdapter(getActivity());
         populateMessageHistory();
@@ -112,26 +135,22 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
 
     //get previous messages from parse & display
     private void populateMessageHistory() {
-//        String[] userIds = {mCurrentUserId, mRecipientId};
-//        ParseQuery<ParseObject> query = ParseQuery.getQuery("ParseMessage");
-//        query.whereContainedIn("senderId", Arrays.asList(userIds));
-//        query.whereContainedIn("mRecipientId", Arrays.asList(userIds));
-//        query.orderByAscending("createdAt");
-//        query.findInBackground(new FindCallback<ParseObject>() {
-//            @Override
-//            public void done(List<ParseObject> messageList, com.parse.ParseException e) {
-//                if (e == null) {
-//                    for (int i = 0; i < messageList.size(); i++) {
-//                        WritableMessage message = new WritableMessage(messageList.get(i).get("mRecipientId").toString(), messageList.get(i).get("messageText").toString());
-//                        if (messageList.get(i).get("senderId").toString().equals(mCurrentUserId)) {
-//                            mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_OUTGOING);
-//                        } else {
-//                            mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_INCOMING);
-//                        }
-//                    }
-//                }
-//            }
-//        });
+        try {
+            CrowdControlApplication.getInstance().getModelManager().fetchMessages(mRecipientConversation);
+        } catch (Exception e) {
+            Log.d("MessagingFragment", e.getMessage());
+        }
+
+        if (mRecipientConversation != null) {
+            MessageModel message;
+            List<? extends MessageModel> cachedMessages = mRecipientConversation.getCachedMessages();
+            ListIterator<? extends MessageModel> it = cachedMessages.listIterator(cachedMessages.size());
+
+            while (it.hasPrevious()) {
+                message = it.previous();
+                mMessageAdapter.addMessage(new ModelTextMessage(message), message.getFrom().getId().equals(mCurrentUserId) ? MessageAdapter.DIRECTION_OUTGOING : MessageAdapter.DIRECTION_INCOMING);
+            }
+        }
     }
 
     /**
@@ -140,16 +159,26 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
      * @see com.bowtaps.crowdcontrol.MessageService.MessageServiceInterface
      */
     private void sendMessage() {
+        if (mRecipientConversation == null) {
+            Log.d("MessagingFragment", "Unable to send message; no known conversation");
+            return;
+        }
+
         mMessageBody = mMessageBodyField.getText().toString();
         if (mMessageBody.isEmpty()) {
             Toast.makeText(getActivity(), "Please enter a message", Toast.LENGTH_LONG).show();
             return;
         }
 
-        List<? extends UserProfileModel> recipients = mRecipientGroup.getGroupMembers();
+        List<? extends UserProfileModel> recipients = mRecipientConversation.getParticipants();
         recipients.remove(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
+        String messageId = mMessageService.sendMessage(recipients, mMessageBody);
 
-        mMessageService.sendMessage(recipients, mMessageBody);
+        List<? extends MessageModel> models = CrowdControlApplication.getInstance().getModelManager().createMessage(messageId, new Date(), mRecipientConversation, mMessageBody);
+        if (!models.isEmpty()) {
+            MessageModel model = models.get(0);
+            mMessageAdapter.addMessage(new ModelTextMessage(model), MessageAdapter.DIRECTION_OUTGOING);
+        }
         mMessageBodyField.setText("");
     }
 
@@ -168,6 +197,13 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
     @Override
     public void onReceivedGroupUpdate(GroupModel group) {
         mRecipientGroup = group;
+
+        if (mRecipientConversation == null && !group.getCachedConversations().isEmpty()) {
+            mRecipientConversation = group.getCachedConversations().get(0);
+            mRecipientConversation.addParticipant(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
+            mRecipientConversation.saveInBackground(null);
+            populateMessageHistory();
+        }
     }
 
     /**
@@ -232,7 +268,20 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
          */
         @Override
         public void onIncomingMessage(MessageClient client, final Message message) {
-            mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_INCOMING);
+
+            // Ignore message if not part of a conversation
+            if (mRecipientConversation == null) {
+                return;
+            }
+
+            UserProfileModel sender = null;
+            for (UserProfileModel participant : mRecipientConversation.getParticipants()) {
+                if (participant .getId().equals(message.getSenderId())) {
+                    sender = participant;
+                    break;
+                }
+            }
+            mMessageAdapter.addMessage(new SinchTextMessage(message, sender), MessageAdapter.DIRECTION_INCOMING);
             Log.d("MessagingFragment", "Message received: " + mMessageBody);
         }
 
@@ -246,7 +295,7 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
          */
         @Override
         public void onMessageSent(MessageClient client, Message message, String recipientId) {
-            mMessageAdapter.addMessage(message, MessageAdapter.DIRECTION_OUTGOING);
+            // TODO
         }
 
         /**
