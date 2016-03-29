@@ -28,6 +28,7 @@ import com.sinch.android.rtc.messaging.MessageDeliveryInfo;
 import com.sinch.android.rtc.messaging.MessageFailureInfo;
 import com.sinch.android.rtc.messaging.WritableMessage;
 
+import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -173,7 +174,7 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
         recipients.remove(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
         String messageId = mMessageService.sendMessage(recipients, mMessageBody);
 
-        List<? extends MessageModel> models = CrowdControlApplication.getInstance().getModelManager().createMessage(messageId, mRecipientConversation, mMessageBody);
+        List<? extends MessageModel> models = CrowdControlApplication.getInstance().getModelManager().createMessage(messageId, new Date(), mRecipientConversation, mMessageBody);
         if (!models.isEmpty()) {
             MessageModel model = models.get(0);
             mMessageAdapter.addMessage(new ModelTextMessage(model), MessageAdapter.DIRECTION_OUTGOING);
@@ -267,6 +268,12 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
          */
         @Override
         public void onIncomingMessage(MessageClient client, final Message message) {
+
+            // Ignore message if not part of a conversation
+            if (mRecipientConversation == null) {
+                return;
+            }
+
             UserProfileModel sender = null;
             for (UserProfileModel participant : mRecipientConversation.getParticipants()) {
                 if (participant .getId().equals(message.getSenderId())) {

@@ -2,6 +2,8 @@ package com.bowtaps.crowdcontrol.messaging;
 
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 
+import java.util.Date;
+
 /**
  * @author Daniel Andrus
  */
@@ -21,6 +23,11 @@ public class SinchTextMessage implements TextMessage {
     }
 
     @Override
+    public Date getMessageTimestamp() {
+        return message.getTimestamp();
+    }
+
+    @Override
     public ModelConversationParticipant getSender() {
         return new ModelConversationParticipant(sender);
     }
@@ -34,5 +41,10 @@ public class SinchTextMessage implements TextMessage {
     @Override
     public String getContent() {
         return message.getTextBody();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Message && getMessageId().equals(((Message) other).getMessageId());
     }
 }

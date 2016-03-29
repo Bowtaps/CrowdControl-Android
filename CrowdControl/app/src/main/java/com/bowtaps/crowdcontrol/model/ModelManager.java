@@ -227,7 +227,7 @@ public interface ModelManager {
 
     public List<? extends ConversationModel> fetchConversationsForGroupAndUser(GroupModel group, UserProfileModel user) throws Exception;
 
-    public List<? extends MessageModel> createMessage(String messageId, ConversationModel conversation, String message);
+    public List<? extends MessageModel> createMessage(String messageId, Date timestamp, ConversationModel conversation, String message);
 
     public List<? extends MessageModel> fetchMessages(ConversationModel conversation) throws Exception;
 

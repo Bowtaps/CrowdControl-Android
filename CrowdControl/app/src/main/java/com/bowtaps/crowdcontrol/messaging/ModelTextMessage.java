@@ -2,6 +2,8 @@ package com.bowtaps.crowdcontrol.messaging;
 
 import com.bowtaps.crowdcontrol.model.MessageModel;
 
+import java.util.Date;
+
 /**
  * @author Daniel Andrus
  */
@@ -16,6 +18,11 @@ public class ModelTextMessage implements TextMessage {
     @Override
     public String getMessageId() {
         return message.getMessageId();
+    }
+
+    @Override
+    public Date getMessageTimestamp() {
+        return getMessageTimestamp();
     }
 
     @Override
@@ -35,6 +42,6 @@ public class ModelTextMessage implements TextMessage {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof ModelTextMessage && message.equals(((ModelTextMessage) other).message);
+        return other instanceof Message && getMessageId().equals(((Message) other).getMessageId());
     }
 }

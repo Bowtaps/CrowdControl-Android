@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.bowtaps.crowdcontrol.messaging.SinchTextMessage;
+import com.bowtaps.crowdcontrol.messaging.TextMessage;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.sinch.android.rtc.ClientRegistration;
 import com.sinch.android.rtc.Sinch;
@@ -27,17 +29,17 @@ public class MessageService extends Service implements SinchClientListener {
     private final MessageServiceInterface serviceInterface = new MessageServiceInterface();
     private SinchClient sinchClient = null;
     private MessageClient messageClient = null;
-    private String currentUserId;
+    private UserProfileModel currentUser;
     private LocalBroadcastManager broadcaster;
     private Intent broadcastIntent = new Intent("com.bowtaps.crowdcontrol.GroupNavigationActivity");
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        currentUserId = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().getId();
+        currentUser = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
 
-        if (currentUserId != null && !isSinchClientStarted()) {
-            startSinchClient(currentUserId);
+        if (currentUser != null && !isSinchClientStarted()) {
+            startSinchClient(currentUser.getId());
         }
 
         broadcaster = LocalBroadcastManager.getInstance(this);
@@ -100,7 +102,7 @@ public class MessageService extends Service implements SinchClientListener {
     public String sendMessage(List<? extends UserProfileModel> recipients, String textBody) {
         if (messageClient != null) {
             String userId;
-            userId = currentUserId;
+            userId = currentUser.getId();
             if (!recipients.isEmpty()) {
                 userId = recipients.get(0).getId();
             }

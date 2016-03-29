@@ -29,6 +29,11 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
     private static final String messageIdKey = "MessageId";
 
     /**
+     * Key for the timestamp column.
+     */
+    private static final String messageTimeKey = "Timestamp";
+
+    /**
      * Field name corresponding to {@link #getBody()}.
      */
     private static final String bodyKey = "Body";
@@ -48,11 +53,6 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
      */
     private static final String conversationKey = "Conversation";
 
-    /**
-     * Field name for the timestamp when the object was created.
-     */
-    private static final String createdKey = "createdAt";
-
 
     /**
      * Class constructor. Initializes object to use the supplied {@link ParseObject} as the
@@ -68,6 +68,11 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
     @Override
     public String getMessageId() {
         return (String) getParseObject().get(messageIdKey);
+    }
+
+    @Override
+    public Date getMessageTime() {
+        return (Date) getParseObject().get(messageTimeKey);
     }
 
     @Override
@@ -95,7 +100,7 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
 
     @Override
     public int compareTo(Object other) {
-        return other instanceof MessageModel ? getCreated().compareTo(((MessageModel) other).getCreated()) : 0;
+        return other instanceof MessageModel ? getMessageTime().compareTo(((MessageModel) other).getMessageTime()) : 0;
     }
 
 
@@ -149,12 +154,12 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
         parseQueryTo.whereEqualTo(toKey, user.getParseObject());
 
         if (before != null) {
-            parseQueryFrom.whereLessThanOrEqualTo(createdKey, before);
-            parseQueryTo.whereLessThanOrEqualTo(createdKey, before);
+            parseQueryFrom.whereLessThanOrEqualTo(messageTimeKey, before);
+            parseQueryTo.whereLessThanOrEqualTo(messageTimeKey, before);
         }
 
         parseQuery = ParseQuery.or(Arrays.asList(parseQueryFrom, parseQueryTo));
-        parseQuery.addDescendingOrder(createdKey);
+        parseQuery.addDescendingOrder(messageTimeKey);
         parseQuery.setLimit(limit);
         List<ParseObject> parseResults = parseQuery.find();
 
@@ -167,10 +172,11 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
         return results;
     }
 
-    public static ParseMessageModel create(String messageId, ParseConversationModel conversation, ParseUserProfileModel fromUser, ParseUserProfileModel toUser, String message) {
+    public static ParseMessageModel create(String messageId, Date timestamp, ParseConversationModel conversation, ParseUserProfileModel fromUser, ParseUserProfileModel toUser, String message) {
         ParseMessageModel messageModel = new ParseMessageModel(new ParseObject(tableName));
 
         messageModel.getParseObject().put(messageIdKey, messageId);
+        messageModel.getParseObject().put(messageTimeKey, timestamp);
         messageModel.getParseObject().put(conversationKey, conversation.getParseObject());
         messageModel.getParseObject().put(fromKey, fromUser.getParseObject());
         messageModel.getParseObject().put(toKey, toUser.getParseObject());

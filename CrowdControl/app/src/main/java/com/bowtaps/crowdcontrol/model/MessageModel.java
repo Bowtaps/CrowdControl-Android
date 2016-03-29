@@ -1,5 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
+import java.util.Date;
+
 /**
  * Model for representing and storing an instant message in storage. This class is intended to be
  * read-only, which is why it lacks setters for the corresponding getters.
@@ -16,6 +18,13 @@ public interface MessageModel extends BaseModel, Comparable {
      * @return The string message ID.
      */
     String getMessageId();
+
+    /**
+     * Gets the message send time.
+     *
+     * @return Timestamp when the message was sent.
+     */
+    Date getMessageTime();
 
     /**
      * Gets the string contents of the message.
