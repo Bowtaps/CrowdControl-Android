@@ -154,11 +154,9 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
      */
     private void onLeaveGroupButtonClick(Button view) {
 
-        if( mGroup.getGroupLeader() == CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile()){
-            leaveLeaderDialog(getActivity(), "Destroy Group?", "Are you sure you want to delete this group?", "Yes, Remove Group");
-        }
-        else {
-            //mGroup.removeGroupMember(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
+        if( mGroup.getGroupLeader() != null && mGroup.getGroupLeader().equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile())) {
+            leaveLeaderDialog(getActivity(), "Disband Group?", "Are you sure you want to disband this group?", "Yes, Disband Group");
+        } else {
             leaveDialog(getActivity(), "Leave Group?", "Are you sure you want to leave this group?", "Yes, Leave Group");
         }
     }
@@ -193,9 +191,10 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
      * @see GroupJoinActivity
      */
     private void launchGroupJoinActivity() {
-        Intent myIntent = new Intent(getActivity(), GroupJoinActivity.class);
-        this.startActivity(myIntent);
-        getActivity().finish();
+        Activity myActivity = getActivity();
+        Intent myIntent = new Intent(myActivity, GroupJoinActivity.class);
+        myActivity.startActivity(myIntent);
+        myActivity.finish();
     }
 
     /**
@@ -213,25 +212,15 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         buildThis.setMessage(message);
         buildThis.setPositiveButton(leaveMessage, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                mGroup.removeGroupMember(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
-
-                // Attempt to save change to group in background
-                mGroup.saveInBackground(new BaseModel.SaveCallback() {
-                    @Override
-                    public void doneSavingModel(BaseModel object, Exception ex) {
-
-                        // Verify operation was a success
-                        if (ex != null) {
-                            Log.d(TAG, "Unable to save group");
-                            return;
-                        }
-
-                        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
-                    }
-                });
+                try {
+                    CrowdControlApplication.getInstance().getModelManager().leaveGroup(mGroup);
+                    launchGroupJoinActivity();
+                } catch (Exception e) {
+                    Log.d("GroupInfoFragment", e.getMessage());
+                }
             }
         });
-        buildThis.setNegativeButton("No go back", null);
+        buildThis.setNegativeButton("Cancel", null);
         buildThis.show();
     }
 
@@ -250,35 +239,18 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         buildThis.setMessage(message);
         buildThis.setPositiveButton(leaveMessage, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                mGroup.removeGroupMember(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
                 mGroup.deleteInBackground(new BaseModel.DeleteCallback() {
                     @Override
                     public void doneDeletingModel(BaseModel object, Exception ex) {
+
                         // Verify operation was a success
                         if (ex != null) {
                             Log.d(TAG, "Unable to save group");
-                            return;
+                        } else {
+                            launchGroupJoinActivity();
                         }
-
-                        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
                     }
                 });
-
-//                // Attempt to save change to group in background
-//                mGroup.saveInBackground(new BaseModel.SaveCallback() {
-//                    @Override
-//                    public void doneSavingModel(BaseModel object, Exception ex) {
-//
-//                        // Verify operation was a success
-//                        if (ex != null) {
-//                            Log.d(TAG, "Unable to save group");
-//                            return;
-//                        }
-//
-//                        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
-//                        launchGroupJoinActivity();
-//                    }
-//                });
             }
         });
         buildThis.setNegativeButton("No go back", null);

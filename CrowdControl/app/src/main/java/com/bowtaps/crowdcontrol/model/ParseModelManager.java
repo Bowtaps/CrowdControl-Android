@@ -435,6 +435,7 @@ public class ParseModelManager implements ModelManager {
 
     @Override
     public ParseGroupModel createGroup(UserProfileModel leader, String name, String description) throws Exception {
+
         // Validate parameters
         if (leader != null && !(leader instanceof ParseUserProfileModel)) {
             throw new IllegalArgumentException("leader parameter must be an instance of ParseUserProfileModel");
@@ -705,10 +706,14 @@ public class ParseModelManager implements ModelManager {
         return model;
     }
 
-    public GroupModel joinGroup(GroupModel group) throws ParseException {
+    public ParseGroupModel joinGroup(GroupModel group) throws ParseException {
 
+        // Verify parameters
         if (group == null) {
             throw new IllegalArgumentException("parameter 'group' cannot be null");
+        }
+        if (!(group instanceof ParseGroupModel)) {
+            throw new IllegalArgumentException("parameter 'group' must be of type ParseGroupModel");
         }
 
         // Construct parameter hash map
@@ -719,34 +724,42 @@ public class ParseModelManager implements ModelManager {
 
         if (parseObject != null) {
             ParseBaseModel model = getModelFromParseObject(parseObject);
-
-            if (model instanceof GroupModel) {
-                model = updateCache(model);
-                return (GroupModel) model;
+            if (model != null && model instanceof ParseGroupModel) {
+                this.currentGroup = (ParseGroupModel) model;
+                return (ParseGroupModel) model;
             }
         }
 
         return null;
     }
 
-    public GroupModel leaveGroup(GroupModel group) throws ParseException {
+    public ParseGroupModel leaveGroup(GroupModel group) throws ParseException {
 
         if (group == null) {
             throw new IllegalArgumentException("parameter 'group' cannot be null");
+        }
+        if (!(group instanceof ParseGroupModel)) {
+            throw new IllegalArgumentException("parameter 'group' must be of type ParseGroupModel");
         }
 
         // Construct parameter hash map
         HashMap<String, Object> params = new HashMap<>();
         params.put("group", group.getId());
 
-        ParseObject parseObject = ParseCloud.callFunction("joinGroup", params);
+        Object parseResult = ParseCloud.callFunction("leaveGroup", params);
+        if (!(parseResult instanceof ParseObject)) {
+            return null;
+        }
+
+        ParseObject parseObject = (ParseObject) parseResult;
 
         if (parseObject != null) {
             ParseBaseModel model = getModelFromParseObject(parseObject);
-
-            if (model instanceof GroupModel) {
-                model = updateCache(model);
-                return (GroupModel) model;
+            if (model != null && model instanceof ParseGroupModel) {
+                if (this.currentGroup != null && this.currentGroup.equals(model)) {
+                    this.currentGroup = null;
+                }
+                return (ParseGroupModel) model;
             }
         }
 
