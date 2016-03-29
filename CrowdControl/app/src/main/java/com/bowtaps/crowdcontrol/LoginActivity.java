@@ -36,11 +36,15 @@ import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.bowtaps.crowdcontrol.model.ParseUserProfileModel;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+
+//facebook
+import com.facebook.FacebookSdk;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -70,6 +74,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        ParseFacebookUtils.initialize(this);
+
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -346,6 +354,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Intent myIntent = new Intent(this, GroupJoinActivity.class);
         this.startActivity(myIntent);
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 }
 

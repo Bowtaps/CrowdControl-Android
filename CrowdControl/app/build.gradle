@@ -12,6 +12,7 @@ apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
 }
 
 
@@ -85,4 +86,9 @@ dependencies {
         transitive = true;
     }
     compile files('libs/sinch-android-rtc-3.7.1.jar')
+
+
+    //facebook dependency
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    compile 'com.parse:parsefacebookutils-v4-android:1.10.3@aar'
 }
