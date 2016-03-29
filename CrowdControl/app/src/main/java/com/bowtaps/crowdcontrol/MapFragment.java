@@ -234,7 +234,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
                 Double longitude = location.getLongitude();
                 Double latitude = location.getLatitude();
 
-
+                Log.d("Adding Marker for: ", location.getFrom().getDisplayName());
                 // Add marker to map
                 mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(location.getFrom().getDisplayName()).icon(BitmapDescriptorFactory.defaultMarker(mMarkerColors.get(i))));
                 i = (i+1)% 8;

@@ -164,12 +164,25 @@ public class ParseLocationManager implements SecureLocationManager {
 
     @Override
     public void updateLocations(Collection<? extends LocationModel> locations) {
+        List<?extends UserProfileModel> groupMembers = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers();
+        UserProfileModel me = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
         // Add each location in collection to cache
         if (locations != null) {
             for (LocationModel location : locations) {
-                Log.d("updateLocations", location.toString());
-
                 if (location.getFrom() != null) {
+                    try{
+                        location.getFrom().getDisplayName();
+                    }catch(Exception e) {
+                        Log.e("Exception", e.toString());
+                        for (UserProfileModel user : groupMembers) {
+                            if (location.getFrom().getId().equals(user.getId())) {
+                                location.setFrom(user);
+                                Log.d("Updating Location", location.getFrom().getDisplayName());
+                                break;
+                            }
+                        }
+                    }
+                    location.setTo(me);
                     memberLocations.put(location.getFrom().getId(), location);
                 }
             }

@@ -37,7 +37,6 @@ public class GoogleLocationListener implements LocationListener {
         else{
             this.longitude = location.getLongitude();
             this.latitude = location.getLatitude();
-            Log.d("location listener", location.toString());
         }
     }
 

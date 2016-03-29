@@ -101,7 +101,8 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
      */
     @Override
     public ParseUserProfileModel getFrom() {
-        return ParseUserProfileModel.createFromParseObject(getParseObject().getParseObject(fromKey));
+        ParseUserProfileModel user = ParseUserProfileModel.createFromParseObject(getParseObject().getParseObject(fromKey));
+        return user;
     }
 
     /**
