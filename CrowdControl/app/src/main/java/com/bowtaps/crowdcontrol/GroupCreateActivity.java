@@ -92,6 +92,18 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         attemptGroupCreate();
     }
 
+    /**
+     * Handles the Set Group Location action.
+     * @param view
+     */
+    private void onSetLoactionClick(Button view) {
+        attemptSetLocation();
+    }
+
+    private void attemptSetLocation() {
+
+    }
+
 
     /*
      *  Determines if the Group name is valid
@@ -280,6 +292,11 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
      */
     private void launchGroupNavigationActivity() {
         Intent myIntent = new Intent(this, GroupNavigationActivity.class);
+        this.startActivity(myIntent);
+    }
+
+    private void launchGroupLocationActivity() {
+        Intent myIntent = new Intent(this, GroupLocationActivity.class);
         this.startActivity(myIntent);
     }
 }
