@@ -181,6 +181,12 @@ public class GroupNavigationActivity extends AppCompatActivity {
             return true;
         }
 
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_invite) {
+            launchSettingsActivity();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -195,12 +201,22 @@ public class GroupNavigationActivity extends AppCompatActivity {
     }
 
     /*
+     *  Launches the (@Link SettingsActivity)
+     *
+     *  @see SettingsActivity
+     */
+    private void launchInviteActivity() {
+        Intent myIntent = new Intent(this, SettingsActivity.class);
+        this.startActivity(myIntent);
+    }
+
+    /*
      *  Creates the option menu for the tool bar
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_event_navigation, menu);
+        getMenuInflater().inflate(R.menu.menu_main_event_navigation_leader, menu);
         return true;
     }
 }
