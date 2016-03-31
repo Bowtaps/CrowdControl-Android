@@ -213,7 +213,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
                 if (mMap == null) mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_frame)).getMap();
                 mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(location.getFrom().getDisplayName()));
             }
-        }catch (com.parse.ParseException e) {
+        }catch (Exception e) {
             Log.d("Exception", e.toString());
         }
     }

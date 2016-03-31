@@ -105,4 +105,6 @@ public interface GroupModel extends BaseModel {
      *         was already not a member of the group.
      */
     public Boolean removeGroupMember(UserProfileModel profile);
+
+    public List<? extends ConversationModel> getCachedConversations();
 }
