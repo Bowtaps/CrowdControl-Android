@@ -70,6 +70,10 @@
             android:label="@string/title_activity_group_create" >
         </activity>
         <activity
+            android:name=".GroupLocationActivity"
+            android:label="@string/GroupCreateActivity" >
+        </activity>
+        <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" >
         </activity>

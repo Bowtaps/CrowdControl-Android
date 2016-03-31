@@ -24,6 +24,7 @@ import com.bowtaps.crowdcontrol.model.GroupModel;
 public class GroupCreateActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mButtonGroupCreate;
+    Button mButtonGroupLocation;
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -52,8 +53,10 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_group_create);
 
         mButtonGroupCreate = (Button) findViewById(R.id.group_create_button);
+        mButtonGroupLocation = (Button) findViewById(R.id.group_create_location_button);
 
         mButtonGroupCreate.setOnClickListener(this);
+        mButtonGroupLocation.setOnClickListener(this);
 
         mGroupNameView = (EditText) findViewById(R.id.group_name);
         mGroupDesctiptionView = (EditText) findViewById(R.id.group_description);
@@ -74,6 +77,10 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         switch (view.getId()) {
             case R.id.group_create_button:
                 onCreateButtonClick((Button) view);
+                break;
+
+            case R.id.group_create_location_button:
+                onSetLoactionClick((Button) view);
                 break;
 
             default:
@@ -101,7 +108,7 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void attemptSetLocation() {
-
+        launchGroupLocationActivity();
     }
 
 
@@ -295,6 +302,11 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
         this.startActivity(myIntent);
     }
 
+    /**
+     * Launches the {@Link GroupLocationActivity}.
+     *
+     * @see GroupLocationActivity
+     */
     private void launchGroupLocationActivity() {
         Intent myIntent = new Intent(this, GroupLocationActivity.class);
         this.startActivity(myIntent);

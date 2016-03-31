@@ -39,4 +39,5 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="search_distance">Search Distance</string>
     <string name="logout_full">Log Out</string>
+    <string name="GroupCreateActivity" />
 </resources>
