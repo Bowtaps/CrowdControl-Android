@@ -175,15 +175,15 @@ public class GroupNavigationActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //noinspection Launch Settings
         if (id == R.id.action_settings) {
             launchSettingsActivity();
             return true;
         }
 
-        //noinspection SimplifiableIfStatement
+        //noinspection Launch Invite
         if (id == R.id.action_invite) {
-            launchSettingsActivity();
+            launchInviteActivity();
             return true;
         }
 
@@ -201,12 +201,12 @@ public class GroupNavigationActivity extends AppCompatActivity {
     }
 
     /*
-     *  Launches the (@Link SettingsActivity)
+     *  Launches the (@Link InviteNavigationActivity)
      *
-     *  @see SettingsActivity
+     *  @see InviteNavigationActivity
      */
     private void launchInviteActivity() {
-        Intent myIntent = new Intent(this, SettingsActivity.class);
+        Intent myIntent = new Intent(this, InviteNavigationActivity.class);
         this.startActivity(myIntent);
     }
 
@@ -216,7 +216,20 @@ public class GroupNavigationActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_event_navigation_leader, menu);
-        return true;
+
+        //If leader display leader specific menu
+        if( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupLeader() == null) {
+            getMenuInflater().inflate(R.menu.menu_main_event_navigation_leader, menu);
+            return true;
+        }
+        else if ( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupLeader().
+                equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser())) {
+            getMenuInflater().inflate(R.menu.menu_main_event_navigation_leader, menu);
+            return true;
+        }
+        else {
+            getMenuInflater().inflate(R.menu.menu_main_event_navigation, menu);
+            return true;
+        }
     }
 }

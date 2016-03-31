@@ -1,27 +1,19 @@
 package com.bowtaps.crowdcontrol;
 
-import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.bowtaps.crowdcontrol.adapters.SimpleTabsAdapter;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 public class InviteNavigationActivity extends AppCompatActivity {
 
@@ -32,8 +24,8 @@ public class InviteNavigationActivity extends AppCompatActivity {
 
     private ServiceConnection mServiceConnection;
 
-    private GroupInfoFragment mGroupInfoFragment;
-    private MapFragment       mMapFragment;
+    private InviteSearchFragment mInviteSearchFragment;
+    private InviteConfirmFragment mInviteConfirmFragment;
 
     private Intent mServiceIntent;
 
@@ -44,6 +36,11 @@ public class InviteNavigationActivity extends AppCompatActivity {
             R.drawable.streamline_bubble,
             R.drawable.streamline_notebook
     };
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
 
     /*
@@ -63,12 +60,12 @@ public class InviteNavigationActivity extends AppCompatActivity {
         startService(new Intent(getApplicationContext(), MessageService.class));
 
         // Create fragment objects
-        mGroupInfoFragment = GroupInfoFragment.newInstance("Group");
-        mMapFragment       = MapFragment.newInstance("Map");
+        mInviteSearchFragment = InviteSearchFragment.newInstance("Search");
+        mInviteConfirmFragment = InviteConfirmFragment.newInstance("Confirm");
 
         // Add fragments to tab manager
-        mTabsAdapter.addFragment(mGroupInfoFragment, "");
-        mTabsAdapter.addFragment(mMapFragment, "");
+        mTabsAdapter.addFragment(mInviteSearchFragment, "");
+        mTabsAdapter.addFragment(mInviteConfirmFragment, "");
 
         //setup viewpager to give swipe effect
         tabsviewPager.setAdapter(mTabsAdapter);
@@ -94,8 +91,8 @@ public class InviteNavigationActivity extends AppCompatActivity {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 InviteNavigationActivity.this.groupServiceBinder = (GroupService.GroupServiceBinder) service;
 
-                InviteNavigationActivity.this.groupServiceBinder.addGroupUpdatesListener(mGroupInfoFragment);
-                InviteNavigationActivity.this.groupServiceBinder.addLocationUpdatesListener(mMapFragment);
+                //InviteNavigationActivity.this.groupServiceBinder.addGroupUpdatesListener(mInviteSearchFragment);
+                //InviteNavigationActivity.this.groupServiceBinder.addLocationUpdatesListener(mInviteConfirmFragment);
             }
 
             @Override
@@ -103,18 +100,56 @@ public class InviteNavigationActivity extends AppCompatActivity {
                 InviteNavigationActivity.this.groupServiceBinder = null;
             }
         };
-        bindService(new Intent(getApplicationContext(), GroupService.class), mServiceConnection, BIND_IMPORTANT);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        groupServiceBinder.removeGroupUpdatesListener(mGroupInfoFragment);
-        groupServiceBinder.removeLocationUpdatesListener(mMapFragment);
-
-        unbindService(mServiceConnection);
-        stopService(new Intent(getApplicationContext(), GroupService.class));
+        //groupServiceBinder.removeGroupUpdatesListener(mInviteSearchFragment);
+        //groupServiceBinder.removeLocationUpdatesListener(mInviteConfirmFragment);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "InviteNavigation Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.bowtaps.crowdcontrol/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "InviteNavigation Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.bowtaps.crowdcontrol/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
 }

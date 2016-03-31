@@ -158,7 +158,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
      */
     private void onLeaveGroupButtonClick(Button view) {
 
-        if( mGroup.getGroupLeader() == CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile()){
+        if( mGroup.getGroupLeader().
+                equals( CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile())){
             leaveLeaderDialog(getActivity(), "Destroy Group?", "Are you sure you want to delete this group?", "Yes, Remove Group");
         }
         else {

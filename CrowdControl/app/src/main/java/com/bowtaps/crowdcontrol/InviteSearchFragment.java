@@ -25,8 +25,8 @@ public class InviteSearchFragment extends Fragment {
      * @return A new instance of fragment EventFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EventFragment newInstance(String text) {
-        EventFragment fragment = new EventFragment();
+    public static InviteSearchFragment newInstance(String text) {
+        InviteSearchFragment fragment = new InviteSearchFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, text);
         fragment.setArguments(args);
