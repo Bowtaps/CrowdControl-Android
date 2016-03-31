@@ -13,7 +13,7 @@
     <string name="WelcomeScreenTitle">Crowd Control</string>
     <string name="title_section4">Section 4</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_group_join">groupJoin</string>
@@ -42,4 +42,5 @@
     <string name="logout_full">Log Out</string>
     <string name="menu_option_kick">action_kick</string>
     <string name="menu_option_promote">action_promote</string>
+    <string name="title_activity_invite_navigation">InviteNavigationActivity</string>
 </resources>
