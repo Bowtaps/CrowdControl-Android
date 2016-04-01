@@ -9,10 +9,12 @@ import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.ListView;
 
 import com.bowtaps.crowdcontrol.adapters.SimpleTabsAdapter;
 import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
+import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -23,12 +25,16 @@ import java.util.List;
 
 public class InviteNavigationActivity extends AppCompatActivity {
 
+    Toolbar mToolbar;
+
     private TabLayout mTabs;
     private ViewPager mTabsviewPager;
     private SimpleTabsAdapter mTabsAdapter;
     private GroupService.GroupServiceBinder groupServiceBinder;
 
     private ServiceConnection mServiceConnection;
+
+    private GroupModel mGroup;
 
     private InviteSearchFragment mInviteSearchFragment;
     private InviteConfirmFragment mInviteConfirmFragment;
@@ -86,13 +92,23 @@ public class InviteNavigationActivity extends AppCompatActivity {
         mTabs.getTabAt(0).setText("0");
         mTabs.getTabAt(1).setIcon(tabIcons[0]);
 
-        // Start group service if it's not running
-        if (!GroupService.isRunning()) {
-            Intent serviceIntent = new Intent(getApplicationContext(), GroupService.class);
-            serviceIntent.putExtra(GroupService.INTENT_GROUP_ID_KEY, CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getId());
-            serviceIntent.putExtra(GroupService.INTENT_USER_ID_KEY, CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().getId());
-            startService(serviceIntent);
-        }
+        // Bind to group service
+        groupServiceBinder = null;
+        mServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                InviteNavigationActivity.this.groupServiceBinder = (GroupService.GroupServiceBinder) service;
+
+                InviteNavigationActivity.this.groupServiceBinder.addGroupUpdatesListener(mInviteSearchFragment);
+                InviteNavigationActivity.this.groupServiceBinder.addGroupUpdatesListener(mInviteConfirmFragment);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                InviteNavigationActivity.this.groupServiceBinder = null;
+            }
+        };
+        bindService(new Intent(getApplicationContext(), GroupService.class), mServiceConnection, BIND_IMPORTANT);
 
         // Bind to group service
         groupServiceBinder = null;

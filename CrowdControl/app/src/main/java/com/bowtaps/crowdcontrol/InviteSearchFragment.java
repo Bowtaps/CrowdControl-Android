@@ -1,6 +1,5 @@
 package com.bowtaps.crowdcontrol;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,10 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
+import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 
 import java.util.ArrayList;
@@ -20,14 +20,14 @@ import java.util.List;
 /**
  * Created by 7143145 on 3/31/2016.
  */
-public class InviteSearchFragment extends Fragment implements ListView.OnItemClickListener {
-
-    private String mText;
+public class InviteSearchFragment extends Fragment implements GroupService.GroupUpdatesListener, ListView.OnItemClickListener, View.OnClickListener {
 
     private UserModelAdapter mUserModelAdapter;
-    private ListView mFoundUsersListView;
+    private ListView mSearchedUsersListView;
     private List<UserProfileModel> mFoundUserList;
     private List<UserProfileModel> mSearchedUserList;
+
+    private EditText mSearchEditText;
 
     /**
      * Searches for a user in the database, sets to be invited (@see InviteConfirmFragment)
@@ -54,6 +54,9 @@ public class InviteSearchFragment extends Fragment implements ListView.OnItemCli
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_invite_search, container, false);
 
+        // Initialize search text bar
+        mSearchEditText = (EditText) v.findViewById(R.id.invite_search_edit_text);
+
         // Initialize list adapter
         mFoundUserList= new ArrayList<UserProfileModel>();
         mSearchedUserList = new ArrayList<UserProfileModel>();
@@ -64,10 +67,12 @@ public class InviteSearchFragment extends Fragment implements ListView.OnItemCli
             mSearchedUserList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
 
         //Initialize ListView
-        mFoundUsersListView = (ListView) v.findViewById(R.id.user_search_list_view);
-        mFoundUsersListView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
-        mFoundUsersListView.setAdapter(mUserModelAdapter);
-        mFoundUsersListView.setOnItemClickListener(this);
+        mSearchedUsersListView = (ListView) v.findViewById(R.id.user_search_list_view);
+        mSearchedUsersListView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE); //suppose to allow items to be selectable
+        mSearchedUsersListView.setAdapter(mUserModelAdapter);
+        mSearchedUsersListView.setOnItemClickListener(this);
+
+
         return v;
     }
 
@@ -82,13 +87,32 @@ public class InviteSearchFragment extends Fragment implements ListView.OnItemCli
         //make sure highlighting happens
         mUserModelAdapter.notifyDataSetChanged();
 
+        //if on current set - remove
         if( mFoundUserList.contains(mUserModelAdapter.getItem(position))){
             mFoundUserList.remove(mUserModelAdapter.getItem(position));
             ((InviteNavigationActivity) getActivity()).setmFoundUserList(mFoundUserList);
         }
-        else {
+        else { // add to current list
             mFoundUserList.add(mUserModelAdapter.getItem(position));
             ((InviteNavigationActivity) getActivity()).setmFoundUserList(mFoundUserList);
+        }
+    }
+
+    @Override
+    public void onReceivedGroupUpdate(GroupModel group) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        // Handles clicks on items in view
+        switch (v.getId()) {
+            case R.id.invite_cancel_button:
+                getActivity().finish();
+
+            default:
+                // Sorry, you're outta luck
+                break;
         }
     }
 }

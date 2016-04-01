@@ -18,7 +18,8 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="65dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
         android:text="Confirm"
         android:id="@+id/invite_confirmation_button"
         android:gravity="center"
@@ -30,8 +31,9 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="65dp"
+        android:layout_height="wrap_content"
         android:text="Cancel"
+        android:layout_margin="15dp"
         android:id="@+id/invite_cancel_button"
         android:gravity="center"
         android:textSize="20sp"
