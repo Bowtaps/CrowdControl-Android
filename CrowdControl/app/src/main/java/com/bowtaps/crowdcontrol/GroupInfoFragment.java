@@ -240,6 +240,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                         CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
                     }
                 });
+                launchGroupJoinActivity();
+                getActivity().finish();
             }
         });
         buildThis.setNegativeButton("No go back", null);
@@ -272,24 +274,10 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                         }
 
                         CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
+                        getActivity().finish();
                     }
                 });
-
-//                // Attempt to save change to group in background
-//                mGroup.saveInBackground(new BaseModel.SaveCallback() {
-//                    @Override
-//                    public void doneSavingModel(BaseModel object, Exception ex) {
-//
-//                        // Verify operation was a success
-//                        if (ex != null) {
-//                            Log.d(TAG, "Unable to save group");
-//                            return;
-//                        }
-//
-//                        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
-//                        launchGroupJoinActivity();
-//                    }
-//                });
+                launchGroupJoinActivity();
             }
         });
         buildThis.setNegativeButton("No go back", null);
@@ -368,7 +356,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 return false;
             }
         });
-        if(!(currentProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser()))) {
+        if((currentProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser()))) {
             //do nothing, stop clicking thyself
             //todo this should also catch not being the leader.... waiting for leader issues to be fixed
             popup.show();
