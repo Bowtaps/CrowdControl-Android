@@ -81,13 +81,31 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
 
     }
 
-    static List<? extends ParseInvitationModel> fetchAllSentTo(UserProfileModel user) throws ParseException {
+    static List<? extends ParseInvitationModel> fetchAllSentTo(ParseUserProfileModel user) throws ParseException {
         if (user == null) {
             throw new IllegalArgumentException("Parameter 1 cannot be null");
         }
 
         ParseQuery parseQuery = new ParseQuery(tableName);
-        parseQuery.whereEqualTo(recipientKey, user.getCreated());
+        parseQuery.whereEqualTo(recipientKey, user.getParseObject());
+
+        List<ParseObject> parseResults = parseQuery.find();
+        List<ParseInvitationModel> results = new ArrayList<>();
+
+        for (ParseObject parseResult : parseResults) {
+            results.add((ParseInvitationModel) ParseModelManager.getInstance().updateCache(ParseInvitationModel.createFromParseObject(parseResult)));
+        }
+
+        return results;
+    }
+
+    static List<? extends ParseInvitationModel> fetchAllForGroup(ParseGroupModel group) throws ParseException {
+        if (group == null) {
+            throw new IllegalArgumentException("Parameter 1 cannot be null");
+        }
+
+        ParseQuery parseQuery = new ParseQuery(tableName);
+        parseQuery.whereEqualTo(groupKey, group.getParseObject());
 
         List<ParseObject> parseResults = parseQuery.find();
         List<ParseInvitationModel> results = new ArrayList<>();
