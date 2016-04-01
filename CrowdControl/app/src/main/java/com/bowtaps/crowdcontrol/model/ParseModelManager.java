@@ -875,4 +875,64 @@ public class ParseModelManager implements ModelManager {
 
         return model;
     }
+
+    public ParseGroupModel joinGroup(GroupModel group) throws ParseException {
+
+        // Verify parameters
+        if (group == null) {
+            throw new IllegalArgumentException("parameter 'group' cannot be null");
+        }
+        if (!(group instanceof ParseGroupModel)) {
+            throw new IllegalArgumentException("parameter 'group' must be of type ParseGroupModel");
+        }
+
+        // Construct parameter hash map
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("group", group.getId());
+
+        ParseObject parseObject = ParseCloud.callFunction("joinGroup", params);
+
+        if (parseObject != null) {
+            ParseBaseModel model = getModelFromParseObject(parseObject);
+            if (model != null && model instanceof ParseGroupModel) {
+                this.currentGroup = (ParseGroupModel) model;
+                return (ParseGroupModel) model;
+            }
+        }
+
+        return null;
+    }
+
+    public ParseGroupModel leaveGroup(GroupModel group) throws ParseException {
+
+        if (group == null) {
+            throw new IllegalArgumentException("parameter 'group' cannot be null");
+        }
+        if (!(group instanceof ParseGroupModel)) {
+            throw new IllegalArgumentException("parameter 'group' must be of type ParseGroupModel");
+        }
+
+        // Construct parameter hash map
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("group", group.getId());
+
+        Object parseResult = ParseCloud.callFunction("leaveGroup", params);
+        if (!(parseResult instanceof ParseObject)) {
+            return null;
+        }
+
+        ParseObject parseObject = (ParseObject) parseResult;
+
+        if (parseObject != null) {
+            ParseBaseModel model = getModelFromParseObject(parseObject);
+            if (model != null && model instanceof ParseGroupModel) {
+                if (this.currentGroup != null && this.currentGroup.equals(model)) {
+                    this.currentGroup = null;
+                }
+                return (ParseGroupModel) model;
+            }
+        }
+
+        return null;
+    }
 }

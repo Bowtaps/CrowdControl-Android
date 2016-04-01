@@ -174,40 +174,16 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
         // Get the selected group
         final GroupModel groupModel = mGroupListAdapter.getItem(position);
-        final UserModel userModel = CrowdControlApplication.getInstance().getModelManager().getCurrentUser();
 
-        // First load members from current group
-        groupModel.loadInBackground(new BaseModel.LoadCallback() {
-            @Override
-            public void doneLoadingModel(BaseModel object, Exception ex) {
+        try {
+            CrowdControlApplication.getInstance().getModelManager().joinGroup(groupModel);
+        } catch(Exception e){
+            Log.d(TAG, "Unable to join group");
+        }
 
-                // Verify operation was successful
-                if (object == null || ex != null) {
-                    Log.d(TAG, "Unable to load group model");
-                    return;
-                }
+        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup((GroupModel) groupModel);
+        launchGroupNavigationActivity();
 
-                if (!groupModel.addGroupMember(userModel.getProfile())) {
-                    Log.d(TAG, "Unable to add user to group. User may already be member of group.");
-                }
-
-                // After changing the model, attempt to save
-                groupModel.saveInBackground(new BaseModel.SaveCallback() {
-                    @Override
-                    public void doneSavingModel(BaseModel object, Exception ex) {
-
-                        // Verify operation was successful
-                        if (ex != null) {
-                            Log.d(TAG, "Unable to save group model");
-                            return;
-                        }
-
-                        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup((GroupModel) object);
-                        launchGroupNavigationActivity();
-                    }
-                });
-            }
-        });
     }
 
     /**
