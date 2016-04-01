@@ -165,7 +165,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
      */
     private void launchLogoutActivity() {
 
-        //Todo move to messaging implentation
+        //Todo move to messaging implementation
         //stop the messaging service
         stopService(new Intent(getApplicationContext(), MessageService.class));
 
@@ -173,6 +173,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
         Intent myIntent = new Intent(this, SignupActivity.class);
         this.startActivity(myIntent);
+        finish();
     }
 
 
