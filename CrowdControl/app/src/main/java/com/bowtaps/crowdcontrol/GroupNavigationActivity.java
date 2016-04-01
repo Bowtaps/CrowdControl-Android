@@ -188,13 +188,19 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         //Change the Group Name!!!!
         if (id == R.id.action_change_group_name){
-            createGroupNameChangeDialog(this, "Submit new group name" );
+            createGroupNameChangeDialog(this, "Submit new group name");
             return true;
         }
 
         //noinspection Launch Invite
         if (id == R.id.action_invite) {
             launchInviteActivity();
+            return true;
+        }
+
+        //Notifications
+        if (id == R.id.action_notification) {
+            launchNotificationActivity();
             return true;
         }
 
@@ -251,6 +257,16 @@ public class GroupNavigationActivity extends AppCompatActivity {
      */
     private void launchSettingsActivity() {
         Intent myIntent = new Intent(this, SettingsActivity.class);
+        this.startActivity(myIntent);
+    }
+
+    /*
+     *  Launches the (@Link NotificationActivity)
+     *
+     *  @see SettingsActivity
+     */
+    private void launchNotificationActivity() {
+        Intent myIntent = new Intent(this, NotificationActivity.class);
         this.startActivity(myIntent);
     }
 

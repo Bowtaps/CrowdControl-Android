@@ -165,6 +165,12 @@ public class InviteNavigationActivity extends AppCompatActivity {
             return true;
         }
 
+        //Notifications
+        if (id == R.id.action_notification) {
+            launchNotificationActivity();
+            return true;
+        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -176,6 +182,16 @@ public class InviteNavigationActivity extends AppCompatActivity {
      */
     private void launchSettingsActivity() {
         Intent myIntent = new Intent(this, SettingsActivity.class);
+        this.startActivity(myIntent);
+    }
+
+    /*
+     *  Launches the (@Link NotificationActivity)
+     *
+     *  @see SettingsActivity
+     */
+    private void launchNotificationActivity() {
+        Intent myIntent = new Intent(this, NotificationActivity.class);
         this.startActivity(myIntent);
     }
 
