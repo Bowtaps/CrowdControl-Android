@@ -3,4 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".InviteNavigationActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_notification" android:title="@string/action_notification"
+        android:orderInCategory="2" app:showAsAction="never" />
 </menu>

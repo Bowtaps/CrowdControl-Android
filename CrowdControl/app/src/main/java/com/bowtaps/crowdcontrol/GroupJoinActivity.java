@@ -142,6 +142,12 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
             return true;
         }
 
+        //Notifications
+        if (id == R.id.action_notification) {
+            launchNotificationActivity();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

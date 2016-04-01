@@ -6,6 +6,8 @@
         android:orderInCategory="1" app:showAsAction="never" />
     <item android:id="@+id/action_change_group_name" android:title="@string/action_change_group_name"
         android:orderInCategory="10" app:showAsAction="never" />
+    <item android:id="@+id/action_notification" android:title="@string/action_notification"
+        android:orderInCategory="2" app:showAsAction="never" />
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>
