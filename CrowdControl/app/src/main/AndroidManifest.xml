@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bowtaps.crowdcontrol" >
+    package="com.bowtaps.crowdcontrol">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -22,10 +22,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/crowd_control"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".WelcomeActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,41 +48,47 @@
 
         <activity
             android:name=".GroupNavigationActivity"
-            android:label="Group" >
+            android:label="Group">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".GroupNavigationActivity" />
         </activity>
         <activity
             android:name=".GroupJoinActivity"
-            android:label="@string/title_activity_group_join" >
-        </activity>
+            android:label="@string/title_activity_group_join"></activity>
         <activity
             android:name=".SignupActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".WelcomeActivity" >
+            android:parentActivityName=".WelcomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bowtaps.crowdcontrol.WelcomeActivity" />
         </activity>
         <activity
             android:name=".GroupCreateActivity"
-            android:label="@string/title_activity_group_create" >
-        </activity>
+            android:label="@string/title_activity_group_create"></activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" >
-        </activity>
+            android:label="@string/title_activity_login"></activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme" >
-        </activity>
+            android:theme="@style/AppTheme"></activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="d37e019949486238d0e94a3722a1ee4a30afe722" />
-        <service android:name=".MessageService"></service>
-        <service android:name=".GroupService"></service>
+
+        <service android:name=".MessageService" />
+        <service android:name=".GroupService" />
+
+        <activity
+            android:name=".InviteNavigationActivity"
+            android:label="@string/title_activity_invite_navigation">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".InviteNavigationActivity" />
+        </activity>
     </application>
 
 </manifest>

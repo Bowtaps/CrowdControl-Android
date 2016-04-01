@@ -8,15 +8,19 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
 import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
+import com.bowtaps.crowdcontrol.model.UserModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 
 import java.util.ArrayList;
@@ -32,7 +36,7 @@ import java.util.List;
  * Will display information of the current group and allow the
  * user to leave the group
  */
-public class GroupInfoFragment extends Fragment implements View.OnClickListener, GroupService.GroupUpdatesListener {
+public class GroupInfoFragment extends Fragment implements View.OnClickListener, GroupService.GroupUpdatesListener, ListView.OnItemClickListener {
 
     GroupModel mGroup;
     Button mLeaveGroupButton;
@@ -105,7 +109,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         //Initialize ListView
         mMemberListView = (ListView) v.findViewById(R.id.user_profile_list_view);
         mMemberListView.setAdapter(mUserModelAdapter);
-        //mMemberListView.setOnItemClickListener(this);
+        mMemberListView.setOnItemClickListener(this);
 
         // Put group info on screen
         updateViews();
@@ -166,16 +170,18 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
      */
     private void updateViews() {
         if( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup() != null) {
-            // Use data from current group to fill UI elements with data
-            if (mGroup.getGroupLeader() != null) {
-                mGroupLeaderTextView.setText(mGroup.getGroupLeader().getDisplayName());
-            }
             mGroupDescriptionTextView.setText(mGroup.getGroupDescription());
 
             // Replace existing list with new results
             mMemberList.clear();
             if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null)
                 mMemberList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
+
+            // Use data from current group to fill UI elements with data
+            if (mGroup.getGroupLeader() != null) {
+                mGroupLeaderTextView.setText(mGroup.getGroupLeader().getDisplayName());
+            }
+
             // Force update on the list adapter
             mUserModelAdapter.notifyDataSetChanged();
         }
@@ -218,6 +224,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 try {
                     CrowdControlApplication.getInstance().getModelManager().leaveGroup(mGroup);
                     launchGroupJoinActivity();
+                    getActivity().finish();
                 } catch (Exception e) {
                     Log.d("GroupInfoFragment", e.getMessage());
                 }
@@ -249,39 +256,96 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                         // Verify operation was a success
                         if (ex != null) {
                             Log.d(TAG, "Unable to save group");
-                        } else {
-                            launchGroupJoinActivity();
                         }
                     }
                 });
+
+                CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
+                getActivity().finish();
+                launchGroupJoinActivity();
             }
         });
         buildThis.setNegativeButton("No go back", null);
         buildThis.show();
     }
 
-//    /*
-//     *  Grabs the click in the list view and then Joins the Group that was clicked on
-//     */
-//    @Override
-//    public void onItemClick(AdapterView parent, View view, int position, long id) {
-//        //TODO request to join group instead of just joining it
-//
-//        // Get the selected group
-//        final UserProfileModel userProfileModel = mUserModelAdapter.getItem(position);
-//
-//        // First load members from current group
-//        CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().loadInBackground(new BaseModel.LoadCallback() {
-//            @Override
-//            public void doneLoadingModel(BaseModel object, Exception ex) {
-//
-//                // Verify operation was successful
-//                if (object == null || ex != null) {
-//                    Log.d(TAG, "Unable to load group model");
-//                    return;
-//                }
-//
-//            }
-//        });
-//    }
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+        //gets the profile being clicked on
+        UserProfileModel currentProfile = mUserModelAdapter.getItem(position);
+
+        //initialize popup menu and anchor it to the list
+        PopupMenu popup = new PopupMenu(getActivity(), view.findViewById(R.id.button_popup));
+
+        // Inflate our menu resource into the list menu
+        popup.getMenuInflater().inflate(R.menu.menu_group_member_list_leader_options, popup.getMenu());
+
+        //sets menu display titles
+        popup.getMenu().getItem(1).setTitle("Kick " + currentProfile.getDisplayName());
+        popup.getMenu().getItem(0).setTitle("Promote " + currentProfile.getDisplayName());
+
+        //listen for if a menu item is clicked
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle action bar item clicks here. The action bar will
+                // automatically handle clicks on the Home/Up button, so long
+                // as you specify a parent activity in AndroidManifest.xml.
+                int id = item.getItemId();
+
+                //gets the profile being clicked on
+                UserProfileModel currentPositionProfile = mUserModelAdapter.getItem(position);
+
+                if (currentPositionProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile())) {
+                    //do nothing, stop clicking thyself
+                    //todo this should also catch not being the leader.... waiting for leader issues to be fixed
+                }
+                //kick leader
+                else if (id == R.id.action_kick) {
+                    mGroup.removeGroupMember(currentPositionProfile);
+
+                    // Attempt to save change to group in background
+                    mGroup.saveInBackground(new BaseModel.SaveCallback() {
+                        @Override
+                        public void doneSavingModel(BaseModel object, Exception ex) {
+
+                            // Verify operation was a success
+                            if (ex != null) {
+                                Log.d(TAG, "Unable to save group");
+                                return;
+                            }
+                        }
+                    });
+                    mUserModelAdapter.remove(currentPositionProfile);
+                    return true;
+                }
+
+                //promote leader
+                else if (id == R.id.action_promote) {
+                    mGroup.setGroupLeader(currentPositionProfile);
+                    // Attempt to save change to group in background
+                    mGroup.saveInBackground(new BaseModel.SaveCallback() {
+                        @Override
+                        public void doneSavingModel(BaseModel object, Exception ex) {
+
+                            // Verify operation was a success
+                            if (ex != null) {
+                                Log.d(TAG, "Unable to save group");
+                                return;
+                            }
+                        }
+                    });
+                    return true;
+                }
+
+                return false;
+            }
+        });
+        if(!(currentProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile()))) {
+            //do nothing, stop clicking thyself
+            //todo this should also catch not being the leader.... waiting for leader issues to be fixed
+            popup.show();
+        }
+    }
+
 }
