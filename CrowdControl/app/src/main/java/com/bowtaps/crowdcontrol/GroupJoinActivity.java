@@ -213,6 +213,16 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     }
 
     /*
+     *  Launches the (@Link NotificationActivity)
+     *
+     *  @see SettingsActivity
+     */
+    private void launchNotificationActivity() {
+        Intent myIntent = new Intent(this, NotificationActivity.class);
+        this.startActivity(myIntent);
+    }
+
+    /*
      *  Launches the (@Link SettingsActivity)
      *
      *  @see SettingsActivity

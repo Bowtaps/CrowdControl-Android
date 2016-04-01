@@ -261,6 +261,16 @@ public class GroupNavigationActivity extends AppCompatActivity {
     }
 
     /*
+     *  Launches the (@Link NotificationActivity)
+     *
+     *  @see SettingsActivity
+     */
+    private void launchNotificationActivity() {
+        Intent myIntent = new Intent(this, NotificationActivity.class);
+        this.startActivity(myIntent);
+    }
+
+    /*
      *  Launches the (@Link InviteNavigationActivity)
      *
      *  @see InviteNavigationActivity

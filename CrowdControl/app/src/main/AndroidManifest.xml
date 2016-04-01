@@ -55,7 +55,7 @@
         </activity>
         <activity
             android:name=".GroupJoinActivity"
-            android:label="@string/title_activity_group_join"></activity>
+            android:label="@string/title_activity_group_join" />
         <activity
             android:name=".SignupActivity"
             android:label="@string/title_activity_login"
@@ -66,14 +66,14 @@
         </activity>
         <activity
             android:name=".GroupCreateActivity"
-            android:label="@string/title_activity_group_create"></activity>
+            android:label="@string/title_activity_group_create" />
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -89,6 +89,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".InviteNavigationActivity" />
         </activity>
+        <activity
+            android:name=".NotificationActivity"
+            android:label="@string/title_activity_notification"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

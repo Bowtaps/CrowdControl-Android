@@ -19,6 +19,7 @@
         <ListView
             android:id="@+id/group_list"
             android:layout_width="fill_parent"
+            android:hint="No Groups - Want to make a new one?"
             android:layout_height="fill_parent"
             android:layout_below="@+id/toolbar"
             android:smoothScrollbar="true"
