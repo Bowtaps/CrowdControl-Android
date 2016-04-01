@@ -68,9 +68,6 @@ public class InviteNavigationActivity extends AppCompatActivity {
 
         mTabsAdapter = new SimpleTabsAdapter(getSupportFragmentManager());
 
-        // Start messaging service
-        startService(new Intent(getApplicationContext(), MessageService.class));
-
         // Create fragment objects
         mInviteSearchFragment = InviteSearchFragment.newInstance("Search");
         mInviteConfirmFragment = InviteConfirmFragment.newInstance("Confirm");
