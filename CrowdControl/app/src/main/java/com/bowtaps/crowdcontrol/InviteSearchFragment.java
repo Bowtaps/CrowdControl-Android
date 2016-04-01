@@ -59,9 +59,9 @@ public class InviteSearchFragment extends Fragment implements ListView.OnItemCli
         mSearchedUserList = new ArrayList<UserProfileModel>();
         mUserModelAdapter = new UserModelAdapter(getActivity(), mSearchedUserList);
 
-//        if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null &&
-//                !CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers().isEmpty())
-//            mSearchedUserList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
+        if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null &&
+                !CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers().isEmpty())
+            mSearchedUserList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
 
         //Initialize ListView
         mFoundUsersListView = (ListView) v.findViewById(R.id.user_search_list_view);

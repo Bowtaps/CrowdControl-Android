@@ -69,7 +69,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setTitle(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupName());
 
         tabsviewPager = (ViewPager) findViewById(R.id.tabspager);
@@ -223,7 +223,7 @@ public class GroupNavigationActivity extends AppCompatActivity {
             return true;
         }
         else if ( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupLeader().
-                equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser())) {
+                equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile())) {
             getMenuInflater().inflate(R.menu.menu_main_event_navigation_leader, menu);
             return true;
         }

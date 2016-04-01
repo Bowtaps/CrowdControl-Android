@@ -27,17 +27,31 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/search_distance_text" />
 
+
     <Button
         android:id="@+id/logout_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/logout_full"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="false"
+        android:layout_marginRight="200dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:text="@string/logout_full" />
+        />
+
+    <Button
+        android:id="@+id/finished_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Finished"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:gravity="bottom|right"
+        android:layout_marginLeft="200dp"
+        android:layout_alignParentRight="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -45,7 +59,8 @@
         android:id="@+id/user_name_edit_text"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/finished_button" />
 
     <Button
         android:layout_width="wrap_content"

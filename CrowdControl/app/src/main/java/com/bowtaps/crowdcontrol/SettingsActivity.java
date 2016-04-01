@@ -19,11 +19,14 @@ import com.bowtaps.crowdcontrol.model.ParseGroupModel;
 import com.bowtaps.crowdcontrol.model.ParseUserModel;
 import com.parse.ParseUser;
 
-
+/**
+ * Holds the display for settings
+ */
 public class SettingsActivity extends AppCompatActivity implements OnClickListener{
 
     Button mLogoutButton;
     Button mChangeProfileNameButton;
+    Button mFinishedButton;
 
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
@@ -57,10 +60,12 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
         // Get handles to Buttons
         mLogoutButton = (Button) findViewById(R.id.logout_button);
         mChangeProfileNameButton = (Button) findViewById(R.id.change_profile_name_button);
+        mFinishedButton = (Button) findViewById(R.id.finished_button);
 
         // Declare button clicks
         mLogoutButton.setOnClickListener(this);
         mChangeProfileNameButton.setOnClickListener(this);
+        mFinishedButton.setOnClickListener(this);
     }
 
     /**
@@ -84,12 +89,19 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
                 onChangeProfileNameButtonClick();
                 break;
 
+            case R.id.finished_button:
+                finish();
+                break;
+
             default:
                 // Sorry, you're outta luck
                 break;
         }
     }
 
+    /**
+     * Changes the Profile name of the user
+     */
     private void onChangeProfileNameButtonClick() {
         CrowdControlApplication.getInstance().getModelManager().getCurrentUser()
                 .getProfile().setDisplayName( mProfileNameEditText.getText().toString() );
@@ -107,7 +119,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
     }
 
     /**
-     *
+     *  Logs out of the user.
      *
      *
      * Calls the launchLogoutActivity() method.
@@ -117,7 +129,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
         try {
             if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup() != null)
             {
-                CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().removeGroupMember(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
+                CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().removeGroupMember
+                        (CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile());
 
                 // Attempt to save change to group in background
                 CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().saveInBackground(new BaseModel.SaveCallback() {

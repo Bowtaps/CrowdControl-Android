@@ -311,7 +311,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 //gets the profile being clicked on
                 UserProfileModel currentPositionProfile = mUserModelAdapter.getItem(position);
 
-                if (currentPositionProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser())) {
+                if (currentPositionProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile())) {
                     //do nothing, stop clicking thyself
                     //todo this should also catch not being the leader.... waiting for leader issues to be fixed
                 }
@@ -356,7 +356,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 return false;
             }
         });
-        if((currentProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser()))) {
+        if(!(currentProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile()))) {
             //do nothing, stop clicking thyself
             //todo this should also catch not being the leader.... waiting for leader issues to be fixed
             popup.show();
