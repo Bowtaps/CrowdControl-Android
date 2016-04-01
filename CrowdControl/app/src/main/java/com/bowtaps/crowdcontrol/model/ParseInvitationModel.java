@@ -65,7 +65,7 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
 
 
 
-    static ParseInvitationModel createFromParseObject(ParseObject object) {
+    protected static ParseInvitationModel createFromParseObject(ParseObject object) {
 
         // Verify parameters
         if (object == null) {
@@ -81,7 +81,7 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
 
     }
 
-    static List<? extends ParseInvitationModel> fetchAllSentTo(ParseUserProfileModel user) throws ParseException {
+    protected static List<ParseInvitationModel> fetchAllSentTo(ParseUserProfileModel user) throws ParseException {
         if (user == null) {
             throw new IllegalArgumentException("Parameter 1 cannot be null");
         }
@@ -93,13 +93,13 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
         List<ParseInvitationModel> results = new ArrayList<>();
 
         for (ParseObject parseResult : parseResults) {
-            results.add((ParseInvitationModel) ParseModelManager.getInstance().updateCache(ParseInvitationModel.createFromParseObject(parseResult)));
+            results.add(ParseInvitationModel.createFromParseObject(parseResult));
         }
 
         return results;
     }
 
-    static List<? extends ParseInvitationModel> fetchAllForGroup(ParseGroupModel group) throws ParseException {
+    protected static List<ParseInvitationModel> fetchAllForGroup(ParseGroupModel group) throws ParseException {
         if (group == null) {
             throw new IllegalArgumentException("Parameter 1 cannot be null");
         }
@@ -111,7 +111,7 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
         List<ParseInvitationModel> results = new ArrayList<>();
 
         for (ParseObject parseResult : parseResults) {
-            results.add((ParseInvitationModel) ParseModelManager.getInstance().updateCache(ParseInvitationModel.createFromParseObject(parseResult)));
+            results.add(ParseInvitationModel.createFromParseObject(parseResult));
         }
 
         return results;
