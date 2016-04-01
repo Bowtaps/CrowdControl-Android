@@ -789,6 +789,37 @@ public class ParseModelManager implements ModelManager {
 
 
 
+    @Override
+    public List<? extends ParseInvitationModel> fetchInvitationsForUser(UserProfileModel user) throws ParseException {
+
+        // Verify parameters
+        if (user == null) {
+            throw new IllegalArgumentException("Parameter 1 cannot be null");
+        }
+        if (!(user instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("Parameter 1 must be of type ParseUserProfileModel");
+        }
+
+        List<ParseInvitationModel> invitations = ParseInvitationModel.fetchAllSentTo((ParseUserProfileModel) user);
+        return invitations;
+    }
+
+    @Override
+    public List<? extends ParseInvitationModel> fetchInvitationsForGroup(GroupModel group) throws ParseException {
+
+        // Verify parameters
+        if (group == null) {
+            throw new IllegalArgumentException("Parameter 1 cannot be null");
+        }
+        if (!(group instanceof ParseUserProfileModel)) {
+            throw new IllegalArgumentException("Parameter 1 must be of type ParseGroupModel");
+        }
+
+        List<ParseInvitationModel> invitations = ParseInvitationModel.fetchAllForGroup((ParseGroupModel) group);
+        return invitations;
+    }
+
+
     /**
      * Returns the model stored in cache matching the given model's object ID. If no such object is
      * stored in cache, then the provided model will be placed in cache and will be returned.
@@ -813,6 +844,18 @@ public class ParseModelManager implements ModelManager {
         }
 
         return cachedModel;
+    }
+
+    protected ParseBaseModel checkCache(String id) {
+        if (id == null) {
+            return null;
+        }
+
+        if (cachedModels.containsKey(id)) {
+            return cachedModels.get(id);
+        } else {
+            return null;
+        }
     }
 
     /**
