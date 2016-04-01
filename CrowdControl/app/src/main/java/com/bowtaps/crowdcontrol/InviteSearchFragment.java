@@ -46,26 +46,25 @@ public class InviteSearchFragment extends Fragment implements ListView.OnItemCli
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Initialize list adapter
-        mFoundUserList= new ArrayList<UserProfileModel>();
-        mUserModelAdapter = new UserModelAdapter(getActivity(), mSearchedUserList);
-
-//        if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null &&
-//                !CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers().isEmpty())
-//            mSearchedUserList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
-    }
+    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_event, container, false);
+        View v = inflater.inflate(R.layout.fragment_invite_search, container, false);
+
+        // Initialize list adapter
+        mFoundUserList= new ArrayList<UserProfileModel>();
+        mSearchedUserList = new ArrayList<UserProfileModel>();
+        mUserModelAdapter = new UserModelAdapter(getActivity(), mSearchedUserList);
+
+//        if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null &&
+//                !CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers().isEmpty())
+//            mSearchedUserList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
 
         //Initialize ListView
-        mFoundUsersListView= (ListView) v.findViewById(R.id.user_search_list_view);
+        mFoundUsersListView = (ListView) v.findViewById(R.id.user_search_list_view);
         mFoundUsersListView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         mFoundUsersListView.setAdapter(mUserModelAdapter);
         mFoundUsersListView.setOnItemClickListener(this);

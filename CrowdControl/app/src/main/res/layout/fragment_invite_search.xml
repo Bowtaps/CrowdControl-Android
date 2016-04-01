@@ -23,5 +23,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/user_search_list_view"
         android:layout_marginTop="96dp"
+        android:hint="Search"
         android:layout_alignEnd="@+id/user_search_list_view" />
 </RelativeLayout>
