@@ -815,6 +815,18 @@ public class ParseModelManager implements ModelManager {
         return cachedModel;
     }
 
+    protected ParseBaseModel checkCache(String id) {
+        if (id == null) {
+            return null;
+        }
+
+        if (cachedModels.containsKey(id)) {
+            return cachedModels.get(id);
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Gets an object from cache or creates a corresponding model.
      *
