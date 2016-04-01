@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ComponentName;
@@ -16,12 +17,16 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bowtaps.crowdcontrol.adapters.SimpleTabsAdapter;
+import com.bowtaps.crowdcontrol.model.BaseModel;
 
 /**
  * This Activity will manage all the tabs related to the current group
@@ -181,6 +186,12 @@ public class GroupNavigationActivity extends AppCompatActivity {
             return true;
         }
 
+        //Change the Group Name!!!!
+        if (id == R.id.action_change_group_name){
+            createGroupNameChangeDialog(this, "Submit new group name" );
+            return true;
+        }
+
         //noinspection Launch Invite
         if (id == R.id.action_invite) {
             launchInviteActivity();
@@ -188,6 +199,49 @@ public class GroupNavigationActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * Allows leader to change the name of the group
+     * @param activity - current activity (GroupNavigationActivity)
+     * @param title - String the dialog box uses as a title
+     */
+    public void createGroupNameChangeDialog(Activity activity, String title ){
+        AlertDialog.Builder buildThis = new AlertDialog.Builder(activity);
+
+        //Make edit Text for new Name
+        final EditText input = new EditText(this);
+        LinearLayout.LayoutParams editTextLayout = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(editTextLayout);
+        buildThis.setView(input);
+
+        buildThis.setTitle(title);
+        buildThis.setPositiveButton("Make It New", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //set that new name
+                CrowdControlApplication.getInstance().getModelManager().getCurrentGroup()
+                        .setGroupName(input.getText().toString());
+
+                // Attempt to save change to group in background
+                CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().saveInBackground(new BaseModel.SaveCallback() {
+                    @Override
+                    public void doneSavingModel(BaseModel object, Exception ex) {
+
+                        // Verify operation was a success
+                        if (ex != null) {
+                            Log.d("GroupNavigationActivity", "Unable to save group");
+                            return;
+                        }
+                    }
+                });
+                mToolbar.setTitle(input.getText().toString());
+            }
+        });
+        buildThis.setNegativeButton("Cancel", null);
+        buildThis.show();
     }
 
     /*

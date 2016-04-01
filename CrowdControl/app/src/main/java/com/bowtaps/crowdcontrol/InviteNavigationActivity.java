@@ -25,6 +25,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This tab-based activity holds the fragments for search-invite and confirm-invite
+ * (@see InviteConfirmFragment)(@see InviteSearchFragment)
+ */
 public class InviteNavigationActivity extends AppCompatActivity {
 
     Toolbar mToolbar;
@@ -56,15 +60,11 @@ public class InviteNavigationActivity extends AppCompatActivity {
             R.drawable.streamline_bubble,
             R.drawable.streamline_notebook
     };
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
 
     /*
      *  Sets up the (@Link SimpleTabsAdapter) and adds in tabs and their fragments.
+     *  This function also handles the calls required to set up the option menu.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class InviteNavigationActivity extends AppCompatActivity {
         mTabs.setupWithViewPager(mTabsviewPager);
 
         mTabs.getTabAt(0).setIcon(tabIcons[3]);
-        mTabs.getTabAt(0).setText("0");
+        //mTabs.getTabAt(0).setText("0");
         mTabs.getTabAt(1).setIcon(tabIcons[0]);
 
         // Bind to group service
@@ -134,9 +134,6 @@ public class InviteNavigationActivity extends AppCompatActivity {
                 InviteNavigationActivity.this.groupServiceBinder = null;
             }
         };
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     /*
@@ -186,15 +183,23 @@ public class InviteNavigationActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
 
-        //groupServiceBinder.removeGroupUpdatesListener(mInviteSearchFragment);
-        //groupServiceBinder.removeLocationUpdatesListener(mInviteConfirmFragment);
+        groupServiceBinder.removeGroupUpdatesListener(mInviteSearchFragment);
+        groupServiceBinder.removeGroupUpdatesListener(mInviteConfirmFragment);
     }
 
 
+    /**
+     * Allows a fragment to set the Found User List
+     * @param FoundUserList - The list in question - holds UserProfileModels
+     */
     public void setmFoundUserList( List<UserProfileModel> FoundUserList){
         mFoundUserList = FoundUserList;
     }
 
+    /**
+     * allows a fragment to get the Found User List
+     * @return UserProfileModel List
+     */
     public List<UserProfileModel> getmFoundUserList (){
         return mFoundUserList;
     }

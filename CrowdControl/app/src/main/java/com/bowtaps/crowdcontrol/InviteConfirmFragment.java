@@ -22,7 +22,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * Created by 7143145 on 3/31/2016.
+ * Created by Johnny on 3/31/2016.
+ * Fragment ment to confirm and send notifications
  */
 public class InviteConfirmFragment extends Fragment
         implements GroupService.GroupUpdatesListener, ListView.OnItemClickListener, View.OnClickListener, Observer {
@@ -117,6 +118,13 @@ public class InviteConfirmFragment extends Fragment
 
     }
 
+    /**
+     * handles clicks on items in the Found User List
+     * @param parent - holder of list layout
+     * @param view - display of pressed item
+     * @param position - position in list adapter
+     * @param id - honestly, no idea
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -130,6 +138,10 @@ public class InviteConfirmFragment extends Fragment
         }
     }
 
+    /**
+     * Handles all clicks on the buttons found in this fragment
+     * @param v - view of button clicked
+     */
     @Override
     public void onClick(View v) {
         // Handles clicks on items in view
@@ -168,6 +180,11 @@ public class InviteConfirmFragment extends Fragment
         //TODO actually invite users
     }
 
+    /**
+     * Code to be called when the given observable is changed (couldn't get to work)
+     * @param observable
+     * @param data
+     */
     @Override
     public void update(Observable observable, Object data) {
         //Sets Found User list
