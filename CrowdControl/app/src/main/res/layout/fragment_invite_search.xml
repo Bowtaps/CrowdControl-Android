@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_search_list_view"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_margin="15dp"
+        android:smoothScrollbar="true"
+        android:scrollingCache="false"
+        android:hint="Search"
+        android:scrollIndicators="right"
+        android:layout_below="@+id/editText"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/user_search_list_view"
+        android:layout_marginTop="96dp"
+        android:layout_alignEnd="@+id/user_search_list_view" />
+</RelativeLayout>

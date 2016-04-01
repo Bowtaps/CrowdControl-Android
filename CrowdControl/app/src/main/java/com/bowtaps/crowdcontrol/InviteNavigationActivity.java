@@ -9,16 +9,22 @@ import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ListView;
 
 import com.bowtaps.crowdcontrol.adapters.SimpleTabsAdapter;
+import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
+import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class InviteNavigationActivity extends AppCompatActivity {
 
     private TabLayout mTabs;
-    private ViewPager tabsviewPager;
+    private ViewPager mTabsviewPager;
     private SimpleTabsAdapter mTabsAdapter;
     private GroupService.GroupServiceBinder groupServiceBinder;
 
@@ -28,6 +34,12 @@ public class InviteNavigationActivity extends AppCompatActivity {
     private InviteConfirmFragment mInviteConfirmFragment;
 
     private Intent mServiceIntent;
+
+
+    private UserModelAdapter mUserModelAdapter;
+    private ListView mFoundUsersListView;
+    private List<UserProfileModel> mFoundUserList;
+
 
     //sets up icons for tabs
     private int[] tabIcons = {
@@ -50,9 +62,9 @@ public class InviteNavigationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_navigation);
-        setTitle(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupName());
+        setTitle("Invite");
 
-        tabsviewPager = (ViewPager) findViewById(R.id.tabspager);
+        mTabsviewPager = (ViewPager) findViewById(R.id.tabspager);
 
         mTabsAdapter = new SimpleTabsAdapter(getSupportFragmentManager());
 
@@ -68,13 +80,14 @@ public class InviteNavigationActivity extends AppCompatActivity {
         mTabsAdapter.addFragment(mInviteConfirmFragment, "");
 
         //setup viewpager to give swipe effect
-        tabsviewPager.setAdapter(mTabsAdapter);
+        mTabsviewPager.setAdapter(mTabsAdapter);
 
         mTabs = (TabLayout) findViewById(R.id.tabs);
-        mTabs.setupWithViewPager(tabsviewPager);
+        mTabs.setupWithViewPager(mTabsviewPager);
 
-        mTabs.getTabAt(0).setIcon(tabIcons[0]);
-        mTabs.getTabAt(1).setIcon(tabIcons[1]);
+        mTabs.getTabAt(0).setIcon(tabIcons[3]);
+        mTabs.getTabAt(0).setText("0");
+        mTabs.getTabAt(1).setIcon(tabIcons[0]);
 
         // Start group service if it's not running
         if (!GroupService.isRunning()) {
@@ -151,5 +164,14 @@ public class InviteNavigationActivity extends AppCompatActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+    }
+
+
+    public void setmFoundUserList( List<UserProfileModel> FoundUserList){
+        mFoundUserList = FoundUserList;
+    }
+
+    public List<UserProfileModel> getmFoundUserList (){
+        return mFoundUserList;
     }
 }

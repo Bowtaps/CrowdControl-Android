@@ -6,29 +6,37 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
+import com.bowtaps.crowdcontrol.model.UserProfileModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 7143145 on 3/31/2016.
  */
-public class InviteSearchFragment extends Fragment {
-
-    private static final String ARG_PARAM1 = "param1";
+public class InviteSearchFragment extends Fragment implements ListView.OnItemClickListener {
 
     private String mText;
 
+    private UserModelAdapter mUserModelAdapter;
+    private ListView mFoundUsersListView;
+    private List<UserProfileModel> mFoundUserList;
+    private List<UserProfileModel> mSearchedUserList;
+
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Searches for a user in the database, sets to be invited (@see InviteConfirmFragment)
      *
-     * @param text Test text 1
-     * @return A new instance of fragment EventFragment.
+     * @return A new instance of fragment InviteSearchFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static InviteSearchFragment newInstance(String text) {
         InviteSearchFragment fragment = new InviteSearchFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, text);
         fragment.setArguments(args);
         return fragment;
     }
@@ -40,9 +48,14 @@ public class InviteSearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mText = getArguments().getString(ARG_PARAM1);
-        }
+
+        // Initialize list adapter
+        mFoundUserList= new ArrayList<UserProfileModel>();
+        mUserModelAdapter = new UserModelAdapter(getActivity(), mSearchedUserList);
+
+//        if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null &&
+//                !CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers().isEmpty())
+//            mSearchedUserList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
     }
 
     @Override
@@ -50,12 +63,33 @@ public class InviteSearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_event, container, false);
-        ((TextView) v.findViewById(R.id.event_test)).setText(mText);
+
+        //Initialize ListView
+        mFoundUsersListView= (ListView) v.findViewById(R.id.user_search_list_view);
+        mFoundUsersListView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        mFoundUsersListView.setAdapter(mUserModelAdapter);
+        mFoundUsersListView.setOnItemClickListener(this);
         return v;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        //make sure highlighting happens
+        mUserModelAdapter.notifyDataSetChanged();
+
+        if( mFoundUserList.contains(mUserModelAdapter.getItem(position))){
+            mFoundUserList.remove(mUserModelAdapter.getItem(position));
+            ((InviteNavigationActivity) getActivity()).setmFoundUserList(mFoundUserList);
+        }
+        else {
+            mFoundUserList.add(mUserModelAdapter.getItem(position));
+            ((InviteNavigationActivity) getActivity()).setmFoundUserList(mFoundUserList);
+        }
     }
 }

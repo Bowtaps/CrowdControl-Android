@@ -158,7 +158,10 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
      */
     private void onLeaveGroupButtonClick(Button view) {
 
-        if( mGroup.getGroupLeader().
+        if( mGroup.getGroupLeader() == null){
+            leaveDialog(getActivity(), "Leave Group?", "Are you sure you want to leave this group?", "Yes, Leave Group");
+        }
+        else if( mGroup.getGroupLeader().
                 equals( CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile())){
             leaveLeaderDialog(getActivity(), "Destroy Group?", "Are you sure you want to delete this group?", "Yes, Remove Group");
         }
@@ -318,15 +321,15 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                 int id = item.getItemId();
 
                 //gets the profile being clicked on
-                UserProfileModel currentProfile = mUserModelAdapter.getItem(position);
+                UserProfileModel currentPositionProfile = mUserModelAdapter.getItem(position);
 
-                if (currentProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser())) {
+                if (currentPositionProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser())) {
                     //do nothing, stop clicking thyself
                     //todo this should also catch not being the leader.... waiting for leader issues to be fixed
                 }
                 //kick leader
                 else if (id == R.id.action_kick) {
-                    mGroup.removeGroupMember(currentProfile);
+                    mGroup.removeGroupMember(currentPositionProfile);
 
                     // Attempt to save change to group in background
                     mGroup.saveInBackground(new BaseModel.SaveCallback() {
@@ -340,13 +343,13 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                             }
                         }
                     });
-                    mUserModelAdapter.remove(currentProfile);
+                    mUserModelAdapter.remove(currentPositionProfile);
                     return true;
                 }
 
                 //promote leader
                 else if (id == R.id.action_promote) {
-                    mGroup.setGroupLeader(currentProfile);
+                    mGroup.setGroupLeader(currentPositionProfile);
                     // Attempt to save change to group in background
                     mGroup.saveInBackground(new BaseModel.SaveCallback() {
                         @Override
