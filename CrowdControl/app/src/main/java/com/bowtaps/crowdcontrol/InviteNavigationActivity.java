@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.bowtaps.crowdcontrol.adapters.SimpleTabsAdapter;
@@ -134,6 +135,39 @@ public class InviteNavigationActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    /*
+     *  This handles the clicks on the drop down menu in the tool bar
+     *
+     *  @see GroupModelAdapter
+     *  @see GroupNavigationActivity
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //Launch Settings
+        if (id == R.id.action_settings) {
+            launchSettingsActivity();
+            return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /*
+     *  Launches the (@Link SettingsActivity)
+     *
+     *  @see SettingsActivity
+     */
+    private void launchSettingsActivity() {
+        Intent myIntent = new Intent(this, SettingsActivity.class);
+        this.startActivity(myIntent);
     }
 
     @Override

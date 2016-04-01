@@ -120,14 +120,14 @@ public class InviteConfirmFragment extends Fragment
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        //remove from list
-        mFoundUserList.remove(mUserModelAdapter.getItem(position));
-        //set activity list
-        ((InviteNavigationActivity) getActivity()).setmFoundUserList(mFoundUserList);
-        //Remove from Found
-        mUserModelAdapter.remove(mUserModelAdapter.getItem(position));
-        //make sure highlighting happens
-        mUserModelAdapter.notifyDataSetChanged();
+        if (mUserModelAdapter.getItem(position) != null){ //hopefully prevents race conditions
+            //remove from list
+            mFoundUserList.remove(mUserModelAdapter.getItem(position));
+            //set activity list
+            ((InviteNavigationActivity) getActivity()).setmFoundUserList(mFoundUserList);
+            //make sure highlighting happens
+            mUserModelAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -142,7 +142,10 @@ public class InviteConfirmFragment extends Fragment
             case R.id.invite_refresh_button:
                 //Sets Found User list
                 mFoundUserList.clear();
-                mFoundUserList.addAll(((InviteNavigationActivity) getActivity()).getmFoundUserList());
+                //prevents null if refresh if first thing clicked
+                if( ((InviteNavigationActivity) getActivity()).getmFoundUserList() != null ) {
+                    mFoundUserList.addAll(((InviteNavigationActivity) getActivity()).getmFoundUserList());
+                }
                 mUserModelAdapter.notifyDataSetChanged();
                 break;
 
