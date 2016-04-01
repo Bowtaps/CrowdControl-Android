@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -28,6 +29,9 @@ public class InviteSearchFragment extends Fragment implements GroupService.Group
     private List<UserProfileModel> mSearchedUserList;
 
     private EditText mSearchEditText;
+
+    //buttons
+    private Button mCancelButton;
 
     /**
      * Searches for a user in the database, sets to be invited (@see InviteConfirmFragment)
@@ -62,6 +66,10 @@ public class InviteSearchFragment extends Fragment implements GroupService.Group
         mSearchedUserList = new ArrayList<UserProfileModel>();
         mUserModelAdapter = new UserModelAdapter(getActivity(), mSearchedUserList);
 
+        //set handler for button and give to onclick
+        mCancelButton = (Button) v.findViewById(R.id.invite_cancel_button);
+        mCancelButton.setOnClickListener(this);
+
         if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null &&
                 !CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers().isEmpty())
             mSearchedUserList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
@@ -84,8 +92,8 @@ public class InviteSearchFragment extends Fragment implements GroupService.Group
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        //make sure highlighting happens
-        mUserModelAdapter.notifyDataSetChanged();
+        //make sure highlighting happens - not working???
+        //mUserModelAdapter.notifyDataSetChanged();
 
         //if on current set - remove
         if( mFoundUserList.contains(mUserModelAdapter.getItem(position))){

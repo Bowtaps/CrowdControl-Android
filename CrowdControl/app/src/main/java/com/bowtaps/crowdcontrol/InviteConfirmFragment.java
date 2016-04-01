@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
 import com.bowtaps.crowdcontrol.model.GroupModel;
@@ -34,6 +35,16 @@ public class InviteConfirmFragment extends Fragment
     private UserModelAdapter mUserModelAdapter;
     private ListView mFoundUsersListView;
 
+    private Button mCancelButton;
+    private Button mConfirmButton;
+
+
+    //TODO THIS BUTTON NEEDS TO BECOME AN EVENT LISTENER!!!
+    private Button mRefreshButton;
+
+
+
+    /// I need a listener for a single object in the other fragment. gosh darn it.
     public void observe(Observable foundList){
         foundList.addObserver(this);
     }
@@ -72,6 +83,17 @@ public class InviteConfirmFragment extends Fragment
         //Sets Found User list
         mFoundUserList = ((InviteNavigationActivity) getActivity()).getmFoundUserList();
 
+        //set handler for button and give to onclick
+        mCancelButton = (Button) v.findViewById(R.id.invite_cancel_button);
+        mConfirmButton = (Button) v.findViewById(R.id.invite_confirmation_button);
+        mCancelButton.setOnClickListener(this);
+        mConfirmButton.setOnClickListener(this);
+
+        //TODO THIS BUTTON NEEDS TO BECOME AN EVENT LISTENER
+        mRefreshButton = (Button) v.findViewById(R.id.invite_refresh_button);
+        mRefreshButton.setOnClickListener(this);
+
+        //attempt to fill list
         if(mFoundUserList == null){
             mFoundUserList = new ArrayList<UserProfileModel>();
         }
@@ -98,6 +120,14 @@ public class InviteConfirmFragment extends Fragment
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+        //remove from list
+        mFoundUserList.remove(mUserModelAdapter.getItem(position));
+        //set activity list
+        ((InviteNavigationActivity) getActivity()).setmFoundUserList(mFoundUserList);
+        //Remove from Found
+        mUserModelAdapter.remove(mUserModelAdapter.getItem(position));
+        //make sure highlighting happens
+        mUserModelAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -106,6 +136,14 @@ public class InviteConfirmFragment extends Fragment
         switch (v.getId()) {
             case R.id.invite_confirmation_button:
                 onInviteConfirmationButtonClicked((Button) v);
+                break;
+
+            //TODO THIS NEEDS TO BE AN EVENT LISTENER
+            case R.id.invite_refresh_button:
+                //Sets Found User list
+                mFoundUserList.clear();
+                mFoundUserList.addAll(((InviteNavigationActivity) getActivity()).getmFoundUserList());
+                mUserModelAdapter.notifyDataSetChanged();
                 break;
 
             case R.id.invite_cancel_button:
@@ -130,7 +168,8 @@ public class InviteConfirmFragment extends Fragment
     @Override
     public void update(Observable observable, Object data) {
         //Sets Found User list
-        mFoundUserList = ((InviteNavigationActivity) getActivity()).getmFoundUserList();
+        mFoundUserList.clear();
+        mFoundUserList.addAll(((InviteNavigationActivity) getActivity()).getmFoundUserList());
         mUserModelAdapter.notifyDataSetChanged();
     }
 }

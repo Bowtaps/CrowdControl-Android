@@ -186,6 +186,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
             mMemberList.clear();
             if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null)
                 mMemberList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
+
             // Force update on the list adapter
             mUserModelAdapter.notifyDataSetChanged();
         }
