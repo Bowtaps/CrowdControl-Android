@@ -1,29 +1,66 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Daniel Andrus
  */
 public class ParseInvitationModel extends ParseBaseModel implements InvitationModel {
 
+    private static final String tableName = "Invitation";
+    private static final String senderKey = "Sender";
+    private static final String recipientKey = "Recipient";
+    private static final String groupKey = "Group";
+
     private ParseInvitationModel(ParseObject object) {
         super(object);
     }
 
     @Override
-    public UserProfileModel getSender() {
-        return null;
+    public ParseUserProfileModel getSender() {
+
+        ParseObject parseSender = (ParseObject) getParseObject().get(senderKey);
+        ParseBaseModel model = ParseModelManager.getInstance().checkCache(parseSender.getObjectId());
+
+        if (model == null) {
+            model = ParseUserProfileModel.createFromParseObject(parseSender);
+            model = ParseModelManager.getInstance().updateCache(model);
+        }
+
+        return (ParseUserProfileModel) model;
     }
 
     @Override
-    public UserProfileModel getRecipient() {
-        return null;
+    public ParseUserProfileModel getRecipient() {
+
+        ParseObject parseRecipient = (ParseObject) getParseObject().get(recipientKey);
+        ParseBaseModel model = ParseModelManager.getInstance().checkCache(parseRecipient.getObjectId());
+
+        if (model == null) {
+            model = ParseUserProfileModel.createFromParseObject(parseRecipient);
+            model = ParseModelManager.getInstance().updateCache(model);
+        }
+
+        return (ParseUserProfileModel) model;
     }
 
     @Override
-    public GroupModel getGroup() {
-        return null;
+    public ParseGroupModel getGroup() {
+
+        ParseObject parseGroup = (ParseObject) getParseObject().get(groupKey);
+        ParseBaseModel model = ParseModelManager.getInstance().checkCache(parseGroup.getObjectId());
+
+        if (model == null) {
+            model = ParseGroupModel.createFromParseObject(parseGroup);
+            model = ParseModelManager.getInstance().updateCache(model);
+        }
+
+        return (ParseGroupModel) model;
     }
 
 
@@ -41,5 +78,24 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
             model = ParseModelManager.getInstance().updateCache(model);
         }
         return (ParseInvitationModel) model;
+
+    }
+
+    static List<? extends ParseInvitationModel> fetchAllSentTo(UserProfileModel user) throws ParseException {
+        if (user == null) {
+            throw new IllegalArgumentException("Parameter 1 cannot be null");
+        }
+
+        ParseQuery parseQuery = new ParseQuery(tableName);
+        parseQuery.whereEqualTo(recipientKey, user.getCreated());
+
+        List<ParseObject> parseResults = parseQuery.find();
+        List<ParseInvitationModel> results = new ArrayList<>();
+
+        for (ParseObject parseResult : parseResults) {
+            results.add((ParseInvitationModel) ParseModelManager.getInstance().updateCache(ParseInvitationModel.createFromParseObject(parseResult)));
+        }
+
+        return results;
     }
 }
