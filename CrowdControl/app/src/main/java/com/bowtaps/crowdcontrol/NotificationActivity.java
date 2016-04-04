@@ -5,14 +5,17 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.bowtaps.crowdcontrol.adapters.GroupModelAdapter;
+import com.bowtaps.crowdcontrol.adapters.InvitationModelAdapter;
 import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
 import com.bowtaps.crowdcontrol.model.GroupModel;
+import com.bowtaps.crowdcontrol.model.InvitationModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 
 import java.util.ArrayList;
@@ -25,9 +28,9 @@ public class NotificationActivity extends AppCompatActivity implements ListView.
     Button mClearAllButton;
 
     //List handlers //TODO Change to notification objects!!!!!!!!!
-    private GroupModelAdapter mNotificationModelAdapter;
+    private InvitationModelAdapter mNotificationModelAdapter;
     private ListView mNotificationListView;
-    private List<GroupModel> mNotificationList;
+    private List<InvitationModel> mNotificationList;
 
 
 
@@ -47,14 +50,21 @@ public class NotificationActivity extends AppCompatActivity implements ListView.
         mFinishButton.setOnClickListener(this);
         mClearAllButton.setOnClickListener(this);
 
-        //Initallize array stuff
+        // Initialize array stuff
         mNotificationList = new ArrayList<>();
-        mNotificationModelAdapter = new GroupModelAdapter(this, mNotificationList);
+        mNotificationModelAdapter = new InvitationModelAdapter(this, mNotificationList);
         mNotificationListView = (ListView) findViewById(R.id.notification_list_view);
 
         mNotificationListView.setAdapter(mNotificationModelAdapter);
         mNotificationListView.setOnItemClickListener(this);
 
+        // Load notifications
+        try {
+            mNotificationList = new ArrayList<>(CrowdControlApplication.getInstance().getModelManager().fetchNotifications());
+            mNotificationModelAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            Log.d("NotificationActivity", "Unable to load notifications");
+        }
     }
 
     @Override

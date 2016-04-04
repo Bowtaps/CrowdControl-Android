@@ -788,6 +788,25 @@ public class ParseModelManager implements ModelManager {
     }
 
 
+    @Override
+    public List<? extends ParseInvitationModel> fetchNotifications() throws ParseException {
+
+        // Call cloud code to load notifications
+        List<ParseObject> parseResults = ParseCloud.callFunction("fetchNotifications", new HashMap<String, Object>());
+        List<ParseInvitationModel> modelResults = new ArrayList<>();
+
+        // Process results
+        for (ParseObject parseObject : parseResults) {
+            ParseBaseModel model = getModelFromParseObject(parseObject);
+
+            // Add any invitations to return set
+            if (model instanceof ParseInvitationModel) {
+                modelResults.add((ParseInvitationModel) model);
+            }
+        }
+
+        return modelResults;
+    }
 
     @Override
     public List<? extends ParseInvitationModel> fetchInvitationsForUser(UserProfileModel user) throws ParseException {
@@ -899,6 +918,11 @@ public class ParseModelManager implements ModelManager {
             // Try building a conversation model
             if (model == null) {
                 model = ParseConversationModel.createFromParseObject(parseObject);
+            }
+
+            // Try building an invitation model
+            if (model == null) {
+                model = ParseInvitationModel.createFromParseObject(parseObject);
             }
 
             // Put object in cache if a matching model was found

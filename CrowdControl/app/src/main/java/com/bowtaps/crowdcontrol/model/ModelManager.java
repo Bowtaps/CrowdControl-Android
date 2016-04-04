@@ -262,6 +262,8 @@ public interface ModelManager {
     public List<? extends MessageModel> fetchMessages(ConversationModel conversation, UserProfileModel user, Date before, Integer limit) throws Exception;
 
 
+    public List<? extends InvitationModel> fetchNotifications() throws Exception;
+
     public List<? extends InvitationModel> fetchInvitationsForUser(UserProfileModel user) throws Exception;
 
     public List<? extends InvitationModel> fetchInvitationsForGroup(GroupModel group) throws Exception;
