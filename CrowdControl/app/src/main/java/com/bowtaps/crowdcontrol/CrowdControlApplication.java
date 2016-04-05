@@ -22,6 +22,10 @@ import com.bowtaps.crowdcontrol.model.SecureLocationManager;
 import com.parse.Parse;
 import com.parse.ParseClassName;
 
+import com.facebook.FacebookSdk;
+
+import com.parse.ParseFacebookUtils;
+
 /**
  * The official singleton object for the application.
  *
@@ -104,5 +108,11 @@ public class CrowdControlApplication extends Application {
     public void onDestroy() {
         stopService(new Intent(this,MessageService.class));
         //super.onDestroy();
+
+        Parse.enableLocalDatastore(this);
+
+        Parse.initialize(this);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        ParseFacebookUtils.initialize(this);
     }
 }

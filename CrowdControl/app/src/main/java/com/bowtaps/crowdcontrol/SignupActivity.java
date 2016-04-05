@@ -52,6 +52,17 @@ import com.parse.SignUpCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+//facebook login
+import com.facebook.FacebookSdk;
+import com.parse.ParseFacebookUtils;
+import com.parse.LogInCallback;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import android.util.Base64;
+
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -90,6 +101,13 @@ public class SignupActivity extends AppCompatActivity
     Button mFacebookButton;
     Button mTwitterButton;
     Button mEmailButton;
+
+    //facebook login
+
+    public static final List<String> mPermissions = new ArrayList<String>() {{
+        add("public_profile");
+        add("email");
+    }};
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -451,7 +469,41 @@ public class SignupActivity extends AppCompatActivity
     }
 
     private void facebookButtonClick(Button view) { //TODO launch facebook login
+
+        Log.d( "SignUpActivity", "facebook button pressed");
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.bowtaps.crowdcontrol",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
+
+        }
+
+
+                ParseFacebookUtils.logInWithReadPermissionsInBackground(SignupActivity.this, mPermissions, new LogInCallback() {
+                    @Override
+                    public void done(ParseUser user, ParseException err) {
+                        if (user == null) {
+                            Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+                        } else if (user.isNew()) {
+                            Log.d("MyApp", "User signed up and logged in through Facebook!");
+                            //getUserDetailsFromFB();
+                        } else {
+                            Log.d("MyApp", "User logged in through Facebook!");
+                            //getUserDetailsFromParse();
+                        }
+                    }
+                });
+
+
     }
+
+
 
     @Override
     public void onStart() {
@@ -581,6 +633,17 @@ public class SignupActivity extends AppCompatActivity
     private void launchGroupJoinActivity() {
         Intent myIntent = new Intent(this, GroupJoinActivity.class);
         this.startActivity(myIntent);
+    }
+
+    /**
+     * Launches the {@link GroupJoinActivity}.
+     *
+     * @see GroupJoinActivity
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 }
 
