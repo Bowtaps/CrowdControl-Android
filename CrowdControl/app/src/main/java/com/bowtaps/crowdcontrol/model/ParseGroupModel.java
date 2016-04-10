@@ -97,7 +97,14 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      */
     @Override
     public ParseUserProfileModel getGroupLeader() {
+
         return leader;
+
+//        //if no leader found - don't pass back a null
+//        Log.d("GroupInfoFragment", "Can't Find Leader");
+//        ParseUserProfileModel tempLeader = new ParseUserProfileModel();
+//        tempLeader.setDisplayName("You Seem To Be Leaderless");
+//        return tempLeader;
     }
 
     /**
@@ -122,7 +129,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         } else {
 
             // Leader is being added/replaced
-            this.leader = null;
+            this.leader = (ParseUserProfileModel) leader;
             getParseObject().put(leaderKey, ((ParseUserProfileModel) leader).getParseObject());
         }
     }
@@ -338,7 +345,16 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         members.clear();
 
         // Fetch the leader
-        ParseObject parseLeader = getParseObject().getParseObject(leaderKey);
+        ParseRelation leaderRelation = getParseObject().getRelation(leaderKey);
+        ParseQuery leaderQuery = leaderRelation.getQuery();
+        List<ParseObject> leaderResults = leaderQuery.find();
+        ParseObject parseLeader;
+        if(leaderResults.size() == 1) {
+            parseLeader = leaderResults.get(0);
+        }
+        else {
+            parseLeader = getParseObject().getParseObject(leaderKey);
+        }
         if (parseLeader == null) {
 
             // No group leader
