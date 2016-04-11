@@ -179,7 +179,11 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
 
             // Use data from current group to fill UI elements with data
             if (mGroup.getGroupLeader() != null) {
-                mGroupLeaderTextView.setText(mGroup.getGroupLeader().getDisplayName());
+                if (mGroup.getGroupLeader().getDisplayName() == null) {
+                    mGroupLeaderTextView.setText("Loading...");
+                } else {
+                    mGroupLeaderTextView.setText(mGroup.getGroupLeader().getDisplayName());
+                }
             }
 
             // Force update on the list adapter

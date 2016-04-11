@@ -270,7 +270,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
             locationModel.setLongitude(Double.parseDouble(longitude));
             locationModel.setTo(user);
             Object from = obj.get(fromKey);
-            ParseUserProfileModel fromProfile = new ParseUserProfileModel((ParseObject)from);
+            ParseUserProfileModel fromProfile = ParseUserProfileModel.createFromParseObject((ParseObject)from);
             fromProfile.load();
             locationModel.setFrom(fromProfile);
             groupMemberLocations.add(locationModel);
@@ -304,7 +304,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
             locationModel.setLongitude(Double.parseDouble(obj.getString(longitudeKey)));
             locationModel.setFrom(user);
             Object to = obj.get(toKey);
-            ParseUserProfileModel toProfile = new ParseUserProfileModel((ParseObject) to);
+            ParseUserProfileModel toProfile = ParseUserProfileModel.createFromParseObject((ParseObject) to);
             toProfile.load();
             locationModel.setTo(toProfile);
             previousLocations.add(locationModel);
