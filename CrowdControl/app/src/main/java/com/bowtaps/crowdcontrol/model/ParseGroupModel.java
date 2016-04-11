@@ -98,6 +98,15 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     @Override
     public ParseUserProfileModel getGroupLeader() {
 
+
+        if(leader == null) {
+            try {
+                load();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
         return leader;
 
 //        //if no leader found - don't pass back a null
