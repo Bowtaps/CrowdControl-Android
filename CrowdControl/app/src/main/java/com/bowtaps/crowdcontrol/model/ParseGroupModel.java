@@ -48,13 +48,6 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
 
 
     /**
-     * Internally cached group leader. This value is set when either {@link #load()},
-     * {@link #loadInBackground(LoadCallback)}, or {@link #setGroupLeader(UserProfileModel)} are
-     * invoked. This value can be gotten via a call to {@link #getGroupLeader()}.
-     */
-    private ParseUserProfileModel leader;
-
-    /**
      * Internal cache of group members. This list is populated when {@link #load()} or
      * {@link #loadInBackground(LoadCallback)} is called.
      */
@@ -83,7 +76,6 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     public ParseGroupModel(ParseObject object) {
         super(object);
 
-        leader = null;
         members = new ArrayList<>();
         conversations = new ArrayList<>();
     }
@@ -97,7 +89,24 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      */
     @Override
     public ParseUserProfileModel getGroupLeader() {
-        return leader;
+
+        Object parseLeader = getParseObject().get(leaderKey);
+        ParseBaseModel leaderModel = null;
+
+        if (parseLeader != null && parseLeader instanceof ParseObject) {
+            leaderModel = ParseModelManager.getInstance().checkCache(((ParseObject) parseLeader).getObjectId());
+
+            if (leaderModel == null) {
+                leaderModel = ParseUserProfileModel.createFromParseObject((ParseObject) parseLeader);
+                leaderModel = ParseModelManager.getInstance().updateCache((ParseBaseModel) leaderModel);
+            }
+        }
+
+        if (leaderModel != null && leaderModel instanceof ParseUserProfileModel) {
+            return (ParseUserProfileModel) leaderModel;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -117,12 +126,10 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         if (leader == null) {
 
             // Leader is being removed
-            this.leader = null;
             getParseObject().put(leaderKey, null);
         } else {
 
             // Leader is being added/replaced
-            this.leader = null;
             getParseObject().put(leaderKey, ((ParseUserProfileModel) leader).getParseObject());
         }
     }
@@ -182,26 +189,11 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      *
      * @return An {@link ArrayList} of {@link UserProfileModel} objects that belong to the group.
      */
-    public UserProfileModel getGroupMember(String id)
-    {
+    public UserProfileModel getGroupMember(String id) {
         ParseUserProfileModel thisMember = null;
 
-//        if (members.isEmpty())
-//        {
-//            loadInBackground(new BaseModel.LoadCallback() {
-//                @Override
-//                public void doneLoadingModel(BaseModel object, Exception ex)
-//                {
-//                    if (ex != null) {
-//                        Log.d("ParseGroupModel", "Unable to load members");
-//                        return;
-//                    }
-//                }
-//            });
-//        }
         for (ParseUserProfileModel member:members) {
-            if(member.getId().equals(id))
-            {
+            if(member.getId().equals(id)) {
                 thisMember = member;
             }
         }
@@ -338,15 +330,12 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         members.clear();
 
         // Fetch the leader
-        ParseObject parseLeader = getParseObject().getParseObject(leaderKey);
-        if (parseLeader == null) {
+        if (getParseObject().get(leaderKey) != null) {
+            ParseObject parseLeader = (ParseObject) getParseObject().get(leaderKey);
 
-            // No group leader
-            leader = null;
-        } else if (leader == null || !leader.equals(parseLeader)) {
-
-            // New group leader
-            leader = new ParseUserProfileModel(parseLeader);
+            if (ParseModelManager.getInstance().checkCache(parseLeader.getObjectId()) == null) {
+                ParseUserProfileModel.createFromParseObject(parseLeader);
+            }
         }
 
         // Fetch objects in relation
@@ -355,7 +344,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         List<ParseObject> results = query.find();
 
         for (ParseObject result : results) {
-            members.add(new ParseUserProfileModel(result));
+            members.add(ParseUserProfileModel.createFromParseObject(result));
         }
     }
 
