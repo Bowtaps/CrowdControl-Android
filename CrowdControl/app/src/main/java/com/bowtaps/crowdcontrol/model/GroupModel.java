@@ -64,6 +64,13 @@ public interface GroupModel extends BaseModel {
     public List<? extends UserProfileModel> getGroupMembers();
 
     /**
+     * Gets the list of users associated with the current group.
+     *
+     * @return An {@link ArrayList} of {@link UserProfileModel} objects that belong to the group.
+     */
+    public UserProfileModel getGroupMember( String id );
+
+    /**
      * Clears all members from this group.
      *
      * @return {@code true} if the operation was successful, {@code false} if not.
@@ -98,4 +105,6 @@ public interface GroupModel extends BaseModel {
      *         was already not a member of the group.
      */
     public Boolean removeGroupMember(UserProfileModel profile);
+
+    public List<? extends ConversationModel> getCachedConversations();
 }

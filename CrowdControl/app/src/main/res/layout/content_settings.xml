@@ -11,33 +11,85 @@
     tools:context="com.bowtaps.crowdcontrol.SettingsActivity">
 
     <TextView
-        android:id="@+id/description_textview"
+        android:id="@+id/search_distance_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:text="@string/search_distance"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/change_profile_name_button"
+        android:layout_alignStart="@+id/change_profile_name_button" />
 
     <RadioGroup
-        android:id="@+id/searchdistance_radiogroup"
+        android:id="@+id/search_distance_radiogroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/description_textview"
-        android:layout_alignStart="@+id/description_textview"
-        android:layout_below="@+id/description_textview" />
+        android:layout_toEndOf="@+id/search_distance_text" />
+
 
     <Button
         android:id="@+id/logout_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/logout_full"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="false"
+        android:layout_marginRight="200dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
+        />
+
+    <Button
+        android:id="@+id/finished_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Finished"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:gravity="bottom|right"
+        android:layout_marginLeft="200dp"
+        android:layout_alignParentRight="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_name_edit_text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:text="@string/logout_full" />
+        android:layout_alignEnd="@+id/finished_button" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Profile Name"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/change_profile_name_button"
+        android:layout_below="@+id/user_name_edit_text"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Current Group:"
+        android:textStyle="bold"
+        android:id="@+id/current_group_text"
+        android:layout_below="@+id/search_distance_text"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="45dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/group_name_display"
+        android:text="None"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/current_group_text" />
 
 </RelativeLayout>

@@ -33,6 +33,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
     Button mButtonToTabs;
 
+    //sets class based toolbar
     Toolbar mToolbar;
 
 
@@ -113,7 +114,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     }
 
     /*
-     *  Creates the menu
+     *  Creates the option menu for the tool bar
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -123,7 +124,7 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     }
 
     /*
-     *  Determines which item in the list view is selected
+     *  This handles the clicks on the drop down menu in the tool bar
      *
      *  @see GroupModelAdapter
      *  @see GroupNavigationActivity
@@ -135,9 +136,15 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //check if settings
         if (id == R.id.action_settings) {
             launchSettingsActivity();
+            return true;
+        }
+
+        //Notifications
+        if (id == R.id.action_notification) {
+            launchNotificationActivity();
             return true;
         }
 
@@ -173,40 +180,16 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
 
         // Get the selected group
         final GroupModel groupModel = mGroupListAdapter.getItem(position);
-        final UserModel userModel = CrowdControlApplication.getInstance().getModelManager().getCurrentUser();
 
-        // First load members from current group
-        groupModel.loadInBackground(new BaseModel.LoadCallback() {
-            @Override
-            public void doneLoadingModel(BaseModel object, Exception ex) {
+        try {
+            CrowdControlApplication.getInstance().getModelManager().joinGroup(groupModel);
+        } catch(Exception e){
+            Log.d(TAG, "Unable to join group");
+        }
 
-                // Verify operation was successful
-                if (object == null || ex != null) {
-                    Log.d(TAG, "Unable to load group model");
-                    return;
-                }
+        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup((GroupModel) groupModel);
+        launchGroupNavigationActivity();
 
-                if (!groupModel.addGroupMember(userModel.getProfile())) {
-                    Log.d(TAG, "Unable to add user to group. User may already be member of group.");
-                }
-
-                // After changing the model, attempt to save
-                groupModel.saveInBackground(new BaseModel.SaveCallback() {
-                    @Override
-                    public void doneSavingModel(BaseModel object, Exception ex) {
-
-                        // Verify operation was successful
-                        if (ex != null) {
-                            Log.d(TAG, "Unable to save group model");
-                            return;
-                        }
-
-                        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup((GroupModel) object);
-                        launchGroupNavigationActivity();
-                    }
-                });
-            }
-        });
     }
 
     /**
@@ -227,6 +210,16 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
      */
     private void onSettingsButtonClick(Button button) {
         launchSettingsActivity();
+    }
+
+    /*
+     *  Launches the (@Link NotificationActivity)
+     *
+     *  @see SettingsActivity
+     */
+    private void launchNotificationActivity() {
+        Intent myIntent = new Intent(this, NotificationActivity.class);
+        this.startActivity(myIntent);
     }
 
     /*

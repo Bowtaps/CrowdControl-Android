@@ -79,10 +79,10 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
         if (profile == null) {
             ParseObject profileObject = object.getParseObject(profileKey);
             if (profileObject == null) {
-                profile = new ParseUserProfileModel();
+                profile = new ParseUserProfileModel(); // TODO THIS NEEDS TO BE REMOVED
                 object.put(profileKey, profile.getParseObject());
             } else {
-                profile = new ParseUserProfileModel(profileObject);
+                profile = ParseUserProfileModel.createFromParseObject(profileObject);
             }
 
         }

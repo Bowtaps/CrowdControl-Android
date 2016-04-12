@@ -248,4 +248,28 @@ public interface ModelManager {
      * @throws ParseException Throws an exception if an error occurred for any reason.
      */
     public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException;
+
+    public ConversationModel createConversation(GroupModel group) throws Exception;
+
+    public List<? extends ConversationModel> fetchConversations() throws Exception;
+
+    public List<? extends ConversationModel> fetchConversationsForGroupAndUser(GroupModel group, UserProfileModel user) throws Exception;
+
+    public List<? extends MessageModel> createMessage(String messageId, Date timestamp, ConversationModel conversation, String message);
+
+    public List<? extends MessageModel> fetchMessages(ConversationModel conversation) throws Exception;
+
+    public List<? extends MessageModel> fetchMessages(ConversationModel conversation, UserProfileModel user, Date before, Integer limit) throws Exception;
+
+
+    public List<? extends InvitationModel> fetchNotifications() throws Exception;
+
+    public List<? extends InvitationModel> fetchInvitationsForUser(UserProfileModel user) throws Exception;
+
+    public List<? extends InvitationModel> fetchInvitationsForGroup(GroupModel group) throws Exception;
+
+
+    public GroupModel joinGroup(GroupModel group) throws Exception;
+
+    public GroupModel leaveGroup(GroupModel group) throws Exception;
 }
