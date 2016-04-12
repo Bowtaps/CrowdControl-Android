@@ -151,13 +151,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
     }
 
     private void myMethodCall1(FloatingActionButton view) {
-        Log.d("myMtethodCall1", "Homing button pressed");
-        SecureLocationManager secureLocationManager = CrowdControlApplication.getInstance().getLocationManager();
-        LatLng myLoc = secureLocationManager.getCurrentLocation();
-        if(mMap == null){
-            setUpMapIfNeeded();
-        }
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLoc, 15));
+        centerOnUser();
     }
 
     private void myMethodCall2(FloatingActionButton view) {
@@ -166,6 +160,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
         }
         refreshMarkers();
 
+    }
+    private void centerOnUser(){
+        SecureLocationManager secureLocationManager = CrowdControlApplication.getInstance().getLocationManager();
+        LatLng myLoc = secureLocationManager.getCurrentLocation();
+        if(mMap == null){
+            setUpMapIfNeeded();
+        }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLoc, 15));
     }
 
     /**
@@ -209,7 +211,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
     }
 
     private void refreshMarkers(){
-
+        String memberDisplayName;
         // Get locations for current group members
         ModelManager modelManager = CrowdControlApplication.getInstance().getModelManager();
         GroupModel group = modelManager.getCurrentGroup();
@@ -236,7 +238,13 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
 
                 Log.d("Adding Marker for: ", location.getFrom().getDisplayName());
                 // Add marker to map
-                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(location.getFrom().getDisplayName()).icon(BitmapDescriptorFactory.defaultMarker(mMarkerColors.get(i))));
+                try{
+                    memberDisplayName = location.getFrom().getDisplayName();
+                }catch (Exception e){
+                    Log.e("Display Name Exception", e.toString());
+                    memberDisplayName = "member " + i;
+                }
+                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(memberDisplayName).icon(BitmapDescriptorFactory.defaultMarker(mMarkerColors.get(i))));
                 i = (i+1)% 8;
 
             }
