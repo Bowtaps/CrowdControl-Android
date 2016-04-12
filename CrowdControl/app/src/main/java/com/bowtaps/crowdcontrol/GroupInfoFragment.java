@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -150,6 +151,19 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         mGroup = group;
 
         updateViews();
+
+        Menu menu = ((GroupNavigationActivity) getActivity()).getOptionMenu();
+        menu.clear();
+        ((GroupNavigationActivity) getActivity()).setOptionMenu(menu);
+
+        //If leader display leader specific menu
+        if( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupLeader() != null && CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupLeader().
+                equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile())) {
+            getActivity().getMenuInflater().inflate(R.menu.menu_main_event_navigation_leader, ((GroupNavigationActivity) getActivity()).getOptionMenu());
+        }
+        else {
+            getActivity().getMenuInflater().inflate(R.menu.menu_main_event_navigation, ((GroupNavigationActivity) getActivity()).getOptionMenu());
+        }
     }
 
 

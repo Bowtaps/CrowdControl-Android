@@ -41,6 +41,8 @@ public class GroupNavigationActivity extends AppCompatActivity {
     private SimpleTabsAdapter mTabsAdapter;
     private GroupService.GroupServiceBinder groupServiceBinder;
 
+    Menu mMenu;
+
     private ProgressDialog progressDialog;
     private BroadcastReceiver receiver = null;
     private ServiceConnection mServiceConnection;
@@ -144,6 +146,14 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         unbindService(mServiceConnection);
         stopService(new Intent(getApplicationContext(), GroupService.class));
+    }
+
+    public Menu getOptionMenu(){
+        return mMenu;
+    }
+
+    public void setOptionMenu(Menu menu){
+        mMenu = menu;
     }
 
     private void setUpReceiver() {
@@ -286,6 +296,8 @@ public class GroupNavigationActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
+        mMenu = menu;
 
         //If leader display leader specific menu
         if( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupLeader() == null) {
