@@ -158,7 +158,8 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
      */
     private void onLeaveGroupButtonClick(Button view) {
 
-        if( mGroup.getGroupLeader() != null && mGroup.getGroupLeader().equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile())) {
+        if( mGroup.getGroupLeader() != null && mGroup.getGroupLeader().equals(
+                CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile())) {
             leaveLeaderDialog(getActivity(), "Disband Group?", "Are you sure you want to disband this group?", "Yes, Disband Group");
         } else {
             leaveDialog(getActivity(), "Leave Group?", "Are you sure you want to leave this group?", "Yes, Leave Group");
@@ -174,8 +175,17 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
 
             // Replace existing list with new results
             mMemberList.clear();
-            if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null)
+            if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null) {
                 mMemberList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
+                if(!mMemberList.isEmpty()  &&
+                        !mMemberList.contains(
+                                CrowdControlApplication.getInstance().getModelManager().getCurrentUser())){
+//                    CrowdControlApplication.getInstance().getModelManager().setCurrentGroup(null);
+//
+//                    launchGroupJoinActivity();
+//                    getActivity().finish();
+                }
+            }
 
             // Use data from current group to fill UI elements with data
             if (mGroup.getGroupLeader() != null) {
@@ -194,6 +204,7 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
             //race conditions can cause this to happen during a log out sequence, check to make sure not logged out
             if (CrowdControlApplication.getInstance().getModelManager().getCurrentUser() != null) {
                 launchGroupJoinActivity();
+                getActivity().finish();
             }
         }
     }
@@ -339,13 +350,17 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
                             }
                         }
                     });
+                    mGroupLeaderTextView.setText("Loading...");
                     return true;
                 }
 
                 return false;
             }
         });
-        if(!(currentProfile.equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile()))) {
+        if(!(currentProfile.equals(
+                CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile()))
+                && (CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().equals(
+                CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupLeader()))) {
             //do nothing, stop clicking thyself
             //todo this should also catch not being the leader.... waiting for leader issues to be fixed
             popup.show();
