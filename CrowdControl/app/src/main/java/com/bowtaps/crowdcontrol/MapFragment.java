@@ -30,6 +30,7 @@ import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -45,7 +46,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  * Will Display a Google Map and place group members on it
  */
-public class MapFragment extends Fragment implements View.OnClickListener, GroupService.LocationUpdatesListener {
+public class MapFragment extends Fragment implements View.OnClickListener, GroupService.LocationUpdatesListener, OnMapReadyCallback {
     private static final String ARG_PARAM1 = "param1";
     private static ArrayList<Float> mMarkerColors;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -127,7 +128,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
         // Declare button clicks
         mLocationButton.setOnClickListener(this);
         mSyncButton.setOnClickListener(this);
+        f.getMapAsync(this);
         return v;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map){
+        Log.d("Map", "on Map ready function");
+        centerOnUser();
     }
 
     @Override
