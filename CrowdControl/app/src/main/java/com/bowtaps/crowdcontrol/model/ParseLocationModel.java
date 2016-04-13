@@ -195,14 +195,15 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
                 oldResult.deleteInBackground();
             }
         }catch (ParseException e){
-            Log.e("Parse Exception", e.toString());
+            Log.e("Location M Exception", e.toString());
         }
         //for each member of the group create the location model
         //create a location object from me to each group member
+        Log.d("Location Model", groupMembers.toString());
         sendLocationToList((List<UserProfileModel>)groupMembers);
     }
     public static void sendLocationToList(List<UserProfileModel> members){
-        Log.d("Testing SendLocation", members.toString());
+        Log.d("Testing Send Location", members.toString());
         UserProfileModel me = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
         LatLng currentLocation = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
 

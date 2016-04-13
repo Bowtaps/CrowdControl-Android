@@ -93,6 +93,8 @@ public class GroupService extends Service {
 
     private LatLng currentLocation;
 
+    private Integer locationCounter;
+
 
     /**
      * Default constructor for this object. Initializes properties.
@@ -122,6 +124,7 @@ public class GroupService extends Service {
         final String groupId = intent.getStringExtra(INTENT_GROUP_ID_KEY);
         final String userPId = intent.getStringExtra(INTENT_USER_ID_KEY);
         currentLocation = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
+        locationCounter = 0;
         // Verify parameters
         if (groupId == null || userPId == null) {
             stopSelf(startId);
@@ -229,6 +232,13 @@ public class GroupService extends Service {
         currentLocation = locationManager.getCurrentLocation();
         if(!currentLocation.equals(previousLocation)){
             locationManager.broadcastLocation();
+        }
+        if(locationCounter < 6){
+            locationCounter++;
+        }else{
+            locationManager.broadcastLocation();
+            locationCounter = 0;
+            Log.d("Service", "Broadcast Location");
         }
 
         // Forward calls to listeners

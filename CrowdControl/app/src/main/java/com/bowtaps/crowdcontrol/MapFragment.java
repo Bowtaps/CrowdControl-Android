@@ -244,20 +244,19 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
                 Double longitude = location.getLongitude();
                 Double latitude = location.getLatitude();
 
-                Log.d("Adding Marker for: ", location.getFrom().getDisplayName());
                 // Add marker to map
-                try{
+                if(location.getFrom().getDisplayName() == null){
+                    memberDisplayName = "member".concat(i.toString());
+                }else{
                     memberDisplayName = location.getFrom().getDisplayName();
-                }catch (Exception e){
-                    Log.e("Display Name Exception", e.toString());
-                    memberDisplayName = "member " + i;
                 }
+
                 mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(memberDisplayName).icon(BitmapDescriptorFactory.defaultMarker(mMarkerColors.get(i))));
                 i = (i+1)% 8;
 
             }
         }catch (Exception e) {
-            Log.d("Exception", e.toString());
+            Log.d("Exception testing", e.toString());
         }
     }
 

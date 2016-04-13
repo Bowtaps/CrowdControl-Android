@@ -233,6 +233,7 @@ public class ParseLocationManager implements SecureLocationManager {
 //            ParseLocationModel.broadcastLocation();
 //        }
         //List<UserProfileModel> groupMembers = (List<UserProfileModel>) CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers();
+        Log.d("LocationManager", "Bcasting location");
         ParseLocationModel.broadcastLocation();
     }
 }
