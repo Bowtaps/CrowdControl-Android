@@ -1,10 +1,9 @@
 package com.bowtaps.crowdcontrol;
 
 import android.content.Intent;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -17,7 +16,6 @@ import android.widget.ListView;
 import com.bowtaps.crowdcontrol.adapters.GroupModelAdapter;
 import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
-import com.bowtaps.crowdcontrol.model.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +26,9 @@ import java.util.List;
  * This Activity will be the default view of all registered users that are not
  * in a group
  */
-public class GroupJoinActivity extends AppCompatActivity implements View.OnClickListener, ListView.OnItemClickListener {
+public class GroupJoinActivity extends AppCompatActivity implements
+        View.OnClickListener, ListView.OnItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
 
     Button mButtonToTabs;
@@ -42,6 +42,8 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
     private GroupModelAdapter mGroupListAdapter;
     private ListView mGroupListView;
     private List<GroupModel> mGroupList;
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Intent mMessagingServiceIntent;
 
@@ -68,6 +70,10 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         mGroupListView.setAdapter(mGroupListAdapter);
         mGroupListView.setOnItemClickListener(this);
 
+        //sets up the swipeRefresh list
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+
         // Get handles to Buttons
         mButtonToTabs = (Button) findViewById(R.id.buttonToTab);
 
@@ -92,25 +98,19 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         mToolbar.setTitle("Join A Group");
 
 
-        // Fetch group list to display
-        CrowdControlApplication.getInstance().getModelManager().fetchAllGroupsInBackground(new BaseModel.FetchCallback() {
-            @Override
-            public void doneFetchingModels(List<? extends BaseModel> results, Exception ex) {
+        /**
+         * Showing Swipe Refresh animation on activity create
+         * As animation won't start on onCreate, post runnable is used
+         */
+        mSwipeRefreshLayout.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mSwipeRefreshLayout.setRefreshing(true);
 
-                // Verify operation was successful
-                if (results == null || ex != null) {
-                    Log.d(TAG, "Failed to load group list");
-                    return;
-                }
-
-                // Replace existing list with new results
-                mGroupList.clear();
-                mGroupList.addAll((List<GroupModel>) results);
-
-                // Force update on the list adapter
-                mGroupListAdapter.notifyDataSetChanged();
-            }
-        });
+                                        fetchGroups();
+                                    }
+                                }
+        );
     }
 
     /*
@@ -257,4 +257,33 @@ public class GroupJoinActivity extends AppCompatActivity implements View.OnClick
         super.onDestroy();
     }
 
+    @Override
+    public void onRefresh() {
+        fetchGroups();
+    }
+
+    private void fetchGroups(){
+        // Fetch group list to display
+        CrowdControlApplication.getInstance().getModelManager().fetchAllGroupsInBackground(new BaseModel.FetchCallback() {
+            @Override
+            public void doneFetchingModels(List<? extends BaseModel> results, Exception ex) {
+
+                // Verify operation was successful
+                if (results == null || ex != null) {
+                    Log.d(TAG, "Failed to load group list");
+                    return;
+                }
+
+                // Replace existing list with new results
+                mGroupList.clear();
+                mGroupList.addAll((List<GroupModel>) results);
+
+                // Force update on the list adapter
+                mGroupListAdapter.notifyDataSetChanged();
+
+                // stopping swipe refresh
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
 }
