@@ -25,14 +25,20 @@ import com.bowtaps.crowdcontrol.model.ModelManager;
 import com.bowtaps.crowdcontrol.model.ParseLocationManager;
 import com.bowtaps.crowdcontrol.model.ParseLocationModel;
 import com.bowtaps.crowdcontrol.model.SecureLocationManager;
+import com.bowtaps.crowdcontrol.model.UserModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -40,8 +46,9 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  * Will Display a Google Map and place group members on it
  */
-public class MapFragment extends Fragment implements View.OnClickListener, GroupService.LocationUpdatesListener {
+public class MapFragment extends Fragment implements View.OnClickListener, GroupService.LocationUpdatesListener, OnMapReadyCallback {
     private static final String ARG_PARAM1 = "param1";
+    private static ArrayList<Float> mMarkerColors;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     private String mText;
@@ -102,6 +109,17 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
         FragmentTransaction t = getChildFragmentManager().beginTransaction();
         t.add(R.id.map_frame, f);
         t.commit();
+        MapsInitializer.initialize(CrowdControlApplication.getInstance());
+
+        mMarkerColors = new ArrayList<Float>();
+        mMarkerColors.add(BitmapDescriptorFactory.HUE_AZURE);
+        mMarkerColors.add(BitmapDescriptorFactory.HUE_BLUE);
+        mMarkerColors.add(BitmapDescriptorFactory.HUE_CYAN);
+        mMarkerColors.add(BitmapDescriptorFactory.HUE_GREEN);
+        mMarkerColors.add(BitmapDescriptorFactory.HUE_MAGENTA);
+        mMarkerColors.add(BitmapDescriptorFactory.HUE_ORANGE);
+        mMarkerColors.add(BitmapDescriptorFactory.HUE_VIOLET);
+        mMarkerColors.add(BitmapDescriptorFactory.HUE_YELLOW);
 
         // Get handle to button
         mLocationButton = (FloatingActionButton)v.findViewById(R.id.locationButton);
@@ -110,7 +128,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
         // Declare button clicks
         mLocationButton.setOnClickListener(this);
         mSyncButton.setOnClickListener(this);
+        f.getMapAsync(this);
         return v;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map){
+        Log.d("Map", "on Map ready function");
+        centerOnUser();
     }
 
     @Override
@@ -134,18 +159,23 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
     }
 
     private void myMethodCall1(FloatingActionButton view) {
-        Log.d("myMtethodCall1", "Homing button pressed");
+        centerOnUser();
+    }
+
+    private void myMethodCall2(FloatingActionButton view) {
+        if(mMap == null){
+            setUpMapIfNeeded();
+        }
+        refreshMarkers();
+
+    }
+    private void centerOnUser(){
         SecureLocationManager secureLocationManager = CrowdControlApplication.getInstance().getLocationManager();
         LatLng myLoc = secureLocationManager.getCurrentLocation();
         if(mMap == null){
             setUpMapIfNeeded();
         }
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLoc, 15));
-    }
-
-    private void myMethodCall2(FloatingActionButton view) {
-        refreshMarkers();
-
     }
 
     /**
@@ -184,42 +214,55 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
      */
     private void setUpMap() {
         LatLng myLoc = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
-        mMap.addMarker(new MarkerOptions().position(myLoc).title("My Location"));
+        UserModel me = CrowdControlApplication.getInstance().getModelManager().getCurrentUser();
+        mMap.addMarker(new MarkerOptions().position(myLoc).title(me.getProfile().getDisplayName()));
     }
 
     private void refreshMarkers(){
-
+        String memberDisplayName;
         // Get locations for current group members
         ModelManager modelManager = CrowdControlApplication.getInstance().getModelManager();
         GroupModel group = modelManager.getCurrentGroup();
         UserProfileModel me = modelManager.getCurrentUser().getProfile();
         LatLng myLoc = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
         try {
-            List<? extends LocationModel> locations = CrowdControlApplication.getInstance().getModelManager().fetchLocationsToUser(me);
+            List<? extends LocationModel> locations = CrowdControlApplication.getInstance().getLocationManager().getLocations();
+            Integer i = 0;
             // Remove pins from map
             if(mMap != null){
                 mMap.clear();
             }
-            mMap.addMarker(new MarkerOptions().position(myLoc).title("ME!!!"));
+            else{
+                mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_frame)).getMap();
+                mMap.clear();
+            }
+            mMap.addMarker(new MarkerOptions().position(myLoc).title(me.getDisplayName()));
             // Put markers on map
             for (LocationModel location : locations){
 
                 // Build location marker
                 Double longitude = location.getLongitude();
                 Double latitude = location.getLatitude();
-                Log.d("MapFragment", "user location: lat = " + latitude + ", long = " + longitude);
 
                 // Add marker to map
-                if (mMap == null) mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_frame)).getMap();
-                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(location.getFrom().getDisplayName()));
+                if(location.getFrom().getDisplayName() == null){
+                    memberDisplayName = "member".concat(i.toString());
+                }else{
+                    memberDisplayName = location.getFrom().getDisplayName();
+                }
+
+                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(memberDisplayName).icon(BitmapDescriptorFactory.defaultMarker(mMarkerColors.get(i))));
+                i = (i+1)% 8;
+
             }
         }catch (Exception e) {
-            Log.d("Exception", e.toString());
+            Log.d("Exception testing", e.toString());
         }
     }
 
     @Override
     public void onReceivedLocationUpdate(List<LocationModel> locations) {
+        CrowdControlApplication.getInstance().getLocationManager().updateLocations(locations);
         refreshMarkers();
     }
 }

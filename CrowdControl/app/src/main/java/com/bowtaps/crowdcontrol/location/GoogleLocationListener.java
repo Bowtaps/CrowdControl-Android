@@ -31,19 +31,18 @@ public class GoogleLocationListener implements LocationListener {
         if(Build.FINGERPRINT.contains("generic")) {
             this.latitude = 44.07082231;      //Joe's house
             this.longitude = -103.25872087;
+            Log.d("Emulation", "It's running on an emulator");
         }
 
         else{
             this.longitude = location.getLongitude();
             this.latitude = location.getLatitude();
-            Log.d("location listener", location.toString());
         }
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         this.status = status;
-        Log.d("Location Status", "Status Changed to: " + status);
     }
 
     @Override
@@ -57,11 +56,9 @@ public class GoogleLocationListener implements LocationListener {
     }
 
     public Double getLongitude(){
-        Log.d("getLongitude", this.longitude.toString());
         return this.longitude;
     }
     public Double getLatitude(){
-        Log.d("getLatitude", this.latitude.toString());
         return this.latitude;
     }
     public void setLocation(LatLng newLoc){
