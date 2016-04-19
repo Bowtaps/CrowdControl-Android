@@ -189,6 +189,10 @@ public class ParseLocationManager implements SecureLocationManager {
         }
     }
 
+    public void removeLocation(UserProfileModel from){
+        memberLocations.remove(from.getId());
+    }
+
     /**
      * @see SecureLocationManager#getUserLocation(UserProfileModel)
      */

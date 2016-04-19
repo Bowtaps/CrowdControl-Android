@@ -82,6 +82,8 @@ public interface SecureLocationManager {
      */
     public void updateLocations(Collection<? extends LocationModel> locations);
 
+    public void removeLocation(UserProfileModel from);
+
     /**
      * Gets the cached {@link LocationModel} object for the requested {@link UserProfileModel}.
      *
