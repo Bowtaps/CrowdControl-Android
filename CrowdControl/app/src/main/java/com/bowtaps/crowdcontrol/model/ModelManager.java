@@ -249,27 +249,134 @@ public interface ModelManager {
      */
     public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException;
 
+    /**
+     * Creates a new conversation belonging to a specific group.
+     *
+     * @param group The group to which the conversation belongs.
+     *
+     * @return The newly created conversation model.
+     *
+     * @throws Exception Throws an exception if creating and saving the conversation fails.
+     */
     public ConversationModel createConversation(GroupModel group) throws Exception;
 
+    /**
+     * Fetches all conversations from storage.
+     *
+     * @return A list of all conversation models in storage.
+     *
+     * @throws Exception Throws an exception if the operation fails for any reason.
+     */
     public List<? extends ConversationModel> fetchConversations() throws Exception;
 
+    /**
+     * Fetches all conversations belonging to the given group in which the given user is a
+     * participant.
+     *
+     * @param group The group to fetch conversations for.
+     * @param user The user to fetch conversations for.
+     *
+     * @return A list of conversations belonging to the given group in which the given user is a
+     *         participant.
+     *
+     * @throws Exception Throws an exception if any storage operations fail.
+     */
     public List<? extends ConversationModel> fetchConversationsForGroupAndUser(GroupModel group, UserProfileModel user) throws Exception;
 
+    /**
+     * Creates a new message and connects it to the appropriate entities. The newly created message
+     * is assembled from the supplied parameters.
+     *
+     * @param messageId The identifier to assign to the new message.
+     * @param timestamp The timestamp that the message was created.
+     * @param conversation The conversation to which the message belongs.
+     * @param message The string contents of the message.
+     *
+     * @return A list of newly created message models created based on the supplied parameters.
+     *         Each message model will be addressed to a different conversation participant.
+     */
     public List<? extends MessageModel> createMessage(String messageId, Date timestamp, ConversationModel conversation, String message);
 
+    /**
+     * Loads the next uncached messages from storage. Each consecutive call to this method will load
+     * another batch of previously unloaded messages, assuming any remain.
+     *
+     * @param conversation The conversation for which to load the new messages.
+     *
+     * @return A list of message models belonging to the conversation that have before now not have
+     *         been loaded from storage.
+     *
+     * @throws Exception Throws an exception if the storage operation fails.
+     */
     public List<? extends MessageModel> fetchMessages(ConversationModel conversation) throws Exception;
 
+    /**
+     * Loads the next set of uncached messages from storage. This method is an alternative to
+     * calling {@link #fetchMessages(ConversationModel)} that allows for specific control over the
+     * range of messages to fetch.
+     *
+     * @param conversation The conversation from which to fetch the messages.
+     * @param user The user to which the fetched messages are to be addressed.
+     * @param before The timestamp before which all fetched messages should have been created.
+     * @param limit The maximum number of messages to fetch.
+     * @return The list of message models fetched from storage.
+     * @throws Exception Throws an exception should any storage operation fails.
+     */
     public List<? extends MessageModel> fetchMessages(ConversationModel conversation, UserProfileModel user, Date before, Integer limit) throws Exception;
 
 
+    /**
+     * Fetches all notifications from storage sent to the currently logged in user.
+     *
+     * @return A list of all existing invitations addressed to the currently logged in user.
+     *
+     * @throws Exception throws an exception should any storage operation fail.
+     */
     public List<? extends InvitationModel> fetchNotifications() throws Exception;
 
+    /**
+     * Fetches all invitations addressed to the supplied user.
+     *
+     * @param user The user for which to fetch invitations.
+     *
+     * @return List of invitations addressed to the supplied user.
+     *
+     * @throws Exception Throws an exception should any storage operation fail.
+     */
     public List<? extends InvitationModel> fetchInvitationsForUser(UserProfileModel user) throws Exception;
 
+    /**
+     * Loads all invitations sent out from the supplied group to any user.
+     *
+     * @param group the group to which all fetched invitations belong.
+     *
+     * @return A list of invitations sent from the given group.
+     *
+     * @throws Exception Throws an exception should any storage operation fail.
+     */
     public List<? extends InvitationModel> fetchInvitationsForGroup(GroupModel group) throws Exception;
 
 
+    /**
+     * Causes the currently logged in user to join the supplied group.
+     *
+     * @param group The group to join.
+     *
+     * @return Returns the group to which the current user belongs after the operation. This value
+     *         may be {@code null} if the operation fails.
+     *
+     * @throws Exception Throws an exception should any storage operation fail.
+     */
     public GroupModel joinGroup(GroupModel group) throws Exception;
 
+    /**
+     * Causes the currently logged in user to leave the supplied group.
+     *
+     * @param group The group to leave.
+     *
+     * @return Returns the group that the current user has left.
+     *
+     * @throws Exception Throws an exception should any storage operation fail.
+     */
     public GroupModel leaveGroup(GroupModel group) throws Exception;
 }

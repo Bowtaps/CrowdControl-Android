@@ -18,7 +18,7 @@ import java.util.List;
 public interface SecureLocationManager {
 
     /**
-     * TODO: Doc me, Doc!
+     * Initializes a new location request.
      */
     public void initializeLocationRequest();
 
@@ -100,5 +100,9 @@ public interface SecureLocationManager {
      */
     public List<? extends LocationModel> getUserLocations(Collection<? extends UserProfileModel> users);
 
+    /**
+     * Broadcasts the current user's location to all other members in the group and stores the data
+     * in storage.
+     */
     public void broadcastLocation();
 }
