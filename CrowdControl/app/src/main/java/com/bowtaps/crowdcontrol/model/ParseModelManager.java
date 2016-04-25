@@ -43,6 +43,9 @@ public class ParseModelManager implements ModelManager {
      */
     private Map<String, ParseBaseModel> cachedModels;
 
+    /**
+     * The singleton instance of this class. Can be retrieved by calling {@link #getInstance()}.
+     */
     private static ParseModelManager instance;
 
 
@@ -66,10 +69,19 @@ public class ParseModelManager implements ModelManager {
         instance = this;
     }
 
+    /**
+     * Gets the singleton instance of this class.
+     *
+     * @return The singleton instance of this class.
+     */
     protected static ParseModelManager getInstance() {
         return instance;
     }
 
+
+    /**
+     * @see ModelManager#deleteModel(BaseModel)
+     */
     @Override
     public void deleteModel(BaseModel model) throws ParseException {
 
@@ -91,6 +103,9 @@ public class ParseModelManager implements ModelManager {
         parseModel.delete();
     }
 
+    /**
+     * @see ModelManager#deleteModelInBackground(BaseModel, BaseModel.DeleteCallback)
+     */
     @Override
     public void deleteModelInBackground(BaseModel model, final BaseModel.DeleteCallback callback) {
 
@@ -112,6 +127,9 @@ public class ParseModelManager implements ModelManager {
         parseModel.deleteInBackground(callback);
     }
 
+    /**
+     * @see ModelManager#logInUser(String, String)
+     */
     @Override
     public ParseUserModel logInUser(String username, String password) throws ParseException {
 
@@ -134,6 +152,9 @@ public class ParseModelManager implements ModelManager {
         return userModel;
     }
 
+    /**
+     * @see ModelManager#logInUserInBackground(String, String, BaseModel.LoadCallback)
+     */
     @Override
     public void logInUserInBackground(String username, String password, final BaseModel.LoadCallback callback) {
 
@@ -185,6 +206,9 @@ public class ParseModelManager implements ModelManager {
         }.execute(username, password, callback);
     }
 
+    /**
+     * @see ModelManager#createUser(String, String, String)
+     */
     @Override
     public ParseUserModel createUser(String username, String email, String password) throws ParseException {
 
@@ -203,6 +227,9 @@ public class ParseModelManager implements ModelManager {
         return userModel;
     }
 
+    /**
+     * @see ModelManager#createUserInBackground(String, String, String, BaseModel.SaveCallback)
+     */
     @Override
     public void createUserInBackground(String username, String email, String password, final BaseModel.SaveCallback callback) {
 
@@ -255,6 +282,9 @@ public class ParseModelManager implements ModelManager {
         }.execute(username, email, password, callback);
     }
 
+    /**
+     * @see ModelManager#getCurrentUser()
+     */
     @Override
     public ParseUserModel getCurrentUser() {
 
@@ -269,6 +299,9 @@ public class ParseModelManager implements ModelManager {
         return currentUser;
     }
 
+    /**
+     * @see ModelManager#logOutCurrentUser()
+     */
     @Override
     public Boolean logOutCurrentUser() throws ParseException {
 
@@ -284,6 +317,9 @@ public class ParseModelManager implements ModelManager {
         return true;
     }
 
+    /**
+     * @see ModelManager#fetchAllGroups()
+     */
     @Override
     public List<ParseGroupModel> fetchAllGroups() throws Exception {
         List<ParseGroupModel> groups = ParseGroupModel.getAll();
@@ -293,6 +329,9 @@ public class ParseModelManager implements ModelManager {
         return groups;
     }
 
+    /**
+     * @see ModelManager#fetchAllGroupsInBackground(BaseModel.FetchCallback)
+     */
     @Override
     public void fetchAllGroupsInBackground(final BaseModel.FetchCallback callback) {
 
@@ -344,11 +383,17 @@ public class ParseModelManager implements ModelManager {
         }.execute(callback);
     }
 
+    /**
+     * @see ModelManager#getCurrentGroup()
+     */
     @Override
     public ParseGroupModel getCurrentGroup() {
         return currentGroup;
     }
 
+    /**
+     * @see ModelManager#setCurrentGroup(GroupModel)
+     */
     @Override
     public void setCurrentGroup(GroupModel group) {
 
@@ -362,6 +407,9 @@ public class ParseModelManager implements ModelManager {
         }
     }
 
+    /**
+     * @see ModelManager#fetchCurrentGroup()
+     */
     @Override
     public GroupModel fetchCurrentGroup() throws Exception {
 
@@ -376,6 +424,9 @@ public class ParseModelManager implements ModelManager {
         return getCurrentGroup();
     }
 
+    /**
+     * @see ModelManager#fetchCurrentGroupInBackground(BaseModel.LoadCallback)
+     */
     @Override
     public void fetchCurrentGroupInBackground(final BaseModel.LoadCallback callback) {
 
@@ -441,6 +492,9 @@ public class ParseModelManager implements ModelManager {
         }.execute(userModel.getProfile(), callback);
     }
 
+    /**
+     * @see ModelManager#createGroup(UserProfileModel, String, String)
+     */
     @Override
     public ParseGroupModel createGroup(UserProfileModel leader, String name, String description) throws Exception {
 
@@ -468,6 +522,9 @@ public class ParseModelManager implements ModelManager {
         return groupModel;
     }
 
+    /**
+     * @see ModelManager#createGroupInBackground(UserProfileModel, String, String, BaseModel.SaveCallback)
+     */
     @Override
     public void createGroupInBackground(UserProfileModel leader, String name, String description, final BaseModel.SaveCallback callback) {
         // Validate parameters
@@ -525,6 +582,9 @@ public class ParseModelManager implements ModelManager {
         }.execute(leader, name, description, callback);
     }
 
+    /**
+     * @see ModelManager#fetchGroupUpdates(String, String, Date)
+     */
     @Override
     public List<ParseBaseModel> fetchGroupUpdates(String groupId, String userPId, Date since) throws ParseException {
 
@@ -593,14 +653,7 @@ public class ParseModelManager implements ModelManager {
     }
 
     /**
-      * Creates and returns an instance of a ParseLocationModel with the fields provided by the
-      * parameters.
-      *
-      * @param to The UserProfileModel to create the to field of the object.
-      * @param from The UserProfileModel to fill in the from field.
-      * @param location A LatLng object containing the user's location.
-      *
-      * @return A ParseLocationModel containing the information from the parameters.
+      * @see ModelManager#createLocation(UserProfileModel, UserProfileModel, LatLng)
      */
     @Override
     public ParseLocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location){
@@ -617,6 +670,9 @@ public class ParseModelManager implements ModelManager {
         return loc;
     }
 
+    /**
+     * @see ModelManager#fetchLocationsFromUser(UserProfileModel)
+     */
     @Override
     public List<ParseLocationModel> fetchLocationsFromUser(UserProfileModel user) throws ParseException {
         List<ParseLocationModel> locationModels;
@@ -629,6 +685,9 @@ public class ParseModelManager implements ModelManager {
         return locationModels;
     }
 
+    /**
+     * @see ModelManager#fetchLocationsToUser(UserProfileModel)
+     */
     @Override
     public List<ParseLocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException{
         List<ParseLocationModel> locationModels;
@@ -641,6 +700,9 @@ public class ParseModelManager implements ModelManager {
     }
 
 
+    /**
+     * @see ModelManager#createConversation(GroupModel)
+     */
     @Override
     public ParseConversationModel createConversation(GroupModel group) throws ParseException {
 
@@ -660,6 +722,9 @@ public class ParseModelManager implements ModelManager {
         return conversation;
     }
 
+    /**
+     * @see ModelManager#fetchConversations()
+     */
     @Override
     public List<? extends ParseConversationModel> fetchConversations() throws ParseException {
 
@@ -671,6 +736,9 @@ public class ParseModelManager implements ModelManager {
         return fetchConversationsForGroupAndUser(getCurrentGroup(), getCurrentUser().getProfile());
     }
 
+    /**
+     * @see ModelManager#fetchConversationsForGroupAndUser(GroupModel, UserProfileModel)
+     */
     @Override
     public List<? extends ParseConversationModel> fetchConversationsForGroupAndUser(GroupModel group, UserProfileModel user) throws ParseException {
 
@@ -698,6 +766,9 @@ public class ParseModelManager implements ModelManager {
         return results;
     }
 
+    /**
+     * @see ModelManager#createMessage(String, Date, ConversationModel, String)
+     */
     @Override
     public List<? extends ParseMessageModel> createMessage(String messageId, Date timestamp, ConversationModel conversation, String message) {
         List<ParseMessageModel> messages = new ArrayList<>();
@@ -730,6 +801,9 @@ public class ParseModelManager implements ModelManager {
         return messages;
     }
 
+    /**
+     * @see ModelManager#fetchMessages(ConversationModel)
+     */
     @Override
     public List<? extends ParseMessageModel> fetchMessages(ConversationModel conversation) throws ParseException {
 
@@ -754,6 +828,9 @@ public class ParseModelManager implements ModelManager {
         return fetchMessages(conversation, user, before, limit);
     }
 
+    /**
+     * @see ModelManager#fetchMessages(ConversationModel, UserProfileModel, Date, Integer)
+     */
     @Override
     public List<? extends ParseMessageModel> fetchMessages(ConversationModel conversation, UserProfileModel user, Date before, Integer limit) throws ParseException {
 
@@ -788,6 +865,9 @@ public class ParseModelManager implements ModelManager {
     }
 
 
+    /**
+     * @see ModelManager#fetchNotifications()
+     */
     @Override
     public List<? extends ParseInvitationModel> fetchNotifications() throws ParseException {
 
@@ -808,6 +888,9 @@ public class ParseModelManager implements ModelManager {
         return modelResults;
     }
 
+    /**
+     * @see ModelManager#fetchInvitationsForUser(UserProfileModel)
+     */
     @Override
     public List<? extends ParseInvitationModel> fetchInvitationsForUser(UserProfileModel user) throws ParseException {
 
@@ -823,6 +906,9 @@ public class ParseModelManager implements ModelManager {
         return invitations;
     }
 
+    /**
+     * @see ModelManager#fetchInvitationsForGroup(GroupModel)
+     */
     @Override
     public List<? extends ParseInvitationModel> fetchInvitationsForGroup(GroupModel group) throws ParseException {
 
@@ -865,6 +951,13 @@ public class ParseModelManager implements ModelManager {
         return cachedModel;
     }
 
+    /**
+     * Checks internal cache to see if it contains a model with the supplied ID.
+     *
+     * @param id The string ID of the model to check the cache for.
+     *
+     * @return The cached model with the supplied ID or {@code null} if no such model is cached.
+     */
     protected ParseBaseModel checkCache(String id) {
         if (id == null) {
             return null;
@@ -943,6 +1036,9 @@ public class ParseModelManager implements ModelManager {
         return model;
     }
 
+    /**
+     * @see ModelManager#joinGroup(GroupModel)
+     */
     public ParseGroupModel joinGroup(GroupModel group) throws ParseException {
 
         // Verify parameters
@@ -970,6 +1066,9 @@ public class ParseModelManager implements ModelManager {
         return null;
     }
 
+    /**
+     * @see ModelManager#leaveGroup(GroupModel)
+     */
     public ParseGroupModel leaveGroup(GroupModel group) throws ParseException {
 
         if (group == null) {

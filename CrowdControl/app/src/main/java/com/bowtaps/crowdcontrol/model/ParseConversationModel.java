@@ -60,22 +60,34 @@ public class ParseConversationModel extends ParseBaseModel implements Conversati
     }
 
 
+    /**
+     * @see ConversationModel#getTitle()
+     */
     @Override
     public String getTitle() {
         return (String) getParseObject().get(titleKey);
     }
 
+    /**
+     * @see ConversationModel#setTitle(String)
+     */
     @Override
     public void setTitle(String title) {
         getParseObject().put(titleKey, title);
     }
 
+    /**
+     * @see ConversationModel#getGroup()
+     */
     @Override
     public GroupModel getGroup() {
         ParseObject parseObject = getParseObject().getParseObject(groupKey);
         return ParseGroupModel.createFromParseObject(parseObject);
     }
 
+    /**
+     * @see ConversationModel#getParticipants()
+     */
     @Override
     public List<? extends ParseUserProfileModel> getParticipants() {
         List<ParseObject> parseParticipants = (List<ParseObject>) getParseObject().get(participantsKey);
@@ -86,6 +98,9 @@ public class ParseConversationModel extends ParseBaseModel implements Conversati
         return participants;
     }
 
+    /**
+     * @see ConversationModel#addParticipant(UserProfileModel)
+     */
     @Override
     public void addParticipant(UserProfileModel user) {
         if (user == null) {
@@ -110,6 +125,9 @@ public class ParseConversationModel extends ParseBaseModel implements Conversati
         }
     }
 
+    /**
+     * @see ConversationModel#getCachedMessages()
+     */
     @Override
     public List<? extends ParseMessageModel> getCachedMessages() {
         return Collections.unmodifiableList(messages);

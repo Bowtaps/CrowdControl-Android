@@ -65,39 +65,63 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
     }
 
 
+    /**
+     * @see MessageModel#getMessageId()
+     */
     @Override
     public String getMessageId() {
         return (String) getParseObject().get(messageIdKey);
     }
 
+    /**
+     * @see MessageModel#getMessageTime()
+     */
     @Override
     public Date getMessageTime() {
         return (Date) getParseObject().get(messageTimeKey);
     }
 
+    /**
+     * @see MessageModel#getBody()
+     */
     @Override
     public String getBody() {
         return (String) getParseObject().get(bodyKey);
     }
 
+    /**
+     * @see MessageModel#getFrom()
+     */
     @Override
     public ParseUserProfileModel getFrom() {
         ParseObject parseObject = getParseObject().getParseObject(fromKey);
         return ParseUserProfileModel.createFromParseObject(parseObject);
     }
 
+    /**
+     * @see MessageModel#getTo()
+     */
     @Override
     public ParseUserProfileModel getTo() {
         ParseObject parseObject = getParseObject().getParseObject(toKey);
         return ParseUserProfileModel.createFromParseObject(parseObject);
     }
 
+    /**
+     * @see MessageModel#getConversation()
+     */
     @Override
     public ParseConversationModel getConversation() {
         ParseObject parseObject = getParseObject().getParseObject(conversationKey);
         return ParseConversationModel.createFromParseObject(parseObject);
     }
 
+    /**
+     * Compares this object's timestamp (which can be retrieved via {@link #getMessageTime()} with
+     * the supplied object. Allows instances of this class to be sorted by time.
+     *
+     * @see Comparable#compareTo(Object)
+     */
     @Override
     public int compareTo(Object other) {
         return other instanceof MessageModel ? getMessageTime().compareTo(((MessageModel) other).getMessageTime()) : 0;
@@ -172,6 +196,19 @@ public class ParseMessageModel extends ParseBaseModel implements MessageModel {
         return results;
     }
 
+    /**
+     * Creates a new instance of this class based off the supplied parameters.
+     *
+     * @param messageId The message's unique ID generated and associated on creation time. Allows
+     *                  for conversations to avoid loading and displaying duplicate messages.
+     * @param timestamp The time at which this message was created.
+     * @param conversation The conversation to which this message belongs.
+     * @param fromUser The user that sent this message.
+     * @param toUser The user to which this message was sent.
+     * @param message The string contents of this message.
+     *
+     * @return The newly created {@link ParseMessageModel}.
+     */
     public static ParseMessageModel create(String messageId, Date timestamp, ParseConversationModel conversation, ParseUserProfileModel fromUser, ParseUserProfileModel toUser, String message) {
         ParseMessageModel messageModel = new ParseMessageModel(new ParseObject(tableName));
 

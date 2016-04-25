@@ -38,7 +38,17 @@ public interface ConversationModel extends BaseModel {
      */
     List<? extends UserProfileModel> getParticipants();
 
+    /**
+     * Adds a participant to the conversation model.
+     *
+     * @param user The user to add as a participant.
+     */
     void addParticipant(UserProfileModel user);
 
+    /**
+     * Gets all messages that have been cached from storage.
+     *
+     * @return List of messages cached in memory
+     */
     List<? extends MessageModel> getCachedMessages();
 }
