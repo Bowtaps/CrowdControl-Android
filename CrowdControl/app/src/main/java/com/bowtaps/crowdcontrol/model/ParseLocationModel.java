@@ -13,10 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Parse-based implementation of the {@link LocationModel} interface. Extends
+ * {@link ParseBaseModel}.
+ *
  * @author Evan Hammer
  * @since 2016-01-19
  */
-public class ParseLocationModel extends ParseBaseModel implements LocationModel{
+public class ParseLocationModel extends ParseBaseModel implements LocationModel {
+
     /**
      * The name of the table that this object is designed to interact with.
      */
@@ -54,10 +58,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     }
 
     /**
-     * Gets the latitude variable, converts it from a string to a double and
-     *  returns it.
-     *
-     * @return latitude as a double.
+     * @see LocationModel#getLatitude()
      */
     @Override
     public double getLatitude(){
@@ -69,10 +70,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     }
 
     /**
-     * Gets the longitude variable, converts it from a string to a double
-     * and returns it.
-     *
-     * @return longitude as a double.
+     * @see LocationModel#getLongitude()
      */
     @Override
     public double getLongitude(){
@@ -84,10 +82,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     }
 
     /**
-     * Gets the To field and returns the UserProfileModel.
-     *
-     * @return UserProfileModel containing the user who is receiving the
-     *          location.
+     * @see LocationModel#getTo()
      */
     @Override
     public ParseUserProfileModel getTo() {
@@ -95,9 +90,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     }
 
     /**
-     * Gets the From field and returns the UserProfileModel.
-     *
-     * @return UserProfileModel containing the user who sent the location.
+     * @see LocationModel#getFrom()
      */
     @Override
     public ParseUserProfileModel getFrom() {
@@ -106,9 +99,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     }
 
     /**
-     * Sets the Latitude variable, converting from a double to a string.
-     *
-     * @param latitude - value for the latitudinal coordinate.
+     * @see LocationModel#setLatitude(double)
      */
     @Override
     public void setLatitude(double latitude){
@@ -116,9 +107,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     }
 
     /**
-     * Sets the Longitude variable, converting from a double to a string.
-     *
-     * @param longitude - value for the longitudinal coordinate.
+     * @see LocationModel#setLongitude(double)
      */
     @Override
     public void setLongitude(double longitude){
@@ -126,9 +115,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     }
 
     /**
-     * Sets the To field, the user Receiving the location
-     *
-     * @param userProfileModel - UserProfileModel of the location recipient
+     * @see LocationModel#setTo(UserProfileModel)
      */
     @Override
     public void setTo(UserProfileModel userProfileModel){
@@ -142,9 +129,7 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     }
 
     /**
-     * Sets the From field, the user that sent the location.
-     *
-     * @param userProfileModel - UserProfileModel of the location sender
+     * @see LocationModel#setFrom(UserProfileModel)
      */
     @Override
     public void setFrom(UserProfileModel userProfileModel){
@@ -179,6 +164,9 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
         fromUser.fetch();
     }
 
+    /**
+     * Broadcasts the current user's location to all other members of the group.
+     */
     public static void broadcastLocation(){
         //Send out the data to all members of the group
         //First get the group members
@@ -202,6 +190,12 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
         Log.d("Location Model", groupMembers.toString());
         sendLocationToList((List<UserProfileModel>)groupMembers);
     }
+
+    /**
+     * Sends current user's location to each user in the supplied list of {@link UserProfileModel}s.
+     *
+     * @param members The list of users to send the current user's location to.
+     */
     public static void sendLocationToList(List<UserProfileModel> members){
         Log.d("Testing Send Location", members.toString());
         UserProfileModel me = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
@@ -298,8 +292,12 @@ public class ParseLocationModel extends ParseBaseModel implements LocationModel{
     }
 
     /**
-     * @param pObject
-     * @return
+     * Creates a new instance of the {@link ParseLocationModel} using the supplied
+     * {@link ParseObject} as the underlying handle into storage.
+     *
+     * @param pObject The {@link ParseObject} to use as the underlying handle into storage.
+     *
+     * @return The newly created {@link ParseLocationModel}.
      */
     @Nullable
     public static ParseLocationModel createFromParseObject(ParseObject pObject){

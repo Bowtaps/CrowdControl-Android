@@ -40,9 +40,7 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
     }
 
     /**
-     * Gets the user's display name.
-     *
-     * @return The user's display name.
+     * @see UserProfileModel#getDisplayName()
      */
     @Override
     public String getDisplayName() {
@@ -50,9 +48,7 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
     }
 
     /**
-     * Sets the user's display name.
-     *
-     * @param displayName The new display name for the user.
+     * @see UserProfileModel#setDisplayName(String)
      */
     @Override
     public void setDisplayName(String displayName) {
