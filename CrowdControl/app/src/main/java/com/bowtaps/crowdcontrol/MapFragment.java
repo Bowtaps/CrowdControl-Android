@@ -169,6 +169,10 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
         refreshMarkers();
 
     }
+
+    /**
+     * Centers the map on the user's current location recieved from the location manager.
+     */
     private void centerOnUser(){
         SecureLocationManager secureLocationManager = CrowdControlApplication.getInstance().getLocationManager();
         LatLng myLoc = secureLocationManager.getCurrentLocation();
@@ -207,8 +211,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
     }
 
     /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
+     * This funciton adds a marker to the current user's location
      * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
@@ -218,6 +221,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
         mMap.addMarker(new MarkerOptions().position(myLoc).title(me.getProfile().getDisplayName()));
     }
 
+    /**
+     * Clears and re-adds the markers for the users when their locations have been updated
+     */
     private void refreshMarkers(){
         String memberDisplayName;
         // Get locations for current group members
@@ -264,6 +270,10 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
         }
     }
 
+    /**
+     * When new locations are recived from the service update the cache and update the map.
+     * @param locations {@link List} of {@link LocationModel}
+     */
     @Override
     public void onReceivedLocationUpdate(List<LocationModel> locations) {
         CrowdControlApplication.getInstance().getLocationManager().updateLocations(locations);

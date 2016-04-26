@@ -1,5 +1,8 @@
 package com.bowtaps.crowdcontrol.model;
 
+import android.location.LocationManager;
+
+import com.bowtaps.crowdcontrol.location.GoogleLocationListener;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Collection;
@@ -18,21 +21,23 @@ import java.util.List;
 public interface SecureLocationManager {
 
     /**
-     * TODO: Doc me, Doc!
+     * This function initializes location updates on the device.  Location tracking does not take
+     *  place until this function is called.  This starts the {@link GoogleLocationListener} and
+     *  sets the {@link LocationManager}
      */
-    public void initializeLocationRequest();
+    void initializeLocationRequest();
 
     /**
      * Gets a complete list of all cached {@link LocationModel}s.
      *
      * @return The {@link List} of cached {@link LocationModel} objects.
      */
-    public List<? extends LocationModel> getLocations();
+    List<? extends LocationModel> getLocations();
 
     /**
      * Retrieves the interval for sending/receiving location data, set by the user.
      */
-    public int getInterval();
+    int getInterval();
 
     /**
      * Sets the interval for sending/receiving location data, set by the user.
@@ -40,48 +45,53 @@ public interface SecureLocationManager {
      * @param interval The desired interval between sending/receiving location data amongst other
      *                 users.
      */
-    public void setInterval(int interval);
+    void setInterval(int interval);
 
     /**
      * Initiates the transmission of location data. This includes sending locations to others and
      * receiving locations from others.
      */
-    public void startTransmission();
+    void startTransmission();
 
     /**
      * Halts the transmission of location data. This includes sending locations to others and
      * receiving locations from others.
      */
-    public void stopTransmission();
+    void stopTransmission();
 
     /**
      * Gets whether or not this manager is currently transmitting the user's location.
      *
      * @return {@code true} if the manager is transmitting, {@code false} if not.
      */
-    public boolean getTransmitting();
+    boolean getTransmitting();
 
     /**
      * Sets the internal flag for whether the current manager is transmitting or not.
      *
      * @param transmitting The value to set the {@link #getTransmitting()} flag to.
      */
-    public void setTransmitting(boolean transmitting);
+    void setTransmitting(boolean transmitting);
 
     /**
      * Gets the current location of the current user.
      *
      * @return Returns the {@link LatLng} object representing the user's location.
      */
-    public LatLng getCurrentLocation();
+    LatLng getCurrentLocation();
 
     /**
      * Updates cached locations using a provided {@link Collection} of {@link LocationModel}s.
      *
      * @param locations The {@link Collection} of {@link LocationModel} objects to update cache for.
      */
-    public void updateLocations(Collection<? extends LocationModel> locations);
+    void updateLocations(Collection<? extends LocationModel> locations);
 
+    /**
+     * Removes the location from storage of a user {@link UserProfileModel} that has left the group.
+     *
+     * @param from The {@link UserProfileModel} of the user to remove stored locations.
+     */
     public void removeLocation(UserProfileModel from);
 
     /**
@@ -91,7 +101,7 @@ public interface SecureLocationManager {
      *                         of. If no location for the supplied user is cached, the {@code null}
      *                         will be returned.
      */
-    public LocationModel getUserLocation(UserProfileModel userProfileModel);
+    LocationModel getUserLocation(UserProfileModel userProfileModel);
 
     /**
      * Gets all cached locations for all users in the given {@link Collection}.
@@ -100,7 +110,11 @@ public interface SecureLocationManager {
      *
      * @return The cached list of {@link LocationModel}s belonging to the requested users.
      */
-    public List<? extends LocationModel> getUserLocations(Collection<? extends UserProfileModel> users);
+    List<? extends LocationModel> getUserLocations(Collection<? extends UserProfileModel> users);
 
+    /**
+     * Broadcasts the current user's location to all other members in the group and stores the data
+     * in storage.
+     */
     public void broadcastLocation();
 }

@@ -8,7 +8,7 @@ import com.parse.ParseObject;
 
 /**
  * The base Parse implementation of models. Fully implements the
- * @{link BaseModel} interface.
+ * {@link BaseModel} interface.
  *
  * @author Daniel Andrus
  * @since 2015-11-27
@@ -23,8 +23,7 @@ public class ParseBaseModel implements BaseModel {
 
 
     /**
-     * The class constructor. Initializes the model from an existing
-     * {@link ParseObject}.
+     * The class constructor. Initializes the model from an existing {@link ParseObject}.
      *
      * @param object The object to use as a handle.
      */
@@ -63,9 +62,7 @@ public class ParseBaseModel implements BaseModel {
     }
 
     /**
-     * Gets this object's unique identifier.
-     *
-     * @return The object's unique identifier.
+     * @see UserProfileModel#getId()
      */
     @Override
     public String getId() {
@@ -73,9 +70,7 @@ public class ParseBaseModel implements BaseModel {
     }
 
     /**
-     * Gets the object's creation timestamp.
-     *
-     * @return The object's creation timestamp.
+     * @see UserProfileModel#getCreated()
      */
     @Override
     public Date getCreated() {
@@ -83,9 +78,7 @@ public class ParseBaseModel implements BaseModel {
     }
 
     /**
-     * Gets the object's last updated timestamp.
-     *
-     * @return The object's last update timestamp.
+     * @see UserProfileModel#getUpdated()
      */
     @Override
     public Date getUpdated() {
@@ -93,9 +86,7 @@ public class ParseBaseModel implements BaseModel {
     }
 
     /**
-     * Gets whether or not the object has unsaved changes.
-     *
-     * @return Whether or not the object has unsaved changes.
+     * @see UserProfileModel#wasModified()
      */
     @Override
     public Boolean wasModified() {
@@ -171,13 +162,7 @@ public class ParseBaseModel implements BaseModel {
     }
 
     /**
-     * Deletes this object from storage. This is a blocking function that will
-     * wait until the operation completes successfully or an {@link Exception}
-     * is thrown. Care should be taken to not call this function on the main
-     * thread.
-     *
-     * @throws ParseException Throws an {@link Exception} should the operation
-     * fail for any reason.
+     * @see UserProfileModel#delete()
      */
     @Override
     public void delete() throws ParseException {
@@ -185,17 +170,7 @@ public class ParseBaseModel implements BaseModel {
     }
 
     /**
-     * Deletes this object from storage asynchronously. Spawns a separate thread
-     * so that this function can be called from the main thread without blocking
-     * the UI. Upon completion, whether successful or unsuccessful, returns
-     * control to the main thread by calling the
-     * {@link DeleteCallback#doneDeletingModel(BaseModel, Exception)} method on
-     * the provided {@link DeleteCallback} object.
-     *
-     * @param callback The callback object to pass control to once the operation
-     *                 is completed. If no object is provided ({@code null} is)
-     *                 given, then nothing will happen after the operation is
-     *                 complete.
+     * @see UserProfileModel#deleteInBackground(DeleteCallback)
      */
     public void deleteInBackground(final DeleteCallback callback) {
         final BaseModel model = this;
@@ -210,8 +185,8 @@ public class ParseBaseModel implements BaseModel {
     }
 
     /**
-     * Overrides the {@link #equals(Object)} operator, allowing this object to be used in standard
-     * operations, such as list searching and object comparison.
+     * Overrides the {@link Object#equals(Object)} operator, allowing this object to be used in
+     * standard operations, such as list searching and object comparison.
      *
      * @param other The other object to compare this object to.
      * @return {@code true} if the other object is linked to the same {@link ParseObject},

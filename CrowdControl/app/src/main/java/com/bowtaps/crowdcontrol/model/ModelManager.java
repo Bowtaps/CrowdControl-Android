@@ -26,7 +26,7 @@ public interface ModelManager {
      * @param model The model to delete.
      * @throws Exception Throws an exception if any error occurred while deleting the model.
      */
-    public void deleteModel(BaseModel model) throws Exception;
+    void deleteModel(BaseModel model) throws Exception;
 
     /**
      * Deletes a model from storage in background. This will spawn a separate thread and delete the
@@ -35,7 +35,7 @@ public interface ModelManager {
      * @param model The model to delete.
      * @param callback The callback object to pass control to after execution.
      */
-    public void deleteModelInBackground(BaseModel model, final BaseModel.DeleteCallback callback);
+    void deleteModelInBackground(BaseModel model, final BaseModel.DeleteCallback callback);
 
     /**
      * Logs in a user using the given username and password.
@@ -49,7 +49,7 @@ public interface ModelManager {
      * the operation was unsuccessful.
      * @throws Exception Throws an exception if any error occurred during the login process.
      */
-    public UserModel logInUser(String username, String password) throws Exception;
+    UserModel logInUser(String username, String password) throws Exception;
 
     /**
      * Logs in a user in a separate thread. Spawns a new thread and attempts to log in the user from
@@ -59,7 +59,7 @@ public interface ModelManager {
      * @param password The password to use when logging the user in.
      * @param callback The callback object to pass control to when the operation completes.
      */
-    public void logInUserInBackground(String username, String password, final BaseModel.LoadCallback callback);
+    void logInUserInBackground(String username, String password, final BaseModel.LoadCallback callback);
 
     /**
      * Creates a new user and puts it in storage using the given username, email, and password.
@@ -74,7 +74,7 @@ public interface ModelManager {
      * {@code null} if it was not.
      * @throws Exception Throws an exception if an error occurred.
      */
-    public UserModel createUser(String username, String email, String password) throws Exception;
+    UserModel createUser(String username, String email, String password) throws Exception;
 
     /**
      * Creates a new user in background, spawning a new thread to avoid the problem of blocking the
@@ -85,14 +85,14 @@ public interface ModelManager {
      * @param password The password to set for the user.
      * @param callback The callback object to pass control back to after the operation completes.
      */
-    public void createUserInBackground(String username, String email, String password, final BaseModel.SaveCallback callback);
+    void createUserInBackground(String username, String email, String password, final BaseModel.SaveCallback callback);
 
     /**
      * Gets the currently logged in user, if any. Returns {@code null} if no user is logged in.
      *
      * @return The currently logged in user or {@code null} if no user is logged in.
      */
-    public UserModel getCurrentUser();
+    UserModel getCurrentUser();
 
     /**
      * Logs out the current user.
@@ -103,7 +103,7 @@ public interface ModelManager {
      * @return True if the operation was successful, false if not.
      * @throws Exception Throws an exception if an error occurred during logout.
      */
-    public Boolean logOutCurrentUser() throws Exception;
+    Boolean logOutCurrentUser() throws Exception;
 
     /**
      * Loads all groups from storage.
@@ -114,7 +114,7 @@ public interface ModelManager {
      * @return A list of all {@link GroupModel} objects in storage.
      * @throws Exception Throws an exception if any error occurs.
      */
-    public List<? extends GroupModel> fetchAllGroups() throws Exception;
+    List<? extends GroupModel> fetchAllGroups() throws Exception;
 
     /**
      * Fetches all group objects in storage on a separate thread. Spawns a new thread and performs
@@ -122,7 +122,7 @@ public interface ModelManager {
      *
      * @param callback The callback object to pass control and the results to after completion.
      */
-    public void fetchAllGroupsInBackground(final BaseModel.FetchCallback callback);
+    void fetchAllGroupsInBackground(final BaseModel.FetchCallback callback);
 
     /**
      * Gets the current group that the current user is a member of. If no user is logged in or the
@@ -136,7 +136,7 @@ public interface ModelManager {
      * @return The {@link GroupModel} of which the currently logged in user is a member or
      * {@code null} if no such object exists.
      */
-    public GroupModel getCurrentGroup();
+    GroupModel getCurrentGroup();
 
     /**
      * Sets the current active group. This updates the currently cached value, but does not update
@@ -144,7 +144,7 @@ public interface ModelManager {
      *
      * @param group The group to set as the current group.
      */
-    public void setCurrentGroup(GroupModel group);
+    void setCurrentGroup(GroupModel group);
 
     /**
      * Queries storage to determine which group the current user belongs and caches and returns the
@@ -157,7 +157,7 @@ public interface ModelManager {
      * the current user is not a member of any group or if there is no current user.
      * @throws Exception Throws an exception if any error occurs.
      */
-    public GroupModel fetchCurrentGroup() throws Exception;
+    GroupModel fetchCurrentGroup() throws Exception;
 
     /**
      * Queries storage to determine which group the current user belongs and caches the result. If
@@ -169,7 +169,7 @@ public interface ModelManager {
      *
      * @param callback The callback object to pass control to after the operation completes.
      */
-    public void fetchCurrentGroupInBackground(final BaseModel.LoadCallback callback);
+    void fetchCurrentGroupInBackground(final BaseModel.LoadCallback callback);
 
     /**
      * Creates a new group object and saves it to storage using the provided parameters.
@@ -183,7 +183,7 @@ public interface ModelManager {
      * @return The newly created group model or {@code null} if no group was created.
      * @throws Exception Throws an exception if any error occurs.
      */
-    public GroupModel createGroup(UserProfileModel leader, String name, String description) throws Exception;
+    GroupModel createGroup(UserProfileModel leader, String name, String description) throws Exception;
 
     /**
      * Creates a new group object and saves it to storage using the provided parameters.
@@ -197,7 +197,7 @@ public interface ModelManager {
      * @param description The description of the group.
      * @param callback The callback object to pass control to after the operation completes.
      */
-    public void createGroupInBackground(UserProfileModel leader, String name, String description, final BaseModel.SaveCallback callback);
+    void createGroupInBackground(UserProfileModel leader, String name, String description, final BaseModel.SaveCallback callback);
 
     /**
      * Fetches any updates for a group that have occurred since the provided timestamp. Returns a
@@ -213,7 +213,7 @@ public interface ModelManager {
      * timestamp.
      * @throws Exception Throws an exception if any error occurs.
      */
-    public List<? extends BaseModel> fetchGroupUpdates(String groupId, String userId, Date since) throws Exception;
+    List<? extends BaseModel> fetchGroupUpdates(String groupId, String userId, Date since) throws Exception;
 
     /**
      * Creates a new LocationModel object that can be saved to storage. Initializes the new model
@@ -225,7 +225,7 @@ public interface ModelManager {
      * @return The new {@link LocationModel} object if successful or {@code null} if the operation
      * was unsuccessful.
      */
-    public LocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location);
+    LocationModel createLocation(UserProfileModel to, UserProfileModel from, LatLng location);
 
     /**
      * Fetches all known locations sent from the given user. Given a {@link UserProfileModel},
@@ -236,7 +236,7 @@ public interface ModelManager {
      * @return A list of all locations sent from the requested user.
      * @throws ParseException Throws an exception if an error occurred for any reason.
      */
-    public List<? extends LocationModel> fetchLocationsFromUser(UserProfileModel user) throws ParseException;
+    List<? extends LocationModel> fetchLocationsFromUser(UserProfileModel user) throws ParseException;
 
     /**
      * Fetches all known locations sent to the given user. Given a {@link UserProfileModel}, fetches
@@ -247,29 +247,136 @@ public interface ModelManager {
      * @return A list of all locations sent to the requested user.
      * @throws ParseException Throws an exception if an error occurred for any reason.
      */
-    public List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException;
+    List<? extends LocationModel> fetchLocationsToUser(UserProfileModel user) throws ParseException;
 
-    public ConversationModel createConversation(GroupModel group) throws Exception;
+    /**
+     * Creates a new conversation belonging to a specific group.
+     *
+     * @param group The group to which the conversation belongs.
+     *
+     * @return The newly created conversation model.
+     *
+     * @throws Exception Throws an exception if creating and saving the conversation fails.
+     */
+    ConversationModel createConversation(GroupModel group) throws Exception;
 
-    public List<? extends ConversationModel> fetchConversations() throws Exception;
+    /**
+     * Fetches all conversations from storage.
+     *
+     * @return A list of all conversation models in storage.
+     *
+     * @throws Exception Throws an exception if the operation fails for any reason.
+     */
+    List<? extends ConversationModel> fetchConversations() throws Exception;
 
-    public List<? extends ConversationModel> fetchConversationsForGroupAndUser(GroupModel group, UserProfileModel user) throws Exception;
+    /**
+     * Fetches all conversations belonging to the given group in which the given user is a
+     * participant.
+     *
+     * @param group The group to fetch conversations for.
+     * @param user The user to fetch conversations for.
+     *
+     * @return A list of conversations belonging to the given group in which the given user is a
+     *         participant.
+     *
+     * @throws Exception Throws an exception if any storage operations fail.
+     */
+    List<? extends ConversationModel> fetchConversationsForGroupAndUser(GroupModel group, UserProfileModel user) throws Exception;
 
-    public List<? extends MessageModel> createMessage(String messageId, Date timestamp, ConversationModel conversation, String message);
+    /**
+     * Creates a new message and connects it to the appropriate entities. The newly created message
+     * is assembled from the supplied parameters.
+     *
+     * @param messageId The identifier to assign to the new message.
+     * @param timestamp The timestamp that the message was created.
+     * @param conversation The conversation to which the message belongs.
+     * @param message The string contents of the message.
+     *
+     * @return A list of newly created message models created based on the supplied parameters.
+     *         Each message model will be addressed to a different conversation participant.
+     */
+    List<? extends MessageModel> createMessage(String messageId, Date timestamp, ConversationModel conversation, String message);
 
-    public List<? extends MessageModel> fetchMessages(ConversationModel conversation) throws Exception;
+    /**
+     * Loads the next uncached messages from storage. Each consecutive call to this method will load
+     * another batch of previously unloaded messages, assuming any remain.
+     *
+     * @param conversation The conversation for which to load the new messages.
+     *
+     * @return A list of message models belonging to the conversation that have before now not have
+     *         been loaded from storage.
+     *
+     * @throws Exception Throws an exception if the storage operation fails.
+     */
+    List<? extends MessageModel> fetchMessages(ConversationModel conversation) throws Exception;
 
-    public List<? extends MessageModel> fetchMessages(ConversationModel conversation, UserProfileModel user, Date before, Integer limit) throws Exception;
+    /**
+     * Loads the next set of uncached messages from storage. This method is an alternative to
+     * calling {@link #fetchMessages(ConversationModel)} that allows for specific control over the
+     * range of messages to fetch.
+     *
+     * @param conversation The conversation from which to fetch the messages.
+     * @param user The user to which the fetched messages are to be addressed.
+     * @param before The timestamp before which all fetched messages should have been created.
+     * @param limit The maximum number of messages to fetch.
+     * @return The list of message models fetched from storage.
+     * @throws Exception Throws an exception should any storage operation fails.
+     */
+    List<? extends MessageModel> fetchMessages(ConversationModel conversation, UserProfileModel user, Date before, Integer limit) throws Exception;
 
 
-    public List<? extends InvitationModel> fetchNotifications() throws Exception;
+    /**
+     * Fetches all notifications from storage sent to the currently logged in user.
+     *
+     * @return A list of all existing invitations addressed to the currently logged in user.
+     *
+     * @throws Exception throws an exception should any storage operation fail.
+     */
+    List<? extends InvitationModel> fetchNotifications() throws Exception;
 
-    public List<? extends InvitationModel> fetchInvitationsForUser(UserProfileModel user) throws Exception;
+    /**
+     * Fetches all invitations addressed to the supplied user.
+     *
+     * @param user The user for which to fetch invitations.
+     *
+     * @return List of invitations addressed to the supplied user.
+     *
+     * @throws Exception Throws an exception should any storage operation fail.
+     */
+    List<? extends InvitationModel> fetchInvitationsForUser(UserProfileModel user) throws Exception;
 
-    public List<? extends InvitationModel> fetchInvitationsForGroup(GroupModel group) throws Exception;
+    /**
+     * Loads all invitations sent out from the supplied group to any user.
+     *
+     * @param group the group to which all fetched invitations belong.
+     *
+     * @return A list of invitations sent from the given group.
+     *
+     * @throws Exception Throws an exception should any storage operation fail.
+     */
+    List<? extends InvitationModel> fetchInvitationsForGroup(GroupModel group) throws Exception;
 
 
-    public GroupModel joinGroup(GroupModel group) throws Exception;
+    /**
+     * Causes the currently logged in user to join the supplied group.
+     *
+     * @param group The group to join.
+     *
+     * @return Returns the group to which the current user belongs after the operation. This value
+     *         may be {@code null} if the operation fails.
+     *
+     * @throws Exception Throws an exception should any storage operation fail.
+     */
+    GroupModel joinGroup(GroupModel group) throws Exception;
 
-    public GroupModel leaveGroup(GroupModel group) throws Exception;
+    /**
+     * Causes the currently logged in user to leave the supplied group.
+     *
+     * @param group The group to leave.
+     *
+     * @return Returns the group that the current user has left.
+     *
+     * @throws Exception Throws an exception should any storage operation fail.
+     */
+    GroupModel leaveGroup(GroupModel group) throws Exception;
 }

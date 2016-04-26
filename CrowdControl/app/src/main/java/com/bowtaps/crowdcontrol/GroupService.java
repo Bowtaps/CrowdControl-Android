@@ -461,6 +461,10 @@ public class GroupService extends Service {
      * Listener interface for receiving location updates.
      */
     public interface LocationUpdatesListener {
+        /**
+         * When a new location has been recieved from the server
+         * @param locations {@link List} of {@link LocationModel}
+         */
         void onReceivedLocationUpdate(List<LocationModel> locations);
     }
 

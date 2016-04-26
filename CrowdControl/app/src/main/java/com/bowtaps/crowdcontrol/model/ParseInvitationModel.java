@@ -12,15 +12,41 @@ import java.util.List;
  */
 public class ParseInvitationModel extends ParseBaseModel implements InvitationModel {
 
+    /**
+     * The name of the Parse table associated with this class.
+     */
     private static final String tableName = "Invitation";
+
+    /**
+     * The column name associated with the {@link #getSender()} method.
+     */
     private static final String senderKey = "Sender";
+
+    /**
+     * The column name associated with the {@link #getRecipient()} method.
+     */
     private static final String recipientKey = "Recipient";
+
+    /**
+     * The column name associated with the {@link #getGroup()} method.
+     */
     private static final String groupKey = "Group";
 
+
+    /**
+     * Constructor for this class. Creates a new instance of the model based on the supplied
+     * {@link ParseObject}.
+     *
+     * @param object The {@link ParseObject} to use as the underlying handle into storage.
+     */
     private ParseInvitationModel(ParseObject object) {
         super(object);
     }
 
+
+    /**
+     * @see InvitationModel#getSender()
+     */
     @Override
     public ParseUserProfileModel getSender() {
 
@@ -35,6 +61,9 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
         return (ParseUserProfileModel) model;
     }
 
+    /**
+     * @see InvitationModel#getRecipient()
+     */
     @Override
     public ParseUserProfileModel getRecipient() {
 
@@ -49,6 +78,9 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
         return (ParseUserProfileModel) model;
     }
 
+    /**
+     * @see InvitationModel#getGroup()
+     */
     @Override
     public ParseGroupModel getGroup() {
 
@@ -64,7 +96,15 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
     }
 
 
-
+    /**
+     * Creates a new instance based on the supplied parameters. Uses the provided
+     * {@link ParseObject} as the underlying handle into storage. Automatically attempts to cache
+     * the object with the model manager.
+     *
+     * @param object The {@link ParseObject} to use as an underlying handle into storage.
+     *
+     * @return The newly created model.
+     */
     protected static ParseInvitationModel createFromParseObject(ParseObject object) {
 
         // Verify parameters
@@ -81,6 +121,15 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
 
     }
 
+    /**
+     * Fetches all invitations from storage sent to the given user.
+     *
+     * @param user The user for which to fetch all invitations.
+     *
+     * @return A list of invitations sent to the given user.
+     *
+     * @throws ParseException Throws a {@link ParseException} if any database operation fails.
+     */
     protected static List<ParseInvitationModel> fetchAllSentTo(ParseUserProfileModel user) throws ParseException {
         if (user == null) {
             throw new IllegalArgumentException("Parameter 1 cannot be null");
@@ -99,6 +148,15 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
         return results;
     }
 
+    /**
+     * Fetches all invitations from storage associated with the given group.
+     *
+     * @param group The group object for which to fetch invitations.
+     *
+     * @return A list of all invitations sent from the given group.
+     *
+     * @throws ParseException Throws an exception if any database operation fails.
+     */
     protected static List<ParseInvitationModel> fetchAllForGroup(ParseGroupModel group) throws ParseException {
         if (group == null) {
             throw new IllegalArgumentException("Parameter 1 cannot be null");

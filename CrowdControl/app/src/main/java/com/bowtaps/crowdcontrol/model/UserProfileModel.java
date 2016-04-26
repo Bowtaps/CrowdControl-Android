@@ -21,13 +21,12 @@ public interface UserProfileModel extends BaseModel {
      *
      * @return String of the user's self-chosen display name.
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * Sets the user's display name that will be seen by other users.
      *
      * @param displayName The new display name for the user.
      */
-    public void setDisplayName(String displayName);
-
+    void setDisplayName(String displayName);
 }
