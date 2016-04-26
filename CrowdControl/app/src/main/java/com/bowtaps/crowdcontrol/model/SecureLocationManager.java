@@ -1,5 +1,8 @@
 package com.bowtaps.crowdcontrol.model;
 
+import android.location.LocationManager;
+
+import com.bowtaps.crowdcontrol.location.GoogleLocationListener;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Collection;
@@ -18,7 +21,9 @@ import java.util.List;
 public interface SecureLocationManager {
 
     /**
-     * Initializes a new location request.
+     * This function initializes location updates on the device.  Location tracking does not take
+     *  place until this function is called.  This starts the {@link GoogleLocationListener} and
+     *  sets the {@link LocationManager}
      */
     void initializeLocationRequest();
 
@@ -83,6 +88,13 @@ public interface SecureLocationManager {
     void updateLocations(Collection<? extends LocationModel> locations);
 
     /**
+     * Removes the location from storage of a user {@link UserProfileModel} that has left the group.
+     *
+     * @param from The {@link UserProfileModel} of the user to remove stored locations.
+     */
+    public void removeLocation(UserProfileModel from);
+
+    /**
      * Gets the cached {@link LocationModel} object for the requested {@link UserProfileModel}.
      *
      * @param userProfileModel The {@link UserProfileModel} of the user to get the cached location
@@ -104,5 +116,5 @@ public interface SecureLocationManager {
      * Broadcasts the current user's location to all other members in the group and stores the data
      * in storage.
      */
-    void broadcastLocation();
+    public void broadcastLocation();
 }

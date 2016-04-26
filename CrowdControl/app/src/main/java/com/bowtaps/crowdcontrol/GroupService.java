@@ -219,8 +219,10 @@ public class GroupService extends Service {
         for (BaseModel model : results) {
             if (model instanceof GroupModel) {
                 group = (GroupModel) model;
+                Log.d("Service", "Added a new GroupModel");
             } else if (model instanceof UserProfileModel) {
                 users.add((UserProfileModel) model);
+                Log.d("Service", "Added a new UserProfileModel");
             } else if (model instanceof LocationModel) {
                 locations.add((LocationModel) model);
             }
@@ -233,13 +235,6 @@ public class GroupService extends Service {
         if(!currentLocation.equals(previousLocation)){
             locationManager.broadcastLocation();
         }
-        if(locationCounter < 6){
-            locationCounter++;
-        }else{
-            locationManager.broadcastLocation();
-            locationCounter = 0;
-            Log.d("Service", "Broadcast Location");
-        }
 
         // Forward calls to listeners
         if (group != null) {
@@ -248,6 +243,7 @@ public class GroupService extends Service {
                 // Invoke callback method call
                 try {
                     ref.onReceivedGroupUpdate(group);
+                    locationManager.broadcastLocation();
                 } catch (Exception ex) {
                     Log.d(TAG, "Exception thrown while handling onReceivedGroupUpdate event");
                 }
@@ -256,7 +252,6 @@ public class GroupService extends Service {
 
         // Trigger events of location listeners
         if (!locations.isEmpty()) {
-            Log.d("Service", "New Locations Received from the service");
             // First, send updated locations to location manager
             CrowdControlApplication.getInstance().getLocationManager().updateLocations(locations);
 

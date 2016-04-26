@@ -80,7 +80,6 @@ public class ParseLocationManager implements SecureLocationManager {
                             continue;
                         }
                         if (bestLocation == null || loc.getAccuracy() < bestLocation.getAccuracy()) {
-                            Log.d("last known location", loc.toString());
                             bestLocation = loc;
                         }
                     }
@@ -208,6 +207,10 @@ public class ParseLocationManager implements SecureLocationManager {
         }
     }
 
+    public void removeLocation(UserProfileModel from){
+        memberLocations.remove(from.getId());
+    }
+
     /**
      * @see SecureLocationManager#getUserLocation(UserProfileModel)
      */
@@ -251,7 +254,6 @@ public class ParseLocationManager implements SecureLocationManager {
      */
     @Override
     public void broadcastLocation(){
-        //if the transmitting flag is set to true, send the data
         Log.d("LocationManager", "Bcasting location");
         ParseLocationModel.broadcastLocation();
     }

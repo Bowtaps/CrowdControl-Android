@@ -245,14 +245,18 @@ public class MapFragment extends Fragment implements View.OnClickListener, Group
                 Double latitude = location.getLatitude();
 
                 // Add marker to map
-                if(location.getFrom().getDisplayName() == null){
-                    memberDisplayName = "member".concat(i.toString());
-                }else{
+//                if(location.getFrom().getDisplayName() == null){
+//                    memberDisplayName = "member".concat(i.toString());
+//                }else{
+//                    memberDisplayName = location.getFrom().getDisplayName();
+//                }
+                if(location.getFrom().getDisplayName() != null){
                     memberDisplayName = location.getFrom().getDisplayName();
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(memberDisplayName).icon(BitmapDescriptorFactory.defaultMarker(mMarkerColors.get(i))));
+                    i = (i+1)% 8;
+                }else{
+                    CrowdControlApplication.getInstance().getLocationManager().removeLocation(location.getFrom());
                 }
-
-                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(memberDisplayName).icon(BitmapDescriptorFactory.defaultMarker(mMarkerColors.get(i))));
-                i = (i+1)% 8;
 
             }
         }catch (Exception e) {
