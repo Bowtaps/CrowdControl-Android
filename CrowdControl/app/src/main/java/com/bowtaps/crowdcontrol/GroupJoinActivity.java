@@ -253,15 +253,27 @@ public class GroupJoinActivity extends AppCompatActivity implements
         finish();
     }
 
+    /**
+     * called when app is destroyed. Currently empty
+     */
     public void onDestroy() {
         super.onDestroy();
     }
 
+
+    /**
+     * checks database for new groups on pull down of the display list
+     */
     @Override
     public void onRefresh() {
         fetchGroups();
     }
 
+
+    /**
+     * Refresh the group list with the new set of Groups for the GroupModel
+     * @see GroupModel
+     */
     private void fetchGroups(){
         // Fetch group list to display
         CrowdControlApplication.getInstance().getModelManager().fetchAllGroupsInBackground(new BaseModel.FetchCallback() {
