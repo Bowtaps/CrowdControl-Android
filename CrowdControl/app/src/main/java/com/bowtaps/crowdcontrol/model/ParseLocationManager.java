@@ -32,12 +32,12 @@ public class ParseLocationManager implements SecureLocationManager {
     private Map<String, LocationModel> memberLocations;
 
     /**
-     * TODO: doc me, Doc!
+     * Interval between location transmissions
      */
     private int transmissionInterval;
 
     /**
-     * TODO: doc me, Doc!
+     * Location transmitting boolean
      */
     private boolean transmitting;
 
@@ -51,7 +51,9 @@ public class ParseLocationManager implements SecureLocationManager {
         transmissionInterval = 10;
         memberLocations = new HashMap<>();
     }
-
+    /**
+     * @see SecureLocationManager#initializeLocationRequest()
+     */
     public void initializeLocationRequest() {
         if (listener == null) {
             listener = new GoogleLocationListener();
@@ -69,7 +71,6 @@ public class ParseLocationManager implements SecureLocationManager {
                             continue;
                         }
                         if (bestLocation == null || loc.getAccuracy() < bestLocation.getAccuracy()) {
-                            Log.d("last known location", loc.toString());
                             bestLocation = loc;
                         }
                     }
@@ -229,14 +230,10 @@ public class ParseLocationManager implements SecureLocationManager {
 
         return locations;
     }
-
+    /**
+     * @see SecureLocationManager#broadcastLocation()
+     */
     public void broadcastLocation(){
-        //if the transmitting flag is set to true, send the data
-        //if the transmitting flag is set to false, leave function
-//        if(this.transmitting){
-//            ParseLocationModel.broadcastLocation();
-//        }
-        //List<UserProfileModel> groupMembers = (List<UserProfileModel>) CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers();
         Log.d("LocationManager", "Bcasting location");
         ParseLocationModel.broadcastLocation();
     }
