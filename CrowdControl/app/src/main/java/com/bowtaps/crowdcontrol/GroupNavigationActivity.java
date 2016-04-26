@@ -136,6 +136,11 @@ public class GroupNavigationActivity extends AppCompatActivity {
         bindService(new Intent(getApplicationContext(), GroupService.class), mServiceConnection, BIND_IMPORTANT);
     }
 
+    /**
+     * disconnects all services
+     * @see GroupService
+     * @see com.bowtaps.crowdcontrol.location.GoogleLocationListener
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -148,14 +153,25 @@ public class GroupNavigationActivity extends AppCompatActivity {
         stopService(new Intent(getApplicationContext(), GroupService.class));
     }
 
+    /**
+     * grabs the class instance of the menu so fragments can get to it
+     * @return mMenu - instance of the option menu
+     */
     public Menu getOptionMenu(){
         return mMenu;
     }
 
+    /**
+     * Allows a fragment to change the option menu
+     * @param menu - changed option menu (thing in the top right corner)
+     */
     public void setOptionMenu(Menu menu){
         mMenu = menu;
     }
 
+    /**
+     * a waiting dialog box, displays until the messaging service is ready
+     */
     private void setUpReceiver() {
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading");
