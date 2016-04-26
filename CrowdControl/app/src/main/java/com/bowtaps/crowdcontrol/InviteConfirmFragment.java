@@ -74,6 +74,13 @@ public class InviteConfirmFragment extends Fragment
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * initializes the view elements of the fragment so they can be modified by other functions
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return view - displays the fragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -113,6 +120,7 @@ public class InviteConfirmFragment extends Fragment
         super.onDetach();
     }
 
+    //Liekly not needed
     @Override
     public void onReceivedGroupUpdate(GroupModel group) {
 

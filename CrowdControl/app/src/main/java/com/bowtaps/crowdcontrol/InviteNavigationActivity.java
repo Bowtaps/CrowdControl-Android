@@ -195,6 +195,10 @@ public class InviteNavigationActivity extends AppCompatActivity {
         this.startActivity(myIntent);
     }
 
+    /**
+     * Disconnects from the group update listener
+     * @see GroupService
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();

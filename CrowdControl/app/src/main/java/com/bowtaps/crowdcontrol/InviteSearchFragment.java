@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by 7143145 on 3/31/2016.
+ * Pulls Users from the database and displays them so that they can be selected as potential invitees
  */
 public class InviteSearchFragment extends Fragment implements GroupService.GroupUpdatesListener, ListView.OnItemClickListener, View.OnClickListener {
 
@@ -52,6 +52,14 @@ public class InviteSearchFragment extends Fragment implements GroupService.Group
     @Override
     public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
+    /**
+     * Initializes all the pieces the user can see so they can be modified by the fragment. sets
+     * them all into the fragment view
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,6 +97,15 @@ public class InviteSearchFragment extends Fragment implements GroupService.Group
         super.onDetach();
     }
 
+    /**
+     * Handles clicks onto the users in the view - currently keeps track of what users have been
+     * 'selected and hands them to the InviteConfirmFragment
+     * @see InviteConfirmFragment
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -106,11 +123,16 @@ public class InviteSearchFragment extends Fragment implements GroupService.Group
         }
     }
 
+    // Likely not needed
     @Override
     public void onReceivedGroupUpdate(GroupModel group) {
 
     }
 
+    /**
+     * Handles clicks onto any buttons found in this fragment
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         // Handles clicks on items in view

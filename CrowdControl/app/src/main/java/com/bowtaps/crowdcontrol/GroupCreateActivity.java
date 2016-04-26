@@ -249,6 +249,11 @@ public class GroupCreateActivity extends AppCompatActivity implements View.OnCli
             }
         }
 
+        /**
+         * Sets the new group and launches the group navigation activity
+         * @see GroupNavigationActivity
+         * @param success - boolean true or false if the group was made properly or not
+         */
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;

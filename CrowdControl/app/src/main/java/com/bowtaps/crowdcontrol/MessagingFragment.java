@@ -133,7 +133,9 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
         return v;
     }
 
-    //get previous messages from parse & display
+    /**
+     * get previous messages from parse & display
+     */
     private void populateMessageHistory() {
         try {
             CrowdControlApplication.getInstance().getModelManager().fetchMessages(mRecipientConversation);
@@ -194,6 +196,10 @@ public class MessagingFragment extends Fragment implements GroupService.GroupUpd
         super.onDestroy();
     }
 
+    /**
+     * Handles putting new conversation pieces into view
+     * @param group - current active group <- conversations are attached to groups
+     */
     @Override
     public void onReceivedGroupUpdate(GroupModel group) {
         mRecipientGroup = group;

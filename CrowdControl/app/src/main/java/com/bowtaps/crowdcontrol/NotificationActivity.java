@@ -21,6 +21,9 @@ import com.bowtaps.crowdcontrol.model.UserProfileModel;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles the in app notifications for the user
+ */
 public class NotificationActivity extends AppCompatActivity implements ListView.OnItemClickListener, View.OnClickListener {
 
     //buttons
@@ -33,7 +36,10 @@ public class NotificationActivity extends AppCompatActivity implements ListView.
     private List<InvitationModel> mNotificationList;
 
 
-
+    /**
+     * Sets up the activity and loads in the new notifications
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +73,10 @@ public class NotificationActivity extends AppCompatActivity implements ListView.
         }
     }
 
+    /**
+     * Handles the clicks on the buttons in the activity
+     * @param v - view of the button
+     */
     @Override
     public void onClick(View v) {
 
@@ -88,6 +98,14 @@ public class NotificationActivity extends AppCompatActivity implements ListView.
         }
     }
 
+
+    /**
+     * Handles clicks onto the individual notifications in the list view
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
