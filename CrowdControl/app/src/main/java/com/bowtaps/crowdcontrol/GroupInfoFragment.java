@@ -298,6 +298,13 @@ public class GroupInfoFragment extends Fragment implements View.OnClickListener,
         buildThis.show();
     }
 
+    /**
+     * Displays leader options to the group leader such as kicking or promoting a memeber
+     * @param parent - holding list
+     * @param view - necessary view so that the menu can be displayed
+     * @param position - specific item in list
+     * @param id - java id of the menu item
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
         //gets the profile being clicked on
