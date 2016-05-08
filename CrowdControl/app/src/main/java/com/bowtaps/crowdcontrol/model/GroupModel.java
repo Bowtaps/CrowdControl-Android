@@ -19,56 +19,63 @@ public interface GroupModel extends BaseModel {
      * @return The {@link UserProfileModel} of the leader of the group or {@code null} if there is
      *         no leader.
      */
-    public UserProfileModel getGroupLeader();
+    UserProfileModel getGroupLeader();
 
     /**
      * Sets the given user as this group's designated leader.
      *
      * @param leader The profile of the user to make the leader.
      */
-    public void setGroupLeader(UserProfileModel leader);
+    void setGroupLeader(UserProfileModel leader);
 
     /**
      * Gets the name of the group.
      *
      * @return The name of the group.
      */
-    public String getGroupName();
+    String getGroupName();
 
     /**
      * Sets the name of the group.
      *
      * @param name The new name of the group.
      */
-    public void setGroupName(String name);
+    void setGroupName(String name);
 
     /**
      * Gets the description of the group.
      *
      * @return The description of the group.
      */
-    public String getGroupDescription();
+    String getGroupDescription();
 
     /**
      * Sets the description of the group.
      *
      * @param description The new description of the group.
      */
-    public void setGroupDescription(String description);
+    void setGroupDescription(String description);
 
     /**
      * Gets the list of users associated with the current group.
      *
      * @return An {@link ArrayList} of {@link UserProfileModel} objects that belong to the group.
      */
-    public List<? extends UserProfileModel> getGroupMembers();
+    List<? extends UserProfileModel> getGroupMembers();
+
+    /**
+     * Gets the list of users associated with the current group.
+     *
+     * @return An {@link ArrayList} of {@link UserProfileModel} objects that belong to the group.
+     */
+    UserProfileModel getGroupMember( String id );
 
     /**
      * Clears all members from this group.
      *
      * @return {@code true} if the operation was successful, {@code false} if not.
      */
-    public Boolean clearGroupMembers();
+    Boolean clearGroupMembers();
 
     /**
      * Adds multiple user profiles to the group.
@@ -77,7 +84,7 @@ public interface GroupModel extends BaseModel {
      *
      * @return {@code true} if the operation was successful, {@code false} if not.
      */
-    public Boolean addGroupMembers(Collection<? extends UserProfileModel> profiles);
+    Boolean addGroupMembers(Collection<? extends UserProfileModel> profiles);
 
     /**
      * Adds a new member to the group.
@@ -87,7 +94,7 @@ public interface GroupModel extends BaseModel {
      * @return True if the user was successfully added to the group, false if not or if the user is
      *         already a member of the group.
      */
-    public Boolean addGroupMember(UserProfileModel profile);
+    Boolean addGroupMember(UserProfileModel profile);
 
     /**
      * Removes a user from the group.
@@ -97,5 +104,12 @@ public interface GroupModel extends BaseModel {
      * @return True if the user was successfully removed from the group, false if not or if the user
      *         was already not a member of the group.
      */
-    public Boolean removeGroupMember(UserProfileModel profile);
+    Boolean removeGroupMember(UserProfileModel profile);
+
+    /**
+     * Gets all conersation models that have been cached from storage.
+     *
+     * @return List of conversation models that have been cached.
+     */
+    List<? extends ConversationModel> getCachedConversations();
 }

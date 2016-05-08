@@ -15,54 +15,54 @@ public interface UserModel extends BaseModel {
      *
      * @return The user's unique username.
      */
-    public String getUsername();
+    String getUsername();
 
     /**
      * Gets whether the user has verified their email address with the service.
      *
      * @return True if the user's email address has been verified, false if not.
      */
-    public Boolean getEmailVerified();
+    Boolean getEmailVerified();
 
     /**
      * Gets the user's email address.
      *
      * @return The user's email address.
      */
-    public String getEmail();
+    String getEmail();
 
     /**
      * Replaces the user's existing email address with a new one.
      *
      * @param email The new email address to assign to the user.
      */
-    public void setEmail(String email);
+    void setEmail(String email);
 
     /**
      * Gets the user's phone number.
      *
      * @return The user's phone number.
      */
-    public String getPhone();
+    String getPhone();
 
     /**
      * Replaces the user's phone number with a new one.
      *
      * @param phone The new phone number to assign to the user.
      */
-    public void setPhone(String phone);
+    void setPhone(String phone);
 
     /**
      * Gets the {@link UserProfileModel} object linked to this {@link UserModel} object.
      *
      * @return The {@link UserProfileModel} linked to this model.
      */
-    public UserProfileModel getProfile();
+    UserProfileModel getProfile();
 
     /**
      * Replaces the profile model.
      *
      * @param profile The profile object to set.
      */
-    public void setProfile(UserProfileModel profile);
+    void setProfile(UserProfileModel profile);
 }

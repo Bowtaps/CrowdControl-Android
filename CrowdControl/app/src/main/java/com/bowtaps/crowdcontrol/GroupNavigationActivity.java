@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ComponentName;
@@ -16,9 +17,16 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bowtaps.crowdcontrol.adapters.SimpleTabsAdapter;
+import com.bowtaps.crowdcontrol.model.BaseModel;
 
 /**
  * This Activity will manage all the tabs related to the current group
@@ -26,10 +34,14 @@ import com.bowtaps.crowdcontrol.adapters.SimpleTabsAdapter;
  */
 public class GroupNavigationActivity extends AppCompatActivity {
 
+    Toolbar mToolbar;
+
     private TabLayout mTabs;
     private ViewPager tabsviewPager;
     private SimpleTabsAdapter mTabsAdapter;
     private GroupService.GroupServiceBinder groupServiceBinder;
+
+    Menu mMenu;
 
     private ProgressDialog progressDialog;
     private BroadcastReceiver receiver = null;
@@ -62,8 +74,10 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         setUpReceiver();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mToolbar.setTitle(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupName());
 
         tabsviewPager = (ViewPager) findViewById(R.id.tabspager);
 
@@ -122,6 +136,11 @@ public class GroupNavigationActivity extends AppCompatActivity {
         bindService(new Intent(getApplicationContext(), GroupService.class), mServiceConnection, BIND_IMPORTANT);
     }
 
+    /**
+     * disconnects all services
+     * @see GroupService
+     * @see com.bowtaps.crowdcontrol.location.GoogleLocationListener
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -134,6 +153,25 @@ public class GroupNavigationActivity extends AppCompatActivity {
         stopService(new Intent(getApplicationContext(), GroupService.class));
     }
 
+    /**
+     * grabs the class instance of the menu so fragments can get to it
+     * @return mMenu - instance of the option menu
+     */
+    public Menu getOptionMenu(){
+        return mMenu;
+    }
+
+    /**
+     * Allows a fragment to change the option menu
+     * @param menu - changed option menu (thing in the top right corner)
+     */
+    public void setOptionMenu(Menu menu){
+        mMenu = menu;
+    }
+
+    /**
+     * a waiting dialog box, displays until the messaging service is ready
+     */
     private void setUpReceiver() {
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading");
@@ -153,5 +191,143 @@ public class GroupNavigationActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("com.bowtaps.crowdcontrol.GroupNavigationActivity"));
 
+    }
+
+    /*
+     *  This handles the clicks on the drop down menu in the tool bar
+     *
+     *  @see GroupModelAdapter
+     *  @see GroupNavigationActivity
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection Launch Settings
+        if (id == R.id.action_settings) {
+            launchSettingsActivity();
+            return true;
+        }
+
+        //Change the Group Name!!!!
+        if (id == R.id.action_change_group_name){
+            createGroupNameChangeDialog(this, "Submit new group name");
+            return true;
+        }
+
+        //noinspection Launch Invite
+        if (id == R.id.action_invite) {
+            launchInviteActivity();
+            return true;
+        }
+
+        //Notifications
+        if (id == R.id.action_notification) {
+            launchNotificationActivity();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * Allows leader to change the name of the group
+     * @param activity - current activity (GroupNavigationActivity)
+     * @param title - String the dialog box uses as a title
+     */
+    public void createGroupNameChangeDialog(Activity activity, String title ){
+        AlertDialog.Builder buildThis = new AlertDialog.Builder(activity);
+
+        //Make edit Text for new Name
+        final EditText input = new EditText(this);
+        LinearLayout.LayoutParams editTextLayout = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(editTextLayout);
+        buildThis.setView(input);
+
+        buildThis.setTitle(title);
+        buildThis.setPositiveButton("Make It New", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //set that new name
+                CrowdControlApplication.getInstance().getModelManager().getCurrentGroup()
+                        .setGroupName(input.getText().toString());
+
+                // Attempt to save change to group in background
+                CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().saveInBackground(new BaseModel.SaveCallback() {
+                    @Override
+                    public void doneSavingModel(BaseModel object, Exception ex) {
+
+                        // Verify operation was a success
+                        if (ex != null) {
+                            Log.d("GroupNavigationActivity", "Unable to save group");
+                            return;
+                        }
+                    }
+                });
+                mToolbar.setTitle(input.getText().toString());
+            }
+        });
+        buildThis.setNegativeButton("Cancel", null);
+        buildThis.show();
+    }
+
+    /*
+     *  Launches the (@Link SettingsActivity)
+     *
+     *  @see SettingsActivity
+     */
+    private void launchSettingsActivity() {
+        Intent myIntent = new Intent(this, SettingsActivity.class);
+        this.startActivity(myIntent);
+    }
+
+    /*
+     *  Launches the (@Link NotificationActivity)
+     *
+     *  @see SettingsActivity
+     */
+    private void launchNotificationActivity() {
+        Intent myIntent = new Intent(this, NotificationActivity.class);
+        this.startActivity(myIntent);
+    }
+
+    /*
+     *  Launches the (@Link InviteNavigationActivity)
+     *
+     *  @see InviteNavigationActivity
+     */
+    private void launchInviteActivity() {
+        Intent myIntent = new Intent(this, InviteNavigationActivity.class);
+        this.startActivity(myIntent);
+    }
+
+    /*
+     *  Creates the option menu for the tool bar
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+
+        mMenu = menu;
+
+        //If leader display leader specific menu
+        if( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupLeader() == null) {
+            getMenuInflater().inflate(R.menu.menu_main_event_navigation_leader, menu);
+            return true;
+        }
+        else if ( CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupLeader().
+                equals(CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile())) {
+            getMenuInflater().inflate(R.menu.menu_main_event_navigation_leader, menu);
+            return true;
+        }
+        else {
+            getMenuInflater().inflate(R.menu.menu_main_event_navigation, menu);
+            return true;
+        }
     }
 }

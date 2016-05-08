@@ -40,19 +40,15 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
     }
 
     /**
-     * Gets the user's display name.
-     *
-     * @return The user's display name.
+     * @see UserProfileModel#getDisplayName()
      */
     @Override
     public String getDisplayName() {
-        return getParseObject().getString(displayNameKey);
+        return getParseObject().has(displayNameKey) ? getParseObject().getString(displayNameKey) : null;
     }
 
     /**
-     * Sets the user's display name.
-     *
-     * @param displayName The new display name for the user.
+     * @see UserProfileModel#setDisplayName(String)
      */
     @Override
     public void setDisplayName(String displayName) {
@@ -79,8 +75,12 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
         }
 
         // Instantiate a new object
-        ParseUserProfileModel model = new ParseUserProfileModel(object);
+        ParseBaseModel model = ParseModelManager.getInstance().checkCache(object.getObjectId());
+        if (model == null) {
+            model = new ParseUserProfileModel(object);
+            model = ParseModelManager.getInstance().updateCache(model);
+        }
 
-        return model;
+        return (ParseUserProfileModel) model;
     }
 }

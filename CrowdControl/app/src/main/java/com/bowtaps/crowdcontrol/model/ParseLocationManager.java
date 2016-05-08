@@ -8,7 +8,6 @@ import android.location.LocationManager;
 import com.bowtaps.crowdcontrol.CrowdControlApplication;
 import com.bowtaps.crowdcontrol.location.GoogleLocationListener;
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.ParseException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,9 +17,10 @@ import java.util.Map;
 
 /**
  * The Parse implementation of the location manager. Fully implements the
- * @{link LocationManager} interface.
+ * {@link LocationManager} interface.
  *
- * Created by Joseph Mowry on 1/21/2016.
+ * @uthor Joseph Mowry
+ * @since 1/21/2016.
  */
 public class ParseLocationManager implements SecureLocationManager {
 
@@ -30,39 +30,48 @@ public class ParseLocationManager implements SecureLocationManager {
     private Map<String, LocationModel> memberLocations;
 
     /**
-     * TODO: doc me, Doc!
+     * Number of milliseconds to wait between automatic transmissions.
      */
     private int transmissionInterval;
 
     /**
-     * TODO: doc me, Doc!
+     * Flag indicating that the user's location is being automatically transmitted.
      */
     private boolean transmitting;
 
+    /**
+     * The listener object tied to Google's location services. Used for detecting location updates.
+     */
     private GoogleLocationListener listener;
-    private LocationManager locationManager;
 
     /**
-     * TODO: doc me, Doc!
+     * The Android location manager that allows this manager to work with the device's location
+     * services and functionality.
      */
-    public ParseLocationManager(){
+    private LocationManager locationManager;
+
+
+    /**
+     * Default constructor. Initializes class properties.
+     */
+    public ParseLocationManager() {
         transmissionInterval = 10;
         memberLocations = new HashMap<>();
-        //listener = new GoogleLocationListener();
-        //locationManager = (LocationManager) CrowdControlApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
-
     }
 
-    public void initializeLocationRequest()
-    {
-        if(listener == null){
+    /**
+     * @see SecureLocationManager#initializeLocationRequest()
+     */
+    @Override
+    public void initializeLocationRequest() {
+        if (listener == null) {
             listener = new GoogleLocationListener();
         }
-        if(locationManager == null) {
+        if (locationManager == null) {
             locationManager = (LocationManager) CrowdControlApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
-            try{
+            try {
                 if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 1000, this.listener);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, transmissionInterval * 1000, 1000, this.listener);
                     List<String> providers = locationManager.getProviders(true);
                     Location bestLocation = null;
                     for (String provider : providers) {
@@ -71,19 +80,18 @@ public class ParseLocationManager implements SecureLocationManager {
                             continue;
                         }
                         if (bestLocation == null || loc.getAccuracy() < bestLocation.getAccuracy()) {
-                            Log.d("last known location", loc.toString());
                             bestLocation = loc;
                         }
                     }
-                    if(bestLocation == null){
+                    if (bestLocation == null) {
                         Log.d("Location Manager", "No location");
-                    }else {
+                    } else {
                         LatLng firstLoc = new LatLng(bestLocation.getLatitude(), bestLocation.getLongitude());
                         listener.setLocation(firstLoc);
                     }
                 }
 
-            }catch(SecurityException e1){
+            } catch (SecurityException e1) {
                 //do something
                 Log.e("Security Exception", e1.toString());
             }
@@ -99,7 +107,7 @@ public class ParseLocationManager implements SecureLocationManager {
     }
 
     /**
-     * Retrieves the interval for sending/receiving location data, set by the user.
+     * @see SecureLocationManager#getInterval()
      */
     @Override
     public int getInterval() {
@@ -107,47 +115,58 @@ public class ParseLocationManager implements SecureLocationManager {
     }
 
     /**
-     * Sets the interval for sending/receiving location data, set by the user.
-     *
-     * @param interval The desired interval between sending/receiving location data amongst other
-     *                 users.
+     * @see SecureLocationManager#setInterval(int)
      */
     @Override
     public void setInterval(int interval) {
-        if(interval < 0){
+        if (interval < 0) {
             transmissionInterval = 0;
-        }else {
+        } else {
             transmissionInterval = interval;
+        }
+        try {
+            locationManager.removeUpdates(listener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, transmissionInterval * 1000, 1000, this.listener);
+        }catch (SecurityException e){
+            Log.e("Location Manager", e.toString());
         }
     }
 
     /**
-     * Initiates the transmission of location data. This includes sending locations to others and
-     * receiving locations from others.
+     * @see SecureLocationManager#startTransmission()
      */
     @Override
     public void startTransmission() {
-
+        // TODO
     }
 
     /**
-     * Halts the transmission of location data. This includes sending locations to others and
-     * receiving locations from others.
+     * @see SecureLocationManager#stopTransmission()
      */
     @Override
     public void stopTransmission() {
-
+        // TODO
     }
 
+    /**
+     * @see SecureLocationManager#getTransmitting()
+     */
+    @Override
     public boolean getTransmitting(){
         return transmitting;
     }
 
-
+    /**
+     * @see SecureLocationManager#setTransmitting(boolean)
+     */
+    @Override
     public void setTransmitting(boolean transmitting){
         transmitting = transmitting;
     }
 
+    /**
+     * @see SecureLocationManager#getCurrentLocation()
+     */
     @Override
     public LatLng getCurrentLocation() {
         //Get the current location of this device and set the variables
@@ -158,17 +177,38 @@ public class ParseLocationManager implements SecureLocationManager {
         return new LatLng(latitude, longitude);
     }
 
+    /**
+     * @see SecureLocationManager#updateLocations(Collection)
+     */
     @Override
     public void updateLocations(Collection<? extends LocationModel> locations) {
-
+        List<?extends UserProfileModel> groupMembers = CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers();
+        UserProfileModel me = CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile();
         // Add each location in collection to cache
         if (locations != null) {
             for (LocationModel location : locations) {
                 if (location.getFrom() != null) {
+                    try{
+                        location.getFrom().getDisplayName();
+                    }catch(Exception e) {
+                        Log.e("Exception", e.toString());
+                        for (UserProfileModel user : groupMembers) {
+                            if (location.getFrom().getId().equals(user.getId())) {
+                                location.setFrom(user);
+                                Log.d("Updating Location", location.getFrom().getDisplayName());
+                                break;
+                            }
+                        }
+                    }
+                    location.setTo(me);
                     memberLocations.put(location.getFrom().getId(), location);
                 }
             }
         }
+    }
+
+    public void removeLocation(UserProfileModel from){
+        memberLocations.remove(from.getId());
     }
 
     /**
@@ -193,6 +233,7 @@ public class ParseLocationManager implements SecureLocationManager {
     /**
      * @see SecureLocationManager#getUserLocations(Collection)
      */
+    @Override
     public List<LocationModel> getUserLocations(Collection<? extends UserProfileModel> users) {
         List<LocationModel> locations = new ArrayList<>();
 
@@ -208,11 +249,12 @@ public class ParseLocationManager implements SecureLocationManager {
         return locations;
     }
 
-    private void broadcastLocation(){
-        //if the transmitting flag is set to true, send the data
-        //if the transmitting flag is set to false, leave function
-        if(this.transmitting){
-            ParseLocationModel.broadcastLocation();
-        }
+    /**
+     * @see SecureLocationManager#broadcastLocation()
+     */
+    @Override
+    public void broadcastLocation(){
+        Log.d("LocationManager", "Bcasting location");
+        ParseLocationModel.broadcastLocation();
     }
 }

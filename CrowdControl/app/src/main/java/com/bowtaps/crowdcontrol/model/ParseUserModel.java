@@ -4,7 +4,7 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 /**
- * The Parse implementation for the @{link UserModel} interface. Extends the {@link ParseBaseModel}
+ * The Parse implementation for the {@link UserModel} interface. Extends the {@link ParseBaseModel}
  * class and adds additional user-related functionality.
  *
  * @author Daniel Andrus
@@ -79,10 +79,10 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
         if (profile == null) {
             ParseObject profileObject = object.getParseObject(profileKey);
             if (profileObject == null) {
-                profile = new ParseUserProfileModel();
+                profile = new ParseUserProfileModel(); // TODO THIS NEEDS TO BE REMOVED
                 object.put(profileKey, profile.getParseObject());
             } else {
-                profile = new ParseUserProfileModel(profileObject);
+                profile = ParseUserProfileModel.createFromParseObject(profileObject);
             }
 
         }
@@ -91,9 +91,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     }
 
     /**
-     * Gets the user's username.
-     *
-     * @return The user's username.
+     * @see UserModel#getUsername()
      */
     @Override
     public String getUsername() {
@@ -101,9 +99,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     }
 
     /**
-     * Gets whether or not the user has verified their email.
-     *
-     * @return Whether or not the user has verified their email.
+     * @see UserModel#getEmailVerified()
      */
     @Override
     public Boolean getEmailVerified() {
@@ -111,9 +107,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     }
 
     /**
-     * Gets the user's email.
-     *
-     * @return The user's email.
+     * @see UserModel#getEmail()
      */
     @Override
     public String getEmail() {
@@ -121,9 +115,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     }
 
     /**
-     * Sets the user's email.
-     *
-     * @param email The new email address to assign to the user.
+     * @see UserModel#setEmail(String)
      */
     @Override
     public void setEmail(String email) {
@@ -131,9 +123,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     }
 
     /**
-     * Gets the user's phone number.
-     *
-     * @return The user's phone number.
+     * @see UserModel#getPhone()
      */
     @Override
     public String getPhone() {
@@ -141,9 +131,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     }
 
     /**
-     * Sets the user's phone number.
-     *
-     * @param phone The new phone number to assign to the user.
+     * @see UserModel#setPhone(String)
      */
     @Override
     public void setPhone(String phone) {
@@ -151,9 +139,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     }
 
     /**
-     * Gets the {@link ParseUserProfileModel} object linked to this {@link ParseUserModel} object.
-     *
-     * @return The {@link ParseUserProfileModel} linked to this model.
+     * @see UserModel#getProfile()
      */
     @Override
     public ParseUserProfileModel getProfile() {
@@ -161,9 +147,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     }
 
     /**
-     * Sets the profile object.
-     *
-     * @param profile The profile object to set.
+     * @see UserModel#setProfile(UserProfileModel)
      */
     @Override
     public void setProfile(UserProfileModel profile) {
@@ -178,6 +162,7 @@ public class ParseUserModel extends ParseBaseModel implements UserModel {
     /**
      * Creates a new instance of this class using the provided username and password. Does not save
      * the object to storage (see {@link #save()}.
+     *
      * @param username The username to assign to the new user.
      * @param password The password to assign to the new user.
      * @return Returns the newly created instance of this class or {@code null} if unable to create

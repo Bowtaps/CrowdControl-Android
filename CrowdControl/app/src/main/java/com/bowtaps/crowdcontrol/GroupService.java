@@ -11,7 +11,9 @@ import android.util.Log;
 import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.LocationModel;
+import com.bowtaps.crowdcontrol.model.SecureLocationManager;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,6 +91,10 @@ public class GroupService extends Service {
      */
     private String userPId;
 
+    private LatLng currentLocation;
+
+    private Integer locationCounter;
+
 
     /**
      * Default constructor for this object. Initializes properties.
@@ -117,7 +123,8 @@ public class GroupService extends Service {
         // Extract intent arguments
         final String groupId = intent.getStringExtra(INTENT_GROUP_ID_KEY);
         final String userPId = intent.getStringExtra(INTENT_USER_ID_KEY);
-
+        currentLocation = CrowdControlApplication.getInstance().getLocationManager().getCurrentLocation();
+        locationCounter = 0;
         // Verify parameters
         if (groupId == null || userPId == null) {
             stopSelf(startId);
@@ -205,13 +212,17 @@ public class GroupService extends Service {
         GroupModel group = null;
         List<UserProfileModel> users = new LinkedList<>();
         List<LocationModel> locations = new LinkedList<>();
+        SecureLocationManager locationManager = CrowdControlApplication.getInstance().getLocationManager();
+        LatLng previousLocation = currentLocation;
 
         // Separate results into buckets based on type and keep track of most recent update time
         for (BaseModel model : results) {
             if (model instanceof GroupModel) {
                 group = (GroupModel) model;
+                Log.d("Service", "Added a new GroupModel");
             } else if (model instanceof UserProfileModel) {
                 users.add((UserProfileModel) model);
+                Log.d("Service", "Added a new UserProfileModel");
             } else if (model instanceof LocationModel) {
                 locations.add((LocationModel) model);
             }
@@ -219,6 +230,10 @@ public class GroupService extends Service {
             if (model.getUpdated().after(since)) {
                 since = model.getUpdated();
             }
+        }
+        currentLocation = locationManager.getCurrentLocation();
+        if(!currentLocation.equals(previousLocation)){
+            locationManager.broadcastLocation();
         }
 
         // Forward calls to listeners
@@ -228,6 +243,7 @@ public class GroupService extends Service {
                 // Invoke callback method call
                 try {
                     ref.onReceivedGroupUpdate(group);
+                    locationManager.broadcastLocation();
                 } catch (Exception ex) {
                     Log.d(TAG, "Exception thrown while handling onReceivedGroupUpdate event");
                 }
@@ -236,13 +252,11 @@ public class GroupService extends Service {
 
         // Trigger events of location listeners
         if (!locations.isEmpty()) {
-
             // First, send updated locations to location manager
             CrowdControlApplication.getInstance().getLocationManager().updateLocations(locations);
 
             // Notify listeners of changes
             for (LocationUpdatesListener listener : locationUpdatesListeners) {
-
                 // Invoke callback method call
                 try {
                     listener.onReceivedLocationUpdate(new ArrayList<>(locations));
@@ -447,6 +461,10 @@ public class GroupService extends Service {
      * Listener interface for receiving location updates.
      */
     public interface LocationUpdatesListener {
+        /**
+         * When a new location has been recieved from the server
+         * @param locations {@link List} of {@link LocationModel}
+         */
         void onReceivedLocationUpdate(List<LocationModel> locations);
     }
 

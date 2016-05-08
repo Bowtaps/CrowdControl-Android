@@ -12,11 +12,11 @@
                 android:id="@+id/txtSender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:text=""
+                android:text="Me"
                 android:textSize="16sp"
                 android:singleLine="true"
                 android:layout_alignParentLeft="true"
+                android:layout_below="@+id/textBubble"
                 android:paddingLeft="10dp"
                 android:paddingBottom="6dp"
                 android:textColor="@android:color/black" android:textStyle="bold"/>
@@ -34,10 +34,11 @@
                 android:layout_alignBottom="@+id/txtSender"/>
 
         <RelativeLayout
+                android:id="@+id/textBubble"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txtSender"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
                 android:padding="12dp"
                 android:background="@drawable/grey_bubble"
                 >

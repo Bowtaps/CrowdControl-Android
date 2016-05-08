@@ -16,14 +16,21 @@
             android:background="?attr/colorPrimary"
             xmlns:android="http://schemas.android.com/apk/res/android" />
 
-        <ListView
-            android:id="@+id/group_list"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@+id/toolbar"
-            android:smoothScrollbar="true"
-            android:scrollingCache="false"
-            android:scrollIndicators="right" />
+        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar">
+            <ListView
+                android:id="@+id/group_list"
+                android:layout_width="fill_parent"
+                android:hint="No Groups - Want to make a new one?"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/toolbar"
+                android:smoothScrollbar="true"
+                android:scrollingCache="false"
+                android:scrollIndicators="right" />
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <Button
             android:layout_width="wrap_content"

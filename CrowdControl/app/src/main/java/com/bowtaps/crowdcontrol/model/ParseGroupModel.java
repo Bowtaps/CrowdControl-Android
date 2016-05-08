@@ -1,6 +1,7 @@
 package com.bowtaps.crowdcontrol.model;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -47,17 +48,15 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
 
 
     /**
-     * Internally cached group leader. This value is set when either {@link #load()},
-     * {@link #loadInBackground(LoadCallback)}, or {@link #setGroupLeader(UserProfileModel)} are
-     * invoked. This value can be gotten via a call to {@link #getGroupLeader()}.
-     */
-    private ParseUserProfileModel leader;
-
-    /**
      * Internal cache of group members. This list is populated when {@link #load()} or
      * {@link #loadInBackground(LoadCallback)} is called.
      */
     private List<ParseUserProfileModel> members;
+
+    /**
+     * Cached list of conversations.
+     */
+    private List<ParseConversationModel> conversations;
 
 
     /**
@@ -77,26 +76,37 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     public ParseGroupModel(ParseObject object) {
         super(object);
 
-        leader = null;
         members = new ArrayList<>();
+        conversations = new ArrayList<>();
     }
 
     /**
-     * Gets the {@link UserProfileModel} of the leader of the group or {@code null} if there is no
-     * leader.
-     *
-     * @return The {@link UserProfileModel} of the leader of the group or {@code null} if there is
-     *         no leader.
+     * @see GroupModel#getGroupLeader()
      */
     @Override
     public ParseUserProfileModel getGroupLeader() {
-        return leader;
+
+        Object parseLeader = getParseObject().get(leaderKey);
+        ParseBaseModel leaderModel = null;
+
+        if (parseLeader != null && parseLeader instanceof ParseObject) {
+            leaderModel = ParseModelManager.getInstance().checkCache(((ParseObject) parseLeader).getObjectId());
+
+            if (leaderModel == null) {
+                leaderModel = ParseUserProfileModel.createFromParseObject((ParseObject) parseLeader);
+                leaderModel = ParseModelManager.getInstance().updateCache((ParseBaseModel) leaderModel);
+            }
+        }
+
+        if (leaderModel != null && leaderModel instanceof ParseUserProfileModel) {
+            return (ParseUserProfileModel) leaderModel;
+        } else {
+            return null;
+        }
     }
 
     /**
-     * Sets the given user as this group's designated leader.
-     *
-     * @param leader The profile of the user to make the leader. {@code null} is a valid value.
+     * @see GroupModel#getGroupLeader()
      */
     @Override
     public void setGroupLeader(UserProfileModel leader) {
@@ -110,20 +120,16 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         if (leader == null) {
 
             // Leader is being removed
-            this.leader = null;
             getParseObject().put(leaderKey, null);
         } else {
 
             // Leader is being added/replaced
-            this.leader = null;
             getParseObject().put(leaderKey, ((ParseUserProfileModel) leader).getParseObject());
         }
     }
 
     /**
-     * Gets the name of the group.
-     *
-     * @return The name of the group.
+     * @see GroupModel#getGroupName()
      */
     @Override
     public String getGroupName() {
@@ -131,9 +137,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     }
 
     /**
-     * Sets the name of the group.
-     *
-     * @param name The new name of the group.
+     * @see GroupModel#setGroupName(String)
      */
     @Override
     public void setGroupName(String name) {
@@ -141,9 +145,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     }
 
     /**
-     * Gets the description of the group.
-     *
-     * @return The description of the group.
+     * @see GroupModel#getGroupDescription()
      */
     @Override
     public String getGroupDescription() {
@@ -151,9 +153,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     }
 
     /**
-     * Sets the description of the group.
-     *
-     * @param description The new description of the group.
+     * @see GroupModel#setGroupDescription(String)
      */
     @Override
     public void setGroupDescription(String description) {
@@ -161,9 +161,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     }
 
     /**
-     * Gets the list of users associated with the current group.
-     *
-     * @return A {@link List} of {@link ParseUserProfileModel} objects that belong to the group.
+     * @see GroupModel#getGroupMembers()
      */
     @Override
     public List<ParseUserProfileModel> getGroupMembers() {
@@ -171,10 +169,24 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     }
 
     /**
-     * Clears all members from this group. Does not modify the group leader, but will remove the
-     * leader from the group if they are a member.
+     * Gets the list of users associated with the current group.
      *
-     * @return {@code true} if the operation was successful, {@code false} if not.
+     * @return An {@link ArrayList} of {@link UserProfileModel} objects that belong to the group.
+     */
+    public UserProfileModel getGroupMember(String id) {
+        ParseUserProfileModel thisMember = null;
+
+        for (ParseUserProfileModel member:members) {
+            if(member.getId().equals(id)) {
+                thisMember = member;
+            }
+        }
+
+        return thisMember;
+    }
+
+    /**
+     * @see GroupModel#clearGroupMembers()
      */
     @Override
     public Boolean clearGroupMembers() {
@@ -190,12 +202,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     }
 
     /**
-     * Adds multiple new members to the group.
-     *
-     * @param profiles The {@link Collection} of users to add as members to this group.
-     *
-     * @return {@code true} if the users were successfully added to the group, {@code false} if not
-     *         or if any member is already a member of the group.
+     * @see GroupModel#addGroupMembers(Collection)
      */
     @Override
     public Boolean addGroupMembers(Collection<? extends UserProfileModel> profiles) {
@@ -227,12 +234,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     }
 
     /**
-     * Adds a new member to the group.
-     *
-     * @param profile The {@link UserProfileModel} of the user to be added.
-     *
-     * @return True if the user was successfully added to the group, false if not or if the user is
-     *         already a member of the group.
+     * @see GroupModel#addGroupMember(UserProfileModel)
      */
     @Override
     public Boolean addGroupMember(UserProfileModel profile) {
@@ -240,12 +242,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     }
 
     /**
-     * Removes a user from the group.
-     *
-     * @param profile The {@link UserProfileModel} of the user to be removed.
-     *
-     * @return True if the user was successfully removed from the group, false if not or if the user
-     *         was already not a member of the group.
+     * @see GroupModel#removeGroupMember(UserProfileModel)
      */
     @Override
     public Boolean removeGroupMember(UserProfileModel profile) {
@@ -274,6 +271,26 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
     }
 
     /**
+     * Adds a conversation to this model's internal cache. This will include it in future calls to
+     * {@link #getCachedConversations()}.
+     *
+     * @param conversation The conversation to add to this model's cache.
+     */
+    protected void addCachedConversation(ParseConversationModel conversation) {
+        if (!conversations.contains(conversation)) {
+            conversations.add(conversation);
+        }
+    }
+
+    /**
+     * @see GroupModel#getCachedConversations()
+     */
+    @Override
+    public List<? extends ParseConversationModel> getCachedConversations() {
+        return Collections.unmodifiableList(conversations);
+    }
+
+    /**
      * Loads this object from Parse storage synchronously. In addition to the normal functionality
      * inherited from {@link ParseBaseModel}, this method also fetches and caches the users who
      * are members of this group.
@@ -288,15 +305,12 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         members.clear();
 
         // Fetch the leader
-        ParseObject parseLeader = getParseObject().getParseObject(leaderKey);
-        if (parseLeader == null) {
+        if (getParseObject().get(leaderKey) != null) {
+            ParseObject parseLeader = (ParseObject) getParseObject().get(leaderKey);
 
-            // No group leader
-            leader = null;
-        } else if (leader == null || !leader.equals(parseLeader)) {
-
-            // New group leader
-            leader = new ParseUserProfileModel(parseLeader);
+            if (ParseModelManager.getInstance().checkCache(parseLeader.getObjectId()) == null) {
+                ParseUserProfileModel.createFromParseObject(parseLeader);
+            }
         }
 
         // Fetch objects in relation
@@ -305,7 +319,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
         List<ParseObject> results = query.find();
 
         for (ParseObject result : results) {
-            members.add(new ParseUserProfileModel(result));
+            members.add(ParseUserProfileModel.createFromParseObject(result));
         }
     }
 
@@ -375,7 +389,7 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
      * @throws ParseException Throws an exception if any error occurs.
      */
     public static List<ParseGroupModel> getAll() throws ParseException {
-        List<ParseGroupModel> result = new ArrayList<ParseGroupModel>();
+        List<ParseGroupModel> result = new ArrayList<>();
 
         // Construct and execute query
         ParseQuery parseQuery = new ParseQuery(tableName);
@@ -487,4 +501,5 @@ public class ParseGroupModel extends ParseBaseModel implements GroupModel {
 
         return model;
     }
+
 }

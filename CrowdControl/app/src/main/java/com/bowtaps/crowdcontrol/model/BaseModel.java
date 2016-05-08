@@ -25,7 +25,7 @@ public interface BaseModel {
      * @return String representation of the unique identifier that can be used
      *         to reference this object.
      */
-    public String getId();
+    String getId();
 
     /**
      * Gets the creation date and time for the model. This value is
@@ -35,7 +35,7 @@ public interface BaseModel {
      * @return Date object representing the date and time when the model was
      *         first introduced into storage.
      */
-    public Date getCreated();
+    Date getCreated();
 
     /**
      * Gets the date and time that the model was last updated in storage. This
@@ -45,7 +45,7 @@ public interface BaseModel {
      * @return Date object representing the date and time when the model was
      *         last updated in storage.
      */
-    public Date getUpdated();
+    Date getUpdated();
 
     /**
      * Gets a flag indicating that the model has new changes that haven't been
@@ -55,7 +55,7 @@ public interface BaseModel {
      * @return Boolean flag indicating whether or not the model contains unsaved
      *         changes.
      */
-    public Boolean wasModified();
+    Boolean wasModified();
 
     /**
      * Saves this object to storage. This is a blocking function, so care should
@@ -64,7 +64,7 @@ public interface BaseModel {
      * @throws Exception Throws an {@link Exception} should the operation fail
      * for any reason.
      */
-    public void save() throws Exception;
+    void save() throws Exception;
 
     /**
      * Saves this object to storage asynchronously. Spawns a separate thread so
@@ -78,7 +78,7 @@ public interface BaseModel {
      *                 is complete. If no object is provided (or null is given),
      *                 then nothing will happen after the object has been saved.
      */
-    public void saveInBackground(final SaveCallback callback);
+    void saveInBackground(final SaveCallback callback);
 
     /**
      * Loads this object from storage. This is a blocking function, so care
@@ -87,7 +87,7 @@ public interface BaseModel {
      * @throws Exception Throws an {@link Exception} should the operation fail
      * for any reason.
      */
-    public void load() throws Exception;
+    void load() throws Exception;
 
     /**
      * Loads this object from storage asynchronously. Spawns a separate thread
@@ -102,7 +102,7 @@ public interface BaseModel {
      *                 then nothing will happen after the object has been
      *                 loaded.
      */
-    public void loadInBackground(final LoadCallback callback);
+    void loadInBackground(final LoadCallback callback);
 
     /**
      * Deletes this object from storage. This is a blocking function that will
@@ -113,7 +113,7 @@ public interface BaseModel {
      * @throws Exception Throws an {@link Exception} should the operation fail
      * for any reason.
      */
-    public void delete() throws Exception;
+    void delete() throws Exception;
 
     /**
      * Deletes this object from storage asynchronously. Spawns a separate thread
@@ -128,7 +128,7 @@ public interface BaseModel {
      *                 given, then nothing will happen after the operation is
      *                 complete.
      */
-    public void deleteInBackground(final DeleteCallback callback);
+    void deleteInBackground(final DeleteCallback callback);
 
 
 
@@ -136,7 +136,7 @@ public interface BaseModel {
      * The callback interface that should be used for asynchronous saving
      * operations.
      */
-    public interface SaveCallback {
+    interface SaveCallback {
 
         /**
          * This method is called after completion of an asynchronous background
@@ -157,7 +157,7 @@ public interface BaseModel {
      * The callback interface that should be used for asynchronous loading
      * operations.
      */
-    public interface LoadCallback {
+    interface LoadCallback {
 
         /**
          * This method is called after completion of an asynchronous background
@@ -178,7 +178,7 @@ public interface BaseModel {
      * The callback interface that should be used for asynchornous loading operations that can
      * return multiple objects as a result.
      */
-    public interface FetchCallback {
+    interface FetchCallback {
 
         /**
          * This method is called after completion of an asynchronous background fetch on a set
@@ -199,7 +199,7 @@ public interface BaseModel {
      * The callback interface that should be used for asnychronous delete
      * operations.
      */
-    public interface DeleteCallback {
+    interface DeleteCallback {
 
         /**
          * This method is called after completion of an asynchronous background
