@@ -384,6 +384,60 @@ public class ParseModelManager implements ModelManager {
     }
 
     /**
+     * @see ModelManager#fetchAllGroupsInBackground(BaseModel.FetchCallback)
+     */
+    @Override
+    public void fetchNotificationsInBackground(final BaseModel.FetchCallback callback) {
+
+        // Define and execute an AsyncTask to perform the background fetch
+        new AsyncTask<Object, Void, List<ParseInvitationModel>>() {
+
+            private BaseModel.FetchCallback callback;
+            private ParseException exception;
+
+            @Override
+            public void onPreExecute() {
+
+                // Initialize variables
+                exception = null;
+            }
+
+            @Override
+            public List<ParseInvitationModel> doInBackground(final Object ... params) {
+
+                // Extract parameters to convenience variables
+                this.callback = (BaseModel.FetchCallback) params[0];
+
+                // Attempt fetch from storage
+                List<ParseInvitationModel> result = null;
+                try {
+                    result = ParseInvitationModel.getAll();
+                } catch (ParseException ex) {
+                    exception = ex;
+                }
+
+                return result;
+            }
+
+            @Override
+            public void onPostExecute(List<ParseInvitationModel> result) {
+
+                // Update cache
+                if (result != null) {
+                    for (int i = 0; i < result.size(); i++) {
+                        result.set(i, (ParseInvitationModel) updateCache(result.get(i)));
+                    }
+                }
+
+                // Execute callback if one is provided
+                if (callback != null) {
+                    callback.doneFetchingModels(result, exception);
+                }
+            }
+        }.execute(callback);
+    }
+
+    /**
      * @see ModelManager#getCurrentGroup()
      */
     @Override

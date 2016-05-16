@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.bowtaps.crowdcontrol.adapters.GroupModelAdapter;
 import com.bowtaps.crowdcontrol.adapters.InvitationModelAdapter;
 import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
+import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.InvitationModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
@@ -33,7 +34,7 @@ public class NotificationActivity extends AppCompatActivity implements ListView.
     //List handlers //TODO Change to notification objects!!!!!!!!!
     private InvitationModelAdapter mNotificationModelAdapter;
     private ListView mNotificationListView;
-    private List<InvitationModel> mNotificationList;
+    private ArrayList mNotificationList;
 
 
     /**
@@ -64,13 +65,32 @@ public class NotificationActivity extends AppCompatActivity implements ListView.
         mNotificationListView.setAdapter(mNotificationModelAdapter);
         mNotificationListView.setOnItemClickListener(this);
 
-        // Load notifications
-        try {
-            mNotificationList = new ArrayList<>(CrowdControlApplication.getInstance().getModelManager().fetchNotifications());
-            mNotificationModelAdapter.notifyDataSetChanged();
-        } catch (Exception e) {
-            Log.d("NotificationActivity", "Unable to load notifications");
-        }
+        CrowdControlApplication.getInstance().getModelManager().fetchNotificationsInBackground(new BaseModel.FetchCallback() {
+            @Override
+            public void doneFetchingModels(List<? extends BaseModel> results, Exception ex) {
+
+                // Verify operation was successful
+                if (results == null || ex != null) {
+                    Log.d("Notification Activity", "Failed to load group list");
+                    return;
+                }
+
+                // Replace existing list with new results
+                mNotificationList.clear();
+                mNotificationList.addAll((List<InvitationModel>) results);
+
+                // Force update on the list adapter
+                mNotificationModelAdapter.notifyDataSetChanged();
+            }
+        });
+
+//        // Load notifications
+//        try {
+//            mNotificationList = new ArrayList<>(CrowdControlApplication.getInstance().getModelManager().fetchNotifications());
+//            mNotificationModelAdapter.notifyDataSetChanged();
+//        } catch (Exception e) {
+//            Log.d("NotificationActivity", "Unable to load notifications");
+//        }
     }
 
     /**

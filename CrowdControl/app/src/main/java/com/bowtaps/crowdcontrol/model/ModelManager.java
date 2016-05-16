@@ -125,6 +125,14 @@ public interface ModelManager {
     void fetchAllGroupsInBackground(final BaseModel.FetchCallback callback);
 
     /**
+     * Fetches all group objects in storage on a separate thread. Spawns a new thread and performs
+     * the fetch on that thread, avoiding the UI blocking issue.
+     *
+     * @param callback The callback object to pass control and the results to after completion.
+     */
+    void fetchNotificationsInBackground(final BaseModel.FetchCallback callback);
+
+    /**
      * Gets the current group that the current user is a member of. If no user is logged in or the
      * user is not a member of any groups, then will return {@code null}.
      *

@@ -174,4 +174,31 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
 
         return results;
     }
+
+
+    /**
+     * Fetches all groups from the database.
+     *
+     * This is a blocking function that can take several seconds to complete. Care should be taken
+     * to not call this method from the UI thread.
+     *
+     * @return A {@link List} of all {@link ParseGroupModel} objects in the database.
+     * @throws ParseException Throws an exception if any error occurs.
+     */
+    public static List<ParseInvitationModel> getAll() throws ParseException {
+        List<ParseInvitationModel> result = new ArrayList<>();
+
+        // Construct and execute query
+        ParseQuery parseQuery = new ParseQuery(tableName);
+        List<ParseObject> queryResult = parseQuery.find();
+
+        // Create model objects for query results
+        for (ParseObject parseObject : queryResult) {
+            result.add(new ParseInvitationModel(parseObject));
+        }
+
+        return result;
+    }
+
+
 }
