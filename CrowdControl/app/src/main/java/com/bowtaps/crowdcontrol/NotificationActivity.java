@@ -1,5 +1,6 @@
 package com.bowtaps.crowdcontrol;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -35,6 +36,8 @@ public class NotificationActivity extends AppCompatActivity implements ListView.
     private InvitationModelAdapter mNotificationModelAdapter;
     private ListView mNotificationListView;
     private ArrayList mNotificationList;
+
+    private static final String TAG = NotificationActivity.class.getSimpleName();
 
 
     /**
@@ -128,6 +131,27 @@ public class NotificationActivity extends AppCompatActivity implements ListView.
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // Get the selected group
+        final GroupModel groupModel = mNotificationModelAdapter.getItem(position).getGroup();
 
+        try {
+            CrowdControlApplication.getInstance().getModelManager().joinGroup(groupModel);
+        } catch(Exception e){
+            Log.d(TAG, "Unable to join group");
+        }
+
+        CrowdControlApplication.getInstance().getModelManager().setCurrentGroup((GroupModel) groupModel);
+        launchGroupNavigationActivity();
+    }
+
+    /*
+     *  Launches the (@Link GroupNavigationActivity)
+     *
+     *  @see GroupNavigationActivity
+     */
+    private void launchGroupNavigationActivity() {
+        Intent myIntent = new Intent(this, GroupNavigationActivity.class);
+        this.startActivity(myIntent);
+        finish();
     }
 }
