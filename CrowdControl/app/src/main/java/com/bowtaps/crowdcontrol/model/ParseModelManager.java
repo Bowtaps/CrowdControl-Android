@@ -9,6 +9,7 @@ import com.parse.Parse;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -25,6 +26,11 @@ import java.util.Map;
  * @since 2016-01-17
  */
 public class ParseModelManager implements ModelManager {
+
+    /**
+     * The name of the Parse table associated with this class.
+     */
+    private static final String tableName = "CCUser";
 
     /**
      * An internal reference to the current logged in user. May be {@code null} if no user is logged
@@ -384,7 +390,7 @@ public class ParseModelManager implements ModelManager {
     }
 
     /**
-     * @see ModelManager#fetchAllGroupsInBackground(BaseModel.FetchCallback)
+     * @see ModelManager#fetchNotificationsInBackground(BaseModel.FetchCallback)
      */
     @Override
     public void fetchNotificationsInBackground(final BaseModel.FetchCallback callback) {
@@ -436,6 +442,62 @@ public class ParseModelManager implements ModelManager {
             }
         }.execute(callback);
     }
+
+
+    /**
+     * @see ModelManager#fetchSearchedUsersInBackground(BaseModel.FetchCallback, String)
+     */
+    @Override
+    public void fetchSearchedUsersInBackground(final BaseModel.FetchCallback callback, final String searchString) {
+
+        // Define and execute an AsyncTask to perform the background fetch
+        new AsyncTask<Object, Void, List<ParseUserProfileModel>>() {
+
+            private BaseModel.FetchCallback callback;
+            private ParseException exception;
+
+            @Override
+            public void onPreExecute() {
+
+                // Initialize variables
+                exception = null;
+            }
+
+            @Override
+            public List<ParseUserProfileModel> doInBackground(final Object ... params) {
+
+                // Extract parameters to convenience variables
+                this.callback = (BaseModel.FetchCallback) params[0];
+
+                // Attempt fetch from storage
+                List<ParseUserProfileModel> result = null;
+                try {
+                    result = ParseUserProfileModel.getAll(searchString);
+                } catch (ParseException ex) {
+                    exception = ex;
+                }
+
+                return result;
+            }
+
+            @Override
+            public void onPostExecute(List<ParseUserProfileModel> result) {
+
+                // Update cache
+                if (result != null) {
+                    for (int i = 0; i < result.size(); i++) {
+                        result.set(i, (ParseUserProfileModel) updateCache(result.get(i)));
+                    }
+                }
+
+                // Execute callback if one is provided
+                if (callback != null) {
+                    callback.doneFetchingModels(result, exception);
+                }
+            }
+        }.execute(callback);
+    }
+
 
     /**
      * @see ModelManager#getCurrentGroup()

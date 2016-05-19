@@ -177,7 +177,7 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
 
 
     /**
-     * Fetches all groups from the database.
+     * Fetches all Invite Notifications from the database.
      *
      * This is a blocking function that can take several seconds to complete. Care should be taken
      * to not call this method from the UI thread.

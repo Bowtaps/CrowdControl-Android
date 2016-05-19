@@ -1,6 +1,11 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Parse implementation of the @{link ParseBaseModel} interface.
@@ -82,5 +87,20 @@ public class ParseUserProfileModel extends ParseBaseModel implements UserProfile
         }
 
         return (ParseUserProfileModel) model;
+    }
+
+    public static List<ParseUserProfileModel> getAll(String searchString) throws ParseException {
+        List<ParseUserProfileModel> result = new ArrayList<>();
+
+        // Construct and execute query
+        ParseQuery parseQuery = new ParseQuery(tableName);
+        List<ParseObject> queryResult = parseQuery.find();
+
+        // Create model objects for query results
+        for (ParseObject parseObject : queryResult) {
+            result.add(new ParseUserProfileModel(parseObject));
+        }
+
+        return result;
     }
 }

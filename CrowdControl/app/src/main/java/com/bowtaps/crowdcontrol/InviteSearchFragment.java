@@ -2,6 +2,7 @@ package com.bowtaps.crowdcontrol;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
+import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 
@@ -27,6 +29,9 @@ public class InviteSearchFragment extends Fragment implements GroupService.Group
     private ListView mSearchedUsersListView;
     private List<UserProfileModel> mFoundUserList;
     private List<UserProfileModel> mSearchedUserList;
+
+
+    private static final String TAG = InviteSearchFragment.class.getSimpleName();
 
     private EditText mSearchEditText;
 
@@ -80,7 +85,24 @@ public class InviteSearchFragment extends Fragment implements GroupService.Group
 
         if(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers() != null &&
                 !CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers().isEmpty())
-            mSearchedUserList.addAll(CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getGroupMembers());
+            CrowdControlApplication.getInstance().getModelManager().fetchSearchedUsersInBackground(new BaseModel.FetchCallback() {
+                @Override
+                public void doneFetchingModels(List<? extends BaseModel> results, Exception ex) {
+
+                    // Verify operation was successful
+                    if (results == null || ex != null) {
+                        Log.d(TAG, "Failed to load Searched list");
+                        return;
+                    }
+
+                    // Replace existing list with new results
+                    mSearchedUserList.clear();
+                    mSearchedUserList.addAll((List<UserProfileModel>) results);
+
+                    // Force update on the list adapter
+                    mUserModelAdapter.notifyDataSetChanged();
+                }
+            }, mSearchEditText.getText().toString());
 
         //Initialize ListView
         mSearchedUsersListView = (ListView) v.findViewById(R.id.user_search_list_view);
