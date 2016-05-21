@@ -373,6 +373,13 @@ public interface ModelManager {
      */
     List<? extends InvitationModel> fetchInvitationsForGroup(GroupModel group) throws Exception;
 
+    /**
+     * Creates a new invitation based on a recipient and the current user and current group
+     *
+     * @param recipient - reciever of group invitation
+     */
+     InvitationModel createNewInvitation(UserProfileModel recipient);
+
 
     /**
      * Causes the currently logged in user to join the supplied group.

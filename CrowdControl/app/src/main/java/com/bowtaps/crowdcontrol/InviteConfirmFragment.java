@@ -2,6 +2,7 @@ package com.bowtaps.crowdcontrol;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,9 @@ import android.widget.TextView;
 import android.widget.Toolbar;
 
 import com.bowtaps.crowdcontrol.adapters.UserModelAdapter;
+import com.bowtaps.crowdcontrol.model.BaseModel;
 import com.bowtaps.crowdcontrol.model.GroupModel;
+import com.bowtaps.crowdcontrol.model.InvitationModel;
 import com.bowtaps.crowdcontrol.model.UserProfileModel;
 
 import java.util.ArrayList;
@@ -42,6 +45,8 @@ public class InviteConfirmFragment extends Fragment
 
     //TODO THIS BUTTON NEEDS TO BECOME AN EVENT LISTENER!!!
     private Button mRefreshButton;
+
+    private static final String TAG = InviteConfirmFragment.class.getSimpleName();
 
 
 
@@ -120,7 +125,7 @@ public class InviteConfirmFragment extends Fragment
         super.onDetach();
     }
 
-    //Liekly not needed
+    //Likely not needed
     @Override
     public void onReceivedGroupUpdate(GroupModel group) {
 
@@ -186,6 +191,22 @@ public class InviteConfirmFragment extends Fragment
      */
     private void onInviteConfirmationButtonClicked(Button v) {
         //TODO actually invite users
+        for( UserProfileModel user : mFoundUserList ) {
+            CrowdControlApplication.getInstance().getModelManager().createNewInvitation(user).saveInBackground(new BaseModel.SaveCallback() {
+                @Override
+                public void doneSavingModel(BaseModel object, Exception ex) {
+                    if(ex != null) {
+
+                    }
+                    else{
+                        Log.d(TAG, "Failed to load Searched list");
+                    }
+
+                }
+            });
+        }
+        mFoundUserList.clear();
+        mUserModelAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -200,4 +221,5 @@ public class InviteConfirmFragment extends Fragment
         mFoundUserList.addAll(((InviteNavigationActivity) getActivity()).getmFoundUserList());
         mUserModelAdapter.notifyDataSetChanged();
     }
+
 }

@@ -1,5 +1,6 @@
 package com.bowtaps.crowdcontrol.model;
 
+import com.bowtaps.crowdcontrol.CrowdControlApplication;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -32,6 +33,13 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
      */
     private static final String groupKey = "Group";
 
+    /**
+     * The column name associated with the {@link #initializeNewInvitation(UserProfileModel)} ()} method.
+     */
+    private static final String sentGroupKey = "sendingGroup";
+
+    private ParseUserProfileModel recipient;
+
 
     /**
      * Constructor for this class. Creates a new instance of the model based on the supplied
@@ -39,10 +47,9 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
      *
      * @param object The {@link ParseObject} to use as the underlying handle into storage.
      */
-    private ParseInvitationModel(ParseObject object) {
+    public ParseInvitationModel(ParseObject object) {
         super(object);
     }
-
 
     /**
      * @see InvitationModel#getSender()
@@ -94,6 +101,19 @@ public class ParseInvitationModel extends ParseBaseModel implements InvitationMo
 
         return (ParseGroupModel) model;
     }
+
+    /**
+     * Creates a new invitation based on the sender and receiver
+     * @param recipient
+     */
+    @Override
+    public void initializeNewInvitation(UserProfileModel recipient) {
+        getParseObject().put(senderKey, CrowdControlApplication.getInstance().getModelManager().getCurrentUser().getProfile().getId());
+        getParseObject().put(recipientKey, recipient.getId());
+        getParseObject().put(sentGroupKey, CrowdControlApplication.getInstance().getModelManager().getCurrentGroup().getId());
+    }
+
+
 
 
     /**

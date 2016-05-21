@@ -30,7 +30,12 @@ public class ParseModelManager implements ModelManager {
     /**
      * The name of the Parse table associated with this class.
      */
-    private static final String tableName = "CCUser";
+    private static final String tableUserProfile = "CCUser";
+
+    /**
+     * The name of the Parse table associated with this class.
+     */
+    private static final String tableInvitations = "Invitation";
 
     /**
      * An internal reference to the current logged in user. May be {@code null} if no user is logged
@@ -1038,6 +1043,16 @@ public class ParseModelManager implements ModelManager {
 
         List<ParseInvitationModel> invitations = ParseInvitationModel.fetchAllForGroup((ParseGroupModel) group);
         return invitations;
+    }
+
+    @Override
+    public InvitationModel createNewInvitation(UserProfileModel recipient) {
+        ParseObject invitation = new ParseObject(tableInvitations);
+        ParseInvitationModel newInvitation = new ParseInvitationModel(invitation);
+        newInvitation.initializeNewInvitation(recipient);
+
+
+        return newInvitation;
     }
 
 

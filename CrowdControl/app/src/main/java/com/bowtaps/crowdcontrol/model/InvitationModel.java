@@ -27,4 +27,11 @@ public interface InvitationModel extends BaseModel {
      * @return The group that this invitation is for.
      */
     GroupModel getGroup();
+
+    /**
+     * puts values in all key value pairs, gets user and group from application
+     *
+     * @param recipient - receiver of message
+     */
+    void initializeNewInvitation(UserProfileModel recipient);
 }
